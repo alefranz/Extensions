@@ -1,7 +1,6 @@
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 
 namespace Microsoft.Extensions.Http.HeaderPropagation
@@ -9,9 +8,9 @@ namespace Microsoft.Extensions.Http.HeaderPropagation
     public class HeaderPropagationMessageHandler : DelegatingHandler
     {
         private readonly HeaderPropagationOptions _options;
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IContextValuesAccessor _contextAccessor;
 
-        public HeaderPropagationMessageHandler(HeaderPropagationOptions options, IHttpContextAccessor contextAccessor)
+        public HeaderPropagationMessageHandler(HeaderPropagationOptions options, IContextValuesAccessor contextAccessor)
         {
             _options = options;
             _contextAccessor = contextAccessor;
@@ -19,16 +18,16 @@ namespace Microsoft.Extensions.Http.HeaderPropagation
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            if (_contextAccessor.HttpContext != null)
+            if (_contextAccessor.ContextValues != null)
             {
                 foreach (var header in _options.Headers)
                 {
-                    if (!_contextAccessor.HttpContext.Request.Headers.TryGetValue(header.InputName, out var values)
+                    if (!_contextAccessor.ContextValues.TryGetValue(header.InputName, out var values)
                         || StringValues.IsNullOrEmpty(values))
                     {
                         if (header.DefaultValuesGenerator != null)
                         {
-                            values = header.DefaultValuesGenerator(request, _contextAccessor.HttpContext);
+                            values = header.DefaultValuesGenerator(request, _contextAccessor.ContextValues);
                             if (StringValues.IsNullOrEmpty(values)) continue;
                         }
                         else if (!StringValues.IsNullOrEmpty(header.DefaultValues))

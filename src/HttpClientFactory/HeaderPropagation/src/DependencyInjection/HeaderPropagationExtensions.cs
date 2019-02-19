@@ -1,5 +1,4 @@
 using System;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Http.HeaderPropagation;
@@ -11,7 +10,6 @@ namespace Microsoft.Extensions.DependencyInjection
     {
         public static IServiceCollection AddHeaderPropagation(this IServiceCollection services, Action<HeaderPropagationOptions> configure)
         {
-            services.AddHttpContextAccessor();
             services.Configure(configure);
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IHttpMessageHandlerBuilderFilter, HeaderPropagationMessageHandlerBuilderFilter>());
             return services;
@@ -19,12 +17,11 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IHttpClientBuilder AddHeaderPropagation(this IHttpClientBuilder builder, Action<HeaderPropagationOptions> configure)
         {
-            builder.Services.AddHttpContextAccessor();
             builder.Services.Configure(configure);
             builder.AddHttpMessageHandler((sp) =>
             {
                 var options = sp.GetRequiredService<IOptions<HeaderPropagationOptions>>();
-                var contextAccessor = sp.GetRequiredService<IHttpContextAccessor>();
+                var contextAccessor = sp.GetRequiredService<IContextValuesAccessor>();
 
                 return new HeaderPropagationMessageHandler(options.Value, contextAccessor);
             });

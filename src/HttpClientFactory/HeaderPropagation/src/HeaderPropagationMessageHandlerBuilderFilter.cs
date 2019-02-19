@@ -1,5 +1,4 @@
 using System;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
 namespace Microsoft.Extensions.Http.HeaderPropagation
@@ -7,9 +6,9 @@ namespace Microsoft.Extensions.Http.HeaderPropagation
     internal class HeaderPropagationMessageHandlerBuilderFilter : IHttpMessageHandlerBuilderFilter
     {
         private readonly HeaderPropagationOptions _options;
-        private readonly IHttpContextAccessor _contextAccessor;
+        private readonly IContextValuesAccessor _contextAccessor;
 
-        public HeaderPropagationMessageHandlerBuilderFilter(IOptions<HeaderPropagationOptions> options, IHttpContextAccessor contextAccessor)
+        public HeaderPropagationMessageHandlerBuilderFilter(IOptions<HeaderPropagationOptions> options, IContextValuesAccessor contextAccessor)
         {
             _options = options.Value;
             _contextAccessor = contextAccessor;

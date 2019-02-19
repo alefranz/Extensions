@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http;
 using Microsoft.Extensions.Http.HeaderPropagation;
 using Microsoft.Extensions.Primitives;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -31,11 +31,25 @@ namespace HeaderPropagation.Tests
             };
             ServiceCollection.AddSingleton<IHttpContextAccessor>(ContextAccessor);
 
+            ServiceCollection.AddSingleton<IContextValuesAccessor>(new AspNetCoreContextAccessor(ContextAccessor));
+
             HttpClientBuilder = ServiceCollection.AddHttpClient("example.com", c => c.BaseAddress = new Uri("http://example.com"))
                 .ConfigureHttpMessageHandlerBuilder(b =>
                 {
                     b.PrimaryHandler = Handler;
                 });
+        }
+
+        private class AspNetCoreContextAccessor : IContextValuesAccessor
+        {
+            private readonly IHttpContextAccessor _accessor;
+
+            public AspNetCoreContextAccessor(IHttpContextAccessor accessor)
+            {
+                _accessor = accessor;
+            }
+
+            public IDictionary<string, StringValues> ContextValues => _accessor.HttpContext.Request.Headers;
         }
 
         private SimpleHandler Handler { get; }
@@ -156,7 +170,7 @@ namespace HeaderPropagation.Tests
         {
             // Arrange
             HttpRequestMessage receivedRequest = null;
-            HttpContext receivedContext = null;
+            IDictionary<string, StringValues> receivedContext = null;
             Configuration.DefaultValues = "no";
             Configuration.DefaultValuesGenerator = (req, context) =>
             {
