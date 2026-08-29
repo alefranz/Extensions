@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Defines the builder used to configure the standard hedging handler.

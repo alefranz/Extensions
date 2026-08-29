@@ -5,12 +5,12 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Moq;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Internal;
 
 public class RequestMessageSnapshotStrategyTests
 {

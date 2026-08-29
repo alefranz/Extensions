@@ -7,7 +7,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Helpers;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 
 public class TestHandlerStub : DelegatingHandler
 {

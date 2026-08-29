@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Polly.CircuitBreaker;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Implementation of the <see cref="CircuitBreakerStrategyOptions{TResult}"/> for <see cref="HttpResponseMessage"/> results.

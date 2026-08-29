@@ -9,7 +9,7 @@ using Microsoft.Shared.Diagnostics;
 using Polly;
 using Polly.Retry;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Extensions for <see cref="HttpRetryStrategyOptions"/>.

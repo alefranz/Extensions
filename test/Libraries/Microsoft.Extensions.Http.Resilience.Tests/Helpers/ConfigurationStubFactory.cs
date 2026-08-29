@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Helpers;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 
 public sealed class ConfigurationStubFactory
 {

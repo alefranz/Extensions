@@ -3,10 +3,10 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Routing;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Routing;
 
 // Can't use NotNullWhenAttribute since it's defined in two reference assemblies with InternalVisibleTo
 #pragma warning disable CS8767

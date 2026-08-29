@@ -3,11 +3,11 @@
 
 using FluentAssertions;
 using Microsoft.Extensions.Http.Diagnostics;
-using Microsoft.Extensions.Resilience;
 using Polly;
+using WantsACracker.Extensions.Resilience;
 using Xunit;
 
-namespace Microsoft.Extensions.Resilience.Test.Resilience;
+namespace WantsACracker.Extensions.Resilience.Test.Resilience;
 
 public class ResilienceContextExtensionsTests
 {

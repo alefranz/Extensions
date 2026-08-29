@@ -3,11 +3,11 @@
 
 using System;
 using System.Net.Http;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Resilience;
 
 public class HttpResilienceContextExtensionsTests
 {

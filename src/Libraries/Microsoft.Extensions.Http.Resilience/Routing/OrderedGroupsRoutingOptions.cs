@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Represents the options for collection of endpoint groups that have fixed order.

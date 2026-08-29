@@ -3,12 +3,12 @@
 
 using System;
 using System.Collections.Generic;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
 using Moq;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Routing;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Routing;
 
 public class RoutingHelperTest
 {

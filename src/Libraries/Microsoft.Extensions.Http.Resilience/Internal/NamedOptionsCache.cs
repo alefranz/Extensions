@@ -4,7 +4,7 @@
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 /// <summary>
 /// The cache for named options that allows accessing the last valid options instance.

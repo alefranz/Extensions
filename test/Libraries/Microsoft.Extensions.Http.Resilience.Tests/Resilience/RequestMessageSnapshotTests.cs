@@ -6,10 +6,10 @@ using System.IO;
 using System.Net.Http;
 using System.Text;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Resilience;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 

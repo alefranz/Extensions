@@ -10,7 +10,7 @@ using Microsoft.Shared.Diagnostics;
 using Polly;
 using Polly.CircuitBreaker;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Static predicates used within the current package.

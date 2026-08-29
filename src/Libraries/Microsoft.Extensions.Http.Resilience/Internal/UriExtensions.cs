@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 /// <summary>
 /// Extensions for Uri class to replace host.

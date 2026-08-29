@@ -5,11 +5,11 @@ using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Extensions.Time.Testing;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Internal;
 
 public class RetryAfterHelperTests
 {

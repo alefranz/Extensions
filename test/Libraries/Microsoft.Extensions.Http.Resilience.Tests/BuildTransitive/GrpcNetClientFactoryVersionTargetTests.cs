@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.BuildTransitive;
+namespace WantsACracker.Extensions.Http.Resilience.Test.BuildTransitive;
 
 public class GrpcNetClientFactoryVersionTargetTests
 {
@@ -399,7 +399,7 @@ public class GrpcNetClientFactoryVersionTargetTests
             "Libraries",
             "Microsoft.Extensions.Http.Resilience",
             "buildTransitive",
-            "Microsoft.Extensions.Http.Resilience.targets");
+            "WantsACracker.Extensions.Http.Resilience.targets");
     }
 
     private static string GetDotNetPath()
@@ -422,7 +422,7 @@ public class GrpcNetClientFactoryVersionTargetTests
                 "Libraries",
                 "Microsoft.Extensions.Http.Resilience",
                 "buildTransitive",
-                "Microsoft.Extensions.Http.Resilience.targets");
+                "WantsACracker.Extensions.Http.Resilience.targets");
 
             if (File.Exists(targetPath))
             {

@@ -6,11 +6,11 @@ using System.Linq;
 using System.Net.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience.Hedging.Internals;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Shared.Diagnostics;
+using WantsACracker.Extensions.Http.Resilience.Hedging.Internals;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 #pragma warning disable S3872 // Parameter names should not duplicate the names of their methods
 

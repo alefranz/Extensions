@@ -7,14 +7,14 @@ using System.Linq;
 using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.ExceptionSummarization;
 using Microsoft.Extensions.Http.Diagnostics;
-using Microsoft.Extensions.Resilience;
-using Microsoft.Extensions.Resilience.Internal;
 using Moq;
 using Polly;
 using Polly.Telemetry;
+using WantsACracker.Extensions.Resilience;
+using WantsACracker.Extensions.Resilience.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Resilience.Test.Resilience;
+namespace WantsACracker.Extensions.Resilience.Test.Resilience;
 
 public class ResilienceMetricsEnricherTests
 {

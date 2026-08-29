@@ -12,7 +12,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Polly;
 using Polly.Timeout;
 
-namespace Microsoft.Extensions.Http.Resilience.PerformanceTests;
+namespace WantsACracker.Extensions.Http.Resilience.PerformanceTests;
 
 public class RetryBenchmark
 {

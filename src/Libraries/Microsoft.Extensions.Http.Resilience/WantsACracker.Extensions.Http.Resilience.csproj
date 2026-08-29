@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>Microsoft.Extensions.Http.Resilience</RootNamespace>
+    <RootNamespace>WantsACracker.Extensions.Http.Resilience</RootNamespace>
+    <!-- No published WantsACracker.Extensions.Http.Resilience baseline exists to validate against yet. -->
+    <EnablePackageValidation>false</EnablePackageValidation>
     <TargetFrameworks>$(NetCoreTargetFrameworks);netstandard2.0;net462</TargetFrameworks>
     <Description>Resilience mechanisms for HttpClient.</Description>
     <Workstream>Resilience</Workstream>
@@ -33,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Extensions.Resilience\Microsoft.Extensions.Resilience.csproj" />
+    <ProjectReference Include="..\Microsoft.Extensions.Resilience\WantsACracker.Extensions.Resilience.csproj" />
     <ProjectReference Include="..\Microsoft.Extensions.Http.Diagnostics\Microsoft.Extensions.Http.Diagnostics.csproj" />
   </ItemGroup>
 

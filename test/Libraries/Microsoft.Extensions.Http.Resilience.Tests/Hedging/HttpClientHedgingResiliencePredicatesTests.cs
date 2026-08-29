@@ -10,7 +10,7 @@ using Polly.CircuitBreaker;
 using Polly.Timeout;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Hedging;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Hedging;
 
 public class HttpClientHedgingResiliencePredicatesTests
 {

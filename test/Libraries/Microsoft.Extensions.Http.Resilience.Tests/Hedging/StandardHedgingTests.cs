@@ -9,9 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
-using Microsoft.Extensions.Http.Resilience.Test.Helpers;
 using Microsoft.Extensions.Options;
 using Moq;
 using Polly;
@@ -19,9 +16,12 @@ using Polly.Hedging;
 using Polly.Registry;
 using Polly.Testing;
 using Polly.Timeout;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
+using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Hedging;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Hedging;
 
 public sealed class StandardHedgingTests : HedgingTests<IStandardHedgingHandlerBuilder>
 {

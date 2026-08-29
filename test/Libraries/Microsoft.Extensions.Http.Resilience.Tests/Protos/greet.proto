@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option csharp_namespace = "Microsoft.Extensions.Http.Resilience.Test.Grpc";
+option csharp_namespace = "WantsACracker.Extensions.Http.Resilience.Test.Grpc";
 
 package greet;
 

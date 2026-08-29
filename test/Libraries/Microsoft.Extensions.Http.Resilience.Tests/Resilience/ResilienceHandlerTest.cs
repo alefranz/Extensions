@@ -8,11 +8,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Http.Diagnostics;
-using Microsoft.Extensions.Http.Resilience.Test.Helpers;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Internals;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Internals;
 
 public class ResilienceHandlerTest
 {

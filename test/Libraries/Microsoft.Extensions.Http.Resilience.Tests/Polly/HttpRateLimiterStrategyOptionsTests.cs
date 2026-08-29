@@ -5,7 +5,7 @@ using System.Threading.RateLimiting;
 using FluentAssertions;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Polly;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Polly;
 
 public class HttpRateLimiterStrategyOptionsTests
 {

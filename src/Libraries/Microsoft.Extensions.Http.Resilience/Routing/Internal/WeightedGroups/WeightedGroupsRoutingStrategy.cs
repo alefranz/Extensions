@@ -4,11 +4,11 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Shared.Diagnostics;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience.Routing.Internal.WeightedGroups;
+namespace WantsACracker.Extensions.Http.Resilience.Routing.Internal.WeightedGroups;
 
 internal sealed class WeightedGroupsRoutingStrategy : RequestRoutingStrategy
 {

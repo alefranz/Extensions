@@ -7,7 +7,7 @@ using Polly.CircuitBreaker;
 using Polly.Hedging;
 using Polly.Timeout;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Implementation of the <see cref="HedgingStrategyOptions{TResult}"/> class for <see cref="HttpResponseMessage"/> results.

@@ -7,14 +7,14 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Test.Helpers;
 using Moq;
 using Polly;
 using Polly.Registry;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test;
+namespace WantsACracker.Extensions.Http.Resilience.Test;
 
 public sealed partial class HttpClientBuilderExtensionsTests
 {

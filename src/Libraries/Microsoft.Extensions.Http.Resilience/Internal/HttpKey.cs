@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 internal readonly record struct HttpKey(string Name, string InstanceName)
 {

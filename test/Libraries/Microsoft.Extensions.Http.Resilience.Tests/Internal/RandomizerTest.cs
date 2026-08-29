@@ -4,10 +4,10 @@
 using System;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Internal;
 
 public class RandomizerTest
 {

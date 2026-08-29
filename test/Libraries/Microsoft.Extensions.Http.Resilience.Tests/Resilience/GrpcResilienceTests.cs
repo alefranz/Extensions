@@ -13,11 +13,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Http.Resilience.Test.Grpc;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience.Test.Grpc;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Resilience;
 
 public class GrpcResilienceTests
 {

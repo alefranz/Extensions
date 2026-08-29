@@ -8,7 +8,7 @@ using Microsoft.Extensions.ObjectPool;
 using Microsoft.Shared.Diagnostics;
 using Microsoft.Shared.Pools;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 internal sealed class RequestMessageSnapshot : IResettable, IDisposable
 {

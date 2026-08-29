@@ -5,14 +5,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal.OrderedGroups;
 using Microsoft.Extensions.ObjectPool;
 using Moq;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal.OrderedGroups;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Routing;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Routing;
 
 public class OrderedRoutingStrategyTest : RoutingStrategyTest
 {

@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Hedging;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Hedging;
 
 internal sealed class OperationCanceledExceptionMock : OperationCanceledException
 {

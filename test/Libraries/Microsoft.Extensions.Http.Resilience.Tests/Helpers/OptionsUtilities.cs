@@ -6,7 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Helpers;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 
 internal static class OptionsUtilities
 {

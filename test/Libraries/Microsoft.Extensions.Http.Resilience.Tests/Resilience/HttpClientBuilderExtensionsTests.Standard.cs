@@ -10,15 +10,15 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Test.Helpers;
 using Microsoft.Extensions.Options;
 using Polly;
 using Polly.Registry;
 using Polly.Testing;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test;
+namespace WantsACracker.Extensions.Http.Resilience.Test;
 
 public sealed partial class HttpClientBuilderExtensionsTests : IDisposable
 {

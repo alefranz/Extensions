@@ -1,6 +1,8 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>Microsoft.Extensions.Resilience</RootNamespace>
+    <RootNamespace>WantsACracker.Extensions.Resilience</RootNamespace>
+    <!-- No published WantsACracker.Extensions.Resilience baseline exists to validate against yet. -->
+    <EnablePackageValidation>false</EnablePackageValidation>
     <TargetFrameworks>$(NetCoreTargetFrameworks);netstandard2.0;net462</TargetFrameworks>
     <Description>Extensions to the Polly libraries to enrich telemetry with metadata and exception summaries.</Description>
     <Workstream>Resilience</Workstream>

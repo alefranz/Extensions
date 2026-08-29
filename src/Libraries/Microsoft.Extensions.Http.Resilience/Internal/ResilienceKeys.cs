@@ -3,10 +3,10 @@
 
 using System.Net.Http;
 using Microsoft.Extensions.Http.Diagnostics;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 internal static class ResilienceKeys
 {

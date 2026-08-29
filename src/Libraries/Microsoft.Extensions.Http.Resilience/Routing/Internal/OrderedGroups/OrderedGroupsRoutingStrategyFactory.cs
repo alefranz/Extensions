@@ -1,11 +1,11 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Shared.Pools;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience.Routing.Internal.OrderedGroups;
+namespace WantsACracker.Extensions.Http.Resilience.Routing.Internal.OrderedGroups;
 
 internal sealed class OrderedGroupsRoutingStrategyFactory : IPooledObjectPolicy<OrderedGroupsRoutingStrategy>
 {

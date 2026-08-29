@@ -8,14 +8,14 @@ using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
 using Microsoft.Extensions.ObjectPool;
 using Microsoft.Extensions.Options;
 using Moq;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Routing;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Routing;
 
 public abstract class RoutingStrategyTest
 {

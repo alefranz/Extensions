@@ -9,7 +9,7 @@ using Polly;
 using Polly.Timeout;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Polly;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Polly;
 
 public class HttpClientResiliencePredicatesTests
 {

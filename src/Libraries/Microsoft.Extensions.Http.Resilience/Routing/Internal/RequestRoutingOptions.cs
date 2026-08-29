@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.Extensions.Http.Resilience.Routing.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 
 internal sealed class RequestRoutingOptions
 {

@@ -4,12 +4,12 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Polly;
 using Polly.Telemetry;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Resilience;
 
 public class HttpResilienceMetricsEnricherTests
 {

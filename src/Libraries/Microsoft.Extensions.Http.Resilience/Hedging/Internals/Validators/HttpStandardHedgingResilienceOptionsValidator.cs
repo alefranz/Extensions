@@ -3,7 +3,7 @@
 
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal.Validators;
+namespace WantsACracker.Extensions.Http.Resilience.Internal.Validators;
 
 [OptionsValidator]
 internal sealed partial class HttpStandardHedgingResilienceOptionsValidator : IValidateOptions<HttpStandardHedgingResilienceOptions>

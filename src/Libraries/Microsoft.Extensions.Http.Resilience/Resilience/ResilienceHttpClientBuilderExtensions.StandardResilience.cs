@@ -5,12 +5,12 @@ using System;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Internal.Validators;
 using Microsoft.Extensions.Options;
 using Microsoft.Shared.Diagnostics;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

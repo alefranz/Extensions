@@ -7,7 +7,7 @@ using Microsoft.Extensions.Http.Diagnostics;
 using Polly;
 using Polly.Telemetry;
 
-namespace Microsoft.Extensions.Resilience.Internal;
+namespace WantsACracker.Extensions.Resilience.Internal;
 
 internal sealed class ResilienceMetricsEnricher : MeteringEnricher
 {

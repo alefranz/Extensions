@@ -3,10 +3,10 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Extensions.ObjectPool;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience.Routing.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 
 /// <summary>
 /// Defines a strategy for retrieval of route URLs,

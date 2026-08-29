@@ -11,7 +11,7 @@ using Microsoft.Shared.Diagnostics;
 using Polly;
 using Polly.Timeout;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Provides static predicates used within the current package.

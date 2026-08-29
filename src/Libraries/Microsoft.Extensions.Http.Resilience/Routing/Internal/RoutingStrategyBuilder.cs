@@ -3,6 +3,6 @@
 
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Microsoft.Extensions.Http.Resilience.Routing.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 
 internal sealed record RoutingStrategyBuilder(string Name, IServiceCollection Services) : IRoutingStrategyBuilder;

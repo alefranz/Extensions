@@ -5,7 +5,7 @@ using System.Net.Http;
 using Microsoft.Shared.Text;
 using Polly.Telemetry;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 internal sealed class HttpResilienceMetricsEnricher : MeteringEnricher
 {

@@ -4,7 +4,7 @@
 using System;
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal.Validators;
+namespace WantsACracker.Extensions.Http.Resilience.Internal.Validators;
 
 internal sealed class HttpStandardResilienceOptionsCustomValidator : IValidateOptions<HttpStandardResilienceOptions>
 {

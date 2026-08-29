@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 #pragma warning disable CA5394 // Do not use insecure randomness
 #pragma warning disable CA1852 // Seal internal types

@@ -39,7 +39,12 @@ Everything else — build infrastructure, other libraries, analyzers, documentat
 
 ## Divergences from baseline
 
-_None yet — this branch is published directly from the baseline commit._
+1. **2026-08-29 — Rename resilience package IDs and public namespaces to `WantsACracker.Extensions.*`** (first migration slice; renames only, Polly untouched):
+   - `src/Libraries/Microsoft.Extensions.Resilience/` and `src/Libraries/Microsoft.Extensions.Http.Resilience/`: the project file, the API-surface `.json` and (Http.Resilience) the `buildTransitive/*.targets` file are renamed to `WantsACracker.Extensions[.Http].Resilience.*`, which moves `AssemblyName`, `PackageId` and `RootNamespace` to the `WantsACracker` identity (the API-staging analyzer and the `$(MSBuildProjectName).json` / `buildTransitive\$(MSBuildProjectName).targets` build machinery key off the project file name, so the files had to follow). All public namespaces move from `Microsoft.Extensions[.Http].Resilience` to `WantsACracker.Extensions[.Http].Resilience`; the extension classes living in `Microsoft.Extensions.DependencyInjection` and `System.Net.Http` keep their namespaces. `EnablePackageValidation` is set to `false` in both source projects because no published baseline version exists under the new package IDs yet.
+   - `test/Libraries/Microsoft.Extensions.Resilience.Tests/` and `test/Libraries/Microsoft.Extensions.Http.Resilience.Tests/`: projects, test namespaces, the proto `csharp_namespace` and the embedded path to the renamed `.targets` file follow the source rename; behaviour and assertions preserved.
+   - `bench/Libraries/Microsoft.Extensions.Resilience.PerformanceTests/` and `bench/Libraries/Microsoft.Extensions.Http.Resilience.PerformanceTests/`: follow the source rename, as declared in the relevant-paths table above.
+   - `src/ProjectTemplates/Microsoft.Extensions.AI.Templates/Microsoft.Extensions.AI.Templates.csproj` and `test/Libraries/Microsoft.Extensions.AotCompatibility.TestApp/Microsoft.Extensions.AotCompatibility.TestApp.csproj`: mechanical project-reference path updates only.
+   - Rationale: required so the published packages carry the `WantsACracker` identity before the Polly → WantsACracker dependency swap (next slice).
 
 ## Rebase and sync policy
 

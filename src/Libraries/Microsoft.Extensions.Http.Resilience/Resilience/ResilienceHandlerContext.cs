@@ -3,11 +3,11 @@
 
 using System;
 using System.Diagnostics.CodeAnalysis;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Shared.Diagnostics;
 using Polly.DependencyInjection;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// The context used when building a resilience pipeline HTTP handler.

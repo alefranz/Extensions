@@ -5,13 +5,13 @@ using System;
 using System.Net.Http;
 using System.Threading;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Http.Resilience;
-using Microsoft.Extensions.Http.Resilience.Hedging.Internals;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Internal.Validators;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
 using Microsoft.Shared.Diagnostics;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience;
+using WantsACracker.Extensions.Http.Resilience.Hedging.Internals;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

@@ -6,9 +6,9 @@ using System.Linq;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.ExceptionSummarization;
 using Microsoft.Extensions.Http.Diagnostics;
-using Microsoft.Extensions.Resilience.Internal;
 using Microsoft.Shared.Diagnostics;
 using Polly.Telemetry;
+using WantsACracker.Extensions.Resilience.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

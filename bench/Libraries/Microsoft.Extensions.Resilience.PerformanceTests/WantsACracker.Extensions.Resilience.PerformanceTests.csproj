@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>Microsoft.Extensions.Resilience</RootNamespace>
+    <RootNamespace>WantsACracker.Extensions.Resilience</RootNamespace>
     <Description>Benchmarks for Microsoft.Extensions.Resilience.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Resilience\Microsoft.Extensions.Resilience.csproj" />
+    <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Resilience\WantsACracker.Extensions.Resilience.csproj" />
     <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Telemetry.Abstractions\Microsoft.Extensions.Telemetry.Abstractions.csproj" />
   </ItemGroup>
 </Project>

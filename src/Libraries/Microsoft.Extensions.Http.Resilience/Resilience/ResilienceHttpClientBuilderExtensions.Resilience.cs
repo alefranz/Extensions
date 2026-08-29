@@ -5,13 +5,13 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
 using Microsoft.Extensions.Diagnostics.ExceptionSummarization;
-using Microsoft.Extensions.Http.Resilience;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Shared.DiagnosticIds;
 using Microsoft.Shared.Diagnostics;
 using Polly;
 using Polly.Registry;
 using Polly.Telemetry;
+using WantsACracker.Extensions.Http.Resilience;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

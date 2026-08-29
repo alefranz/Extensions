@@ -9,12 +9,12 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Test.Hedging;
 using Polly;
 using Polly.Retry;
+using WantsACracker.Extensions.Http.Resilience.Test.Hedging;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Polly;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Polly;
 
 public class HttpRetryStrategyOptionsTests
 {

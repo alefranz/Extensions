@@ -4,12 +4,12 @@
 using System;
 using System.Net.Http;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
 using Moq;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Routing;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Routing;
 
 public class RoutingResilienceStrategyTests
 {

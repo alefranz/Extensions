@@ -3,7 +3,7 @@
 
 using Polly.RateLimiting;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Implementation of the <see cref="RateLimiterStrategyOptions"/> for HTTP scenarios.

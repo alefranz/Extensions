@@ -3,10 +3,10 @@
 
 using System;
 using System.Net.Http;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Shared.Diagnostics;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Extensions for <see cref="IHttpResiliencePipelineBuilder"/>.

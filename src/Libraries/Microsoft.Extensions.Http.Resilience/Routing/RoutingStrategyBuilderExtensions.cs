@@ -5,15 +5,15 @@ using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Internal.Routing;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal.OrderedGroups;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal.WeightedGroups;
 using Microsoft.Extensions.Options;
 using Microsoft.Shared.Diagnostics;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Internal.Routing;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal.OrderedGroups;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal.WeightedGroups;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 #pragma warning disable IL2026 // Members annotated with 'RequiresUnreferencedCodeAttribute' require dynamic access otherwise can break functionality when trimming application code
 

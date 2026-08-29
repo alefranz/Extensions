@@ -10,7 +10,7 @@ using Polly;
 using Polly.Registry;
 using Polly.Telemetry;
 
-namespace Microsoft.Extensions.Resilience.Bench;
+namespace WantsACracker.Extensions.Resilience.Bench;
 
 public class ResilienceEnrichmentBenchmark
 {

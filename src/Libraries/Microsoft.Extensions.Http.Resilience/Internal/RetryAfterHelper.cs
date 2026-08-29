@@ -4,7 +4,7 @@
 using System;
 using System.Net.Http;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 internal static class RetryAfterHelper
 {

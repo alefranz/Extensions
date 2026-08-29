@@ -4,11 +4,11 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Shared.Diagnostics;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience.Routing.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 
 /// <summary>
 /// Adds routing support to an inner strategy.

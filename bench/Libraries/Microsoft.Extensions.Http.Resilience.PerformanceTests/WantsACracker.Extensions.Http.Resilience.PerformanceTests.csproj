@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <RootNamespace>Microsoft.Extensions.Http.Resilience.PerformanceTests</RootNamespace>
+    <RootNamespace>WantsACracker.Extensions.Http.Resilience.PerformanceTests</RootNamespace>
     <Description>Benchmarks for Microsoft.Extensions.Http.Resilience.</Description>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Http.Resilience\Microsoft.Extensions.Http.Resilience.csproj" />
+    <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Http.Resilience\WantsACracker.Extensions.Http.Resilience.csproj" />
     <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Telemetry.Abstractions\Microsoft.Extensions.Telemetry.Abstractions.csproj" />
     <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Compliance.Testing\Microsoft.Extensions.Compliance.Testing.csproj" />
     <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Compliance.Redaction\Microsoft.Extensions.Compliance.Redaction.csproj" />

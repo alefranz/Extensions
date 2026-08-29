@@ -5,7 +5,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Net.Http;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 internal sealed class ByAuthorityPipelineKeyProvider
 {

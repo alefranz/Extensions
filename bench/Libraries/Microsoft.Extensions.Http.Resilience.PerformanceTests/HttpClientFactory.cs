@@ -11,7 +11,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
-namespace Microsoft.Extensions.Http.Resilience.PerformanceTests;
+namespace WantsACracker.Extensions.Http.Resilience.PerformanceTests;
 
 [Flags]
 [SuppressMessage("Performance", "EA0004:Make types declared in an executable internal", Justification = "Needs to be public for BenchmarkDotNet consumption")]

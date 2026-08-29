@@ -5,7 +5,7 @@ using System;
 using FluentAssertions;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Routing;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Routing;
 
 public class EndpointTests
 {

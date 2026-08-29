@@ -3,7 +3,7 @@
 
 using System;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Routing;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Routing;
 
 public interface IStubRoutingService
 {

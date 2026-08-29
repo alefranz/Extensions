@@ -3,11 +3,11 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Extensions.Options;
 using Polly.Timeout;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Options for resilience strategies for usage in HTTP scenarios.

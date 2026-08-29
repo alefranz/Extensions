@@ -3,10 +3,10 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Http.Resilience.Internal.Validators;
 using Microsoft.Extensions.Options;
+using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Options for the pipeline of resilience strategies for usage in hedging HTTP scenarios.

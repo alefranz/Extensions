@@ -4,7 +4,7 @@
 using System.Collections.Generic;
 using Microsoft.Extensions.Options;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Represents a collection of <see cref="WeightedUriEndpoint"/>.

@@ -4,9 +4,9 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.Http;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Microsoft.Shared.DiagnosticIds;
 using Microsoft.Shared.Diagnostics;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
 namespace Polly;
 

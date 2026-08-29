@@ -4,12 +4,12 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Http.Resilience.Internal;
 using Polly;
 using Polly.Retry;
 using Polly.Timeout;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Implementation of the <see cref="RetryStrategyOptions{TResult}"/> for <see cref="HttpResponseMessage"/> results.

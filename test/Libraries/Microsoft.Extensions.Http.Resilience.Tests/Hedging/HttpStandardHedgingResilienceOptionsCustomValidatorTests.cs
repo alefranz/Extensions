@@ -5,10 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Internal.Validators;
+using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Hedging;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Hedging;
 
 public class HttpStandardHedgingResilienceOptionsCustomValidatorTests
 {

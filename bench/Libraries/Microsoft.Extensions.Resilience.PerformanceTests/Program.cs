@@ -7,7 +7,7 @@ using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 using BenchmarkDotNet.Toolchains.InProcess.Emit;
 
-namespace Microsoft.Extensions.Resilience.Bench;
+namespace WantsACracker.Extensions.Resilience.Bench;
 
 internal static class Program
 {

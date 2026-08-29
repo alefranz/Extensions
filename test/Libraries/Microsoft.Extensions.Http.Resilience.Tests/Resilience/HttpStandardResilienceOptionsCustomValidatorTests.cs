@@ -8,14 +8,14 @@ using System.Linq;
 using Microsoft;
 using Microsoft.Extensions;
 using Microsoft.Extensions.Http;
-using Microsoft.Extensions.Http.Resilience;
+using WantsACracker.Extensions.Http.Resilience;
 #endif
-using Microsoft.Extensions.Http.Resilience.Internal.Validators;
 using Polly;
 using Polly.Retry;
+using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Resilience;
 
 public class HttpStandardResilienceOptionsCustomValidatorTests
 {

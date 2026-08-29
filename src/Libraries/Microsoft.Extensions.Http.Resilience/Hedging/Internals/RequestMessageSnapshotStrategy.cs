@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Microsoft.Shared.Diagnostics;
 using Polly;
 
-namespace Microsoft.Extensions.Http.Resilience.Internal;
+namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
 /// <summary>
 /// This strategy creates a snapshot of <see cref="HttpRequestMessage"/> before executing the hedging to prevent race conditions when cloning and modifying the message at the same time.

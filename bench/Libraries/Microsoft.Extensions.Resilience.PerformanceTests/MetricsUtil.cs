@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.Metrics;
 
-namespace Microsoft.Extensions.Resilience.Bench;
+namespace WantsACracker.Extensions.Resilience.Bench;
 
 internal sealed class MetricsUtil
 {

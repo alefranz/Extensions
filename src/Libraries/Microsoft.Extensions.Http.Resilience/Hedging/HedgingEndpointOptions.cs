@@ -3,11 +3,11 @@
 
 using System;
 using System.ComponentModel.DataAnnotations;
-using Microsoft.Extensions.Http.Resilience.Internal.Validators;
 using Microsoft.Extensions.Options;
 using Polly.Timeout;
+using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
 
-namespace Microsoft.Extensions.Http.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience;
 
 /// <summary>
 /// Options for the pipeline of resilience strategies assigned to a particular endpoint.

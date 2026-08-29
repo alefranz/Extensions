@@ -3,10 +3,10 @@
 
 using System;
 using FluentAssertions;
-using Microsoft.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Resilience;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Resilience;
 
 #pragma warning disable CA2000 // Test class
 

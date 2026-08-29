@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience.Internal;
-using Microsoft.Extensions.Http.Resilience.Routing.Internal;
-using Microsoft.Extensions.Http.Resilience.Test.Helpers;
 using Moq;
 using Polly;
+using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
+using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 using Xunit;
 
-namespace Microsoft.Extensions.Http.Resilience.Test.Hedging;
+namespace WantsACracker.Extensions.Http.Resilience.Test.Hedging;
 
 #pragma warning disable CA1063 // Implement IDisposable Correctly
 #pragma warning disable CA1816 // Dispose methods should call SuppressFinalize

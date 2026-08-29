@@ -1,0 +1,567 @@
+{
+  "Name": "WantsACracker.Extensions.Http.Resilience, Version=9.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
+  "Types": [
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HedgingEndpointOptions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HedgingEndpointOptions.HedgingEndpointOptions();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpCircuitBreakerStrategyOptions WantsACracker.Extensions.Http.Resilience.HedgingEndpointOptions.CircuitBreaker { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpRateLimiterStrategyOptions WantsACracker.Extensions.Http.Resilience.HedgingEndpointOptions.RateLimiter { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpTimeoutStrategyOptions WantsACracker.Extensions.Http.Resilience.HedgingEndpointOptions.Timeout { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpCircuitBreakerStrategyOptions : Polly.CircuitBreaker.CircuitBreakerStrategyOptions<System.Net.Http.HttpResponseMessage>",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpCircuitBreakerStrategyOptions.HttpCircuitBreakerStrategyOptions();",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "static class WantsACracker.Extensions.Http.Resilience.HttpClientHedgingResiliencePredicates",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientHedgingResiliencePredicates.IsTransient(Polly.Outcome<System.Net.Http.HttpResponseMessage> outcome);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientHedgingResiliencePredicates.IsTransient(Polly.Outcome<System.Net.Http.HttpResponseMessage> outcome, System.Threading.CancellationToken cancellationToken);",
+          "Stage": "Experimental"
+        }
+      ]
+    },
+    {
+      "Type": "static class WantsACracker.Extensions.Http.Resilience.HttpClientResiliencePredicates",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientResiliencePredicates.IsTransient(Polly.Outcome<System.Net.Http.HttpResponseMessage> outcome);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientResiliencePredicates.IsTransient(Polly.Outcome<System.Net.Http.HttpResponseMessage> outcome, System.Threading.CancellationToken cancellationToken);",
+          "Stage": "Experimental"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpHedgingStrategyOptions : Polly.Hedging.HedgingStrategyOptions<System.Net.Http.HttpResponseMessage>",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpHedgingStrategyOptions.HttpHedgingStrategyOptions();",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpRateLimiterStrategyOptions : Polly.RateLimiting.RateLimiterStrategyOptions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpRateLimiterStrategyOptions.HttpRateLimiterStrategyOptions();",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "static class Polly.HttpResilienceContextExtensions",
+      "Stage": "Experimental",
+      "Methods": [
+        {
+          "Member": "static System.Net.Http.HttpRequestMessage? Polly.HttpResilienceContextExtensions.GetRequestMessage(this Polly.ResilienceContext context);",
+          "Stage": "Experimental"
+        },
+        {
+          "Member": "static void Polly.HttpResilienceContextExtensions.SetRequestMessage(this Polly.ResilienceContext context, System.Net.Http.HttpRequestMessage? requestMessage);",
+          "Stage": "Experimental"
+        }
+      ]
+    },
+    {
+      "Type": "static class System.Net.Http.HttpResilienceHttpRequestMessageExtensions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "static Polly.ResilienceContext? System.Net.Http.HttpResilienceHttpRequestMessageExtensions.GetResilienceContext(this System.Net.Http.HttpRequestMessage requestMessage);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static void System.Net.Http.HttpResilienceHttpRequestMessageExtensions.SetResilienceContext(this System.Net.Http.HttpRequestMessage requestMessage, Polly.ResilienceContext? resilienceContext);",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "static class WantsACracker.Extensions.Http.Resilience.HttpResiliencePipelineBuilderExtensions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder WantsACracker.Extensions.Http.Resilience.HttpResiliencePipelineBuilderExtensions.SelectPipelineBy(this WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder builder, System.Func<System.IServiceProvider, System.Func<System.Net.Http.HttpRequestMessage, string>> selectorFactory);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder WantsACracker.Extensions.Http.Resilience.HttpResiliencePipelineBuilderExtensions.SelectPipelineByAuthority(this WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder builder);",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpRetryStrategyOptions : Polly.Retry.RetryStrategyOptions<System.Net.Http.HttpResponseMessage>",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpRetryStrategyOptions.HttpRetryStrategyOptions();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "bool WantsACracker.Extensions.Http.Resilience.HttpRetryStrategyOptions.ShouldRetryAfterHeader { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpStandardHedgingResilienceOptions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpStandardHedgingResilienceOptions.HttpStandardHedgingResilienceOptions();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HedgingEndpointOptions WantsACracker.Extensions.Http.Resilience.HttpStandardHedgingResilienceOptions.Endpoint { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpHedgingStrategyOptions WantsACracker.Extensions.Http.Resilience.HttpStandardHedgingResilienceOptions.Hedging { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpTimeoutStrategyOptions WantsACracker.Extensions.Http.Resilience.HttpStandardHedgingResilienceOptions.TotalRequestTimeout { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions.HttpStandardResilienceOptions();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpTimeoutStrategyOptions WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions.AttemptTimeout { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpCircuitBreakerStrategyOptions WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions.CircuitBreaker { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpRateLimiterStrategyOptions WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions.RateLimiter { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpRetryStrategyOptions WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions.Retry { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpTimeoutStrategyOptions WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions.TotalRequestTimeout { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "static class WantsACracker.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder WantsACracker.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions.Configure(this WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder builder, Microsoft.Extensions.Configuration.IConfigurationSection section);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder WantsACracker.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions.Configure(this WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder WantsACracker.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions.Configure(this WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions, System.IServiceProvider> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder WantsACracker.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions.SelectPipelineBy(this WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder builder, System.Func<System.IServiceProvider, System.Func<System.Net.Http.HttpRequestMessage, string>> selectorFactory);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder WantsACracker.Extensions.Http.Resilience.HttpStandardResiliencePipelineBuilderExtensions.SelectPipelineByAuthority(this WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder builder);",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpTimeoutStrategyOptions : Polly.Timeout.TimeoutStrategyOptions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.HttpTimeoutStrategyOptions.HttpTimeoutStrategyOptions();",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "interface WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder",
+      "Stage": "Stable",
+      "Properties": [
+        {
+          "Member": "string WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder.PipelineName { get; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "Microsoft.Extensions.DependencyInjection.IServiceCollection WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder.Services { get; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "interface WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder",
+      "Stage": "Stable",
+      "Properties": [
+        {
+          "Member": "string WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder.PipelineName { get; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "Microsoft.Extensions.DependencyInjection.IServiceCollection WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder.Services { get; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "interface WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder",
+      "Stage": "Stable",
+      "Properties": [
+        {
+          "Member": "string WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder.Name { get; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "Microsoft.Extensions.DependencyInjection.IServiceCollection WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder.Services { get; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "interface WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder",
+      "Stage": "Stable",
+      "Properties": [
+        {
+          "Member": "string WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder.Name { get; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder.RoutingStrategyBuilder { get; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "Microsoft.Extensions.DependencyInjection.IServiceCollection WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder.Services { get; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.OrderedGroupsRoutingOptions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.OrderedGroupsRoutingOptions.OrderedGroupsRoutingOptions();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "System.Collections.Generic.IList<WantsACracker.Extensions.Http.Resilience.UriEndpointGroup> WantsACracker.Extensions.Http.Resilience.OrderedGroupsRoutingOptions.Groups { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.ResilienceHandler : System.Net.Http.DelegatingHandler",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.ResilienceHandler.ResilienceHandler(System.Func<System.Net.Http.HttpRequestMessage, Polly.ResiliencePipeline<System.Net.Http.HttpResponseMessage>> pipelineProvider);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.ResilienceHandler.ResilienceHandler(Polly.ResiliencePipeline<System.Net.Http.HttpResponseMessage> pipeline);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "override System.Net.Http.HttpResponseMessage WantsACracker.Extensions.Http.Resilience.ResilienceHandler.Send(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "override System.Threading.Tasks.Task<System.Net.Http.HttpResponseMessage> WantsACracker.Extensions.Http.Resilience.ResilienceHandler.SendAsync(System.Net.Http.HttpRequestMessage request, System.Threading.CancellationToken cancellationToken);",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "sealed class WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "void WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext.EnableReloads<TOptions>(string? name = null);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "TOptions WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext.GetOptions<TOptions>(string? name = null);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "void WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext.OnPipelineDisposed(System.Action callback);",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "string WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext.BuilderName { get; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "string WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext.InstanceName { get; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "System.IServiceProvider WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext.ServiceProvider { get; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "static class Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, string pipelineName, System.Action<Polly.ResiliencePipelineBuilder<System.Net.Http.HttpResponseMessage>> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, string pipelineName, System.Action<Polly.ResiliencePipelineBuilder<System.Net.Http.HttpResponseMessage>, WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddStandardHedgingHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddStandardHedgingHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddStandardResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, Microsoft.Extensions.Configuration.IConfigurationSection section);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddStandardResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.HttpStandardResilienceOptions> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpStandardResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddStandardResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder);",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "static class WantsACracker.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder WantsACracker.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions.ConfigureOrderedGroups(this WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder builder, Microsoft.Extensions.Configuration.IConfigurationSection section);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder WantsACracker.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions.ConfigureOrderedGroups(this WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.OrderedGroupsRoutingOptions> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder WantsACracker.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions.ConfigureOrderedGroups(this WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.OrderedGroupsRoutingOptions, System.IServiceProvider> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder WantsACracker.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions.ConfigureWeightedGroups(this WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder builder, Microsoft.Extensions.Configuration.IConfigurationSection section);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder WantsACracker.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions.ConfigureWeightedGroups(this WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.WeightedGroupsRoutingOptions> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder WantsACracker.Extensions.Http.Resilience.RoutingStrategyBuilderExtensions.ConfigureWeightedGroups(this WantsACracker.Extensions.Http.Resilience.IRoutingStrategyBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.WeightedGroupsRoutingOptions, System.IServiceProvider> configure);",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "static class WantsACracker.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder WantsACracker.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions.Configure(this WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder builder, Microsoft.Extensions.Configuration.IConfigurationSection section);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder WantsACracker.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions.Configure(this WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.HttpStandardHedgingResilienceOptions> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder WantsACracker.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions.Configure(this WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder builder, System.Action<WantsACracker.Extensions.Http.Resilience.HttpStandardHedgingResilienceOptions, System.IServiceProvider> configure);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder WantsACracker.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions.SelectPipelineBy(this WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder builder, System.Func<System.IServiceProvider, System.Func<System.Net.Http.HttpRequestMessage, string>> selectorFactory);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder WantsACracker.Extensions.Http.Resilience.StandardHedgingHandlerBuilderExtensions.SelectPipelineByAuthority(this WantsACracker.Extensions.Http.Resilience.IStandardHedgingHandlerBuilder builder);",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.UriEndpoint",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.UriEndpoint.UriEndpoint();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "System.Uri? WantsACracker.Extensions.Http.Resilience.UriEndpoint.Uri { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.UriEndpointGroup",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.UriEndpointGroup.UriEndpointGroup();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "System.Collections.Generic.IList<WantsACracker.Extensions.Http.Resilience.WeightedUriEndpoint> WantsACracker.Extensions.Http.Resilience.UriEndpointGroup.Endpoints { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "enum WantsACracker.Extensions.Http.Resilience.WeightedGroupSelectionMode",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.WeightedGroupSelectionMode.WeightedGroupSelectionMode();",
+          "Stage": "Stable"
+        }
+      ],
+      "Fields": [
+        {
+          "Member": "const WantsACracker.Extensions.Http.Resilience.WeightedGroupSelectionMode WantsACracker.Extensions.Http.Resilience.WeightedGroupSelectionMode.EveryAttempt",
+          "Stage": "Stable",
+          "Value": "0"
+        },
+        {
+          "Member": "const WantsACracker.Extensions.Http.Resilience.WeightedGroupSelectionMode WantsACracker.Extensions.Http.Resilience.WeightedGroupSelectionMode.InitialAttempt",
+          "Stage": "Stable",
+          "Value": "1"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.WeightedGroupsRoutingOptions",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.WeightedGroupsRoutingOptions.WeightedGroupsRoutingOptions();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "System.Collections.Generic.IList<WantsACracker.Extensions.Http.Resilience.WeightedUriEndpointGroup> WantsACracker.Extensions.Http.Resilience.WeightedGroupsRoutingOptions.Groups { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.WeightedGroupSelectionMode WantsACracker.Extensions.Http.Resilience.WeightedGroupsRoutingOptions.SelectionMode { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.WeightedUriEndpoint",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.WeightedUriEndpoint.WeightedUriEndpoint();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "System.Uri? WantsACracker.Extensions.Http.Resilience.WeightedUriEndpoint.Uri { get; set; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "int WantsACracker.Extensions.Http.Resilience.WeightedUriEndpoint.Weight { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
+      "Type": "class WantsACracker.Extensions.Http.Resilience.WeightedUriEndpointGroup : WantsACracker.Extensions.Http.Resilience.UriEndpointGroup",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.WeightedUriEndpointGroup.WeightedUriEndpointGroup();",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "int WantsACracker.Extensions.Http.Resilience.WeightedUriEndpointGroup.Weight { get; set; }",
+          "Stage": "Stable"
+        }
+      ]
+    }
+  ]
+}
