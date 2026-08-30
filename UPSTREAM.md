@@ -12,7 +12,7 @@ This repository is a fork of [`dotnet/extensions`](https://github.com/dotnet/ext
 - Upstream: `dotnet/extensions`
 - Baseline commit: `cc597aa24bf108c38a6a59d09555765575d11cb3` — *Validate path segments in Azure storage result store and response cache (#7718)*
 - Pinned on: 2026-08-26
-- Polly versions at baseline (from `eng/Versions.props`): `9.0.18` (default), `10.0.10` (net10.0), `8.0.29` (net8.0)
+- Polly versions at baseline (from `eng/Versions.props`): `9.0.18` (default), `10.0.10` (net10.0), `8.0.29` (net8.0) — superseded / corrected: these three values are the `MicrosoftExtensionsHttpPolly*Version` properties in `eng/Versions.props`, i.e. the versions of the `Microsoft.Extensions.Http.Polly` wrapper package, which neither `Microsoft.Extensions.Resilience` nor `Microsoft.Extensions.Http.Resilience` references; per the 2026-08-28 Polly package-graph finding, every Polly package in both projects actually resolves to `8.4.2` on all TFMs (pinned TFM-independently in `eng/packages/General.props`)
 
 ## Relevant paths
 
