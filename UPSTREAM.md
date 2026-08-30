@@ -27,8 +27,9 @@ The only paths expected to diverge from upstream:
 | `bench/Libraries/Microsoft.Extensions.Resilience.PerformanceTests/` | Follows the source rename |
 | `bench/Libraries/Microsoft.Extensions.Http.Resilience.PerformanceTests/` | Follows the source rename |
 | `eng/Versions.props` | Polly version entries replaced by WantsACracker package versions |
+| `samples/` | Additive runnable sample for the renamed Http.Resilience package (divergence 4); upstream has no `samples/` directory |
 
-Everything else — build infrastructure, other libraries, analyzers, documentation, samples — must remain byte-identical to upstream. If a change outside this list becomes necessary, it must be justified in the commit message and logged in the divergence list below.
+Everything else — build infrastructure, other libraries, analyzers, documentation — must remain byte-identical to upstream. If a change outside this list becomes necessary, it must be justified in the commit message and logged in the divergence list below.
 
 ## Divergence rules
 
@@ -57,6 +58,11 @@ Everything else — build infrastructure, other libraries, analyzers, documentat
     - New `THIRD-PARTY-NOTICES.TXT` in each project directory, packed at the package root via a `None` item (`Pack="true" PackagePath="\"`): attributes the dotnet/extensions-derived code to the .NET Foundation (MIT), lists the MIT-licensed direct dependencies (including the WantsACracker core package and the same-repo derived libraries), and carries the "independently implemented, not affiliated" footer. The shared repo-root `THIRD-PARTY-NOTICES.TXT` is not packed by the Arcade SDK, so per-package files are the narrowest mechanism.
     - Intentionally **not** changed: `PackageLicenseExpression=MIT` (already correct in shared `eng/MSBuild/Packaging.props`, matching the upstream MIT notice the fork preserves).
     - Rationale: the two published packages must carry the WantsACracker identity (repository URLs, authors, descriptions, copyright, notices) without claiming Microsoft/upstream identity, while preserving the upstream MIT licensing/attribution.
+4. **2026-08-30 — Add a runnable sample for the renamed Http.Resilience package** (additive-only: a new `samples/` directory; no existing upstream file is changed):
+    - New `samples/Libraries/WantsACracker.Extensions.Http.Resilience.Sample/` (`WantsACracker.Extensions.Http.Resilience.Sample.csproj` + `Program.cs`) and `samples/Directory.Build.props`. The sample wires the canonical usage pattern — `AddHttpClient("sample")` + `AddStandardResilienceHandler()` on a named client — and exercises it against an in-process `HttpListener` (the first request fails with a transient 503 that the standard handler's retry strategy recovers from; a second request succeeds on the first attempt), so it runs fully offline with no network or external server.
+    - `samples/Directory.Build.props` follows the fork's executable convention from `bench/Directory.Build.props` (`OutputType=Exe`, single `$(LatestTargetFramework)` TFM, `GenerateProgramFile=false`). The sample references the source project directly (`ProjectReference` to `WantsACracker.Extensions.Http.Resilience.csproj`, the same convention as the test and bench projects — the committed local nupkg feed under `eng/local-packages` carries only the core `WantsACracker` package, so it cannot stand in for the migration package).
+    - `samples/Directory.Build.props` suppresses `RT0000` (samples generate no documentation files — the same suppression `test/Directory.Build.props` applies) and `SA1636` (the file-header copyright rule, which expects the upstream .NET Foundation header; sample files are fork-specific additions and carry none).
+    - Rationale: the sample must consume `WantsACracker.Extensions.Http.Resilience`, the package this branch owns and publishes; the fork already wires the local `WantsACracker` 0.1.0 nupkg feed (`eng/local-packages` + `NuGet.config`); and the Core repository must stay free of fork knowledge (portability), which rules out the Core repo or cross-repository working documents as the sample's home. Being purely additive, it changes no upstream content and keeps the divergence narrow.
 
 ## Rebase and sync policy
 
