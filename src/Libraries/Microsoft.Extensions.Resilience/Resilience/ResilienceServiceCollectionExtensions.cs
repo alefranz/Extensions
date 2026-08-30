@@ -23,7 +23,7 @@ public static class ResilienceServiceCollectionExtensions
     /// <param name="services">The services.</param>
     /// <returns>The input <paramref name="services"/>.</returns>
     /// <remarks>
-    /// This method adds additional dimensions on top of the default ones that are built-in to the Polly library. These include:
+    /// This method adds additional dimensions on top of the default ones that are built-in to the WantsACracker library. These include:
     /// <list type="bullet">
     ///   <item>
     ///   Exception enrichment based on <see cref="IExceptionSummarizer"/>.
