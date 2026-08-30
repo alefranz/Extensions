@@ -19,7 +19,7 @@ This package depends on the following MIT-licensed packages:
   Copyright (c) .NET Foundation and Contributors.
   License: MIT.
 
-  Microsoft.Extensions.ObjectPool (https://github.com/dotnet/runtime)
+  Microsoft.Extensions.ObjectPool (https://github.com/dotnet/aspnetcore)
   Copyright (c) .NET Foundation and Contributors.
   License: MIT.
 
