@@ -1,0 +1,28 @@
+THIRD-PARTY NOTICES
+
+The source of this package is maintained in the WantsACracker fork of
+dotnet/extensions (https://github.com/alefranz/Extensions, wants-a-cracker
+branch). It contains code derived from the following MIT-licensed project:
+
+  dotnet/extensions (https://github.com/dotnet/extensions)
+  Copyright (c) .NET Foundation and Contributors.
+  License: MIT.
+
+  The package also bundles libraries derived from dotnet/extensions and built
+  from the same fork:
+  Microsoft.Extensions.Diagnostics.ExceptionSummarization
+  Microsoft.Extensions.Telemetry.Abstractions
+
+This package depends on the following MIT-licensed packages:
+
+  WantsACracker (https://github.com/alefranz/WantsACracker-Development)
+  Copyright (c) 2026 WantsACracker contributors.
+  License: MIT.
+
+  Microsoft.Extensions.Diagnostics (https://github.com/dotnet/runtime)
+  Microsoft.Extensions.Options.ConfigurationExtensions (https://github.com/dotnet/runtime)
+  Copyright (c) .NET Foundation and Contributors.
+  License: MIT.
+
+WantsACracker is independently implemented and is not affiliated with Polly,
+App vNext, Microsoft or the .NET Foundation.
