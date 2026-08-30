@@ -4,8 +4,8 @@
 using System;
 using Microsoft.Extensions.Diagnostics.ExceptionSummarization;
 using Microsoft.Extensions.Http.Diagnostics;
-using Polly;
-using Polly.Telemetry;
+using WantsACracker;
+using WantsACracker.Telemetry;
 
 namespace WantsACracker.Extensions.Resilience.Internal;
 

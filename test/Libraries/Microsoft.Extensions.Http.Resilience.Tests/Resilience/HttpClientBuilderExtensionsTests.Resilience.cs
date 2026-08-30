@@ -12,11 +12,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.Metrics.Testing;
 using Microsoft.Extensions.Options;
 using Moq;
-using Polly;
-using Polly.Registry;
-using Polly.Telemetry;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
+using WantsACracker.Registry;
+using WantsACracker.Telemetry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test;
@@ -123,7 +123,7 @@ public sealed partial class HttpClientBuilderExtensionsTests
             .AddStandardResilienceHandler()
             .Configure(options =>
             {
-                options.Retry.ShouldHandle = _ => PredicateResult.True();
+                options.Retry.ShouldHandle = _ => new ValueTask<bool>(true);
                 options.Retry.MaxRetryAttempts = 1;
                 options.Retry.Delay = TimeSpan.Zero;
             });

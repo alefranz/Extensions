@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Http.Diagnostics;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
 using Xunit;
 

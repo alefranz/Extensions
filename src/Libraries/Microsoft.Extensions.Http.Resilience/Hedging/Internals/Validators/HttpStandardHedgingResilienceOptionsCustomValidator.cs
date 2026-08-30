@@ -10,6 +10,10 @@ internal sealed class HttpStandardHedgingResilienceOptionsCustomValidator : IVal
 {
     private const int CircuitBreakerTimeoutMultiplier = 2;
 
+    // Mirrors the hedging limits enforced by the WantsACracker AddHedging builder method.
+    private const int MinimumHedgedAttempts = 1;
+    private const int MaximumHedgedAttempts = 10;
+
     public ValidateOptionsResult Validate(string? name, HttpStandardHedgingResilienceOptions options)
     {
         var builder = new ValidateOptionsResultBuilder();
@@ -44,6 +48,46 @@ internal sealed class HttpStandardHedgingResilienceOptionsCustomValidator : IVal
             }
         }
 
+        // the strategy options have no data annotations for the generated options
+        // validator to range-check, so mirror the builder validation here to make
+        // invalid configurations fail with an OptionsValidationException early
+        if (options.Hedging.MaxHedgedAttempts < MinimumHedgedAttempts || options.Hedging.MaxHedgedAttempts > MaximumHedgedAttempts)
+        {
+            builder.AddError($"The maximum hedged attempts must be between {MinimumHedgedAttempts} and {MaximumHedgedAttempts}.");
+        }
+
+        ValidateTimeout(builder, options.TotalRequestTimeout);
+        ValidateTimeout(builder, options.Endpoint.Timeout);
+
+        if (options.Endpoint.CircuitBreaker.SamplingDuration <= TimeSpan.Zero)
+        {
+            builder.AddError("The sampling duration of circuit breaker strategy must be a positive value.");
+        }
+
+        if (options.Endpoint.CircuitBreaker.MinimumThroughput < 1)
+        {
+            builder.AddError("The minimum throughput of circuit breaker strategy must be one or a positive value.");
+        }
+
+        if (options.Endpoint.CircuitBreaker.FailureRatio <= 0.0 || options.Endpoint.CircuitBreaker.FailureRatio > 1.0)
+        {
+            builder.AddError("The failure ratio of circuit breaker strategy must be a value between 0.0 and 1.0, exclusive of 0.0.");
+        }
+
+        if (options.Endpoint.CircuitBreaker.BreakDurationGenerator is null && options.Endpoint.CircuitBreaker.BreakDuration <= TimeSpan.Zero)
+        {
+            builder.AddError("The break duration of circuit breaker strategy must be a positive value when no break duration generator is provided.");
+        }
+
         return builder.Build();
+    }
+
+    private static void ValidateTimeout(ValidateOptionsResultBuilder builder, HttpTimeoutStrategyOptions timeout)
+    {
+        if (timeout.TimeoutGenerator is null
+            && (timeout.Timeout < TimeSpan.FromMilliseconds(10) || timeout.Timeout > TimeSpan.FromDays(1)))
+        {
+            builder.AddError("The timeout must be between 00:00:00.01 (ten milliseconds) and 1.00:00:00 (one day), inclusive, when no timeout generator is provided.");
+        }
     }
 }

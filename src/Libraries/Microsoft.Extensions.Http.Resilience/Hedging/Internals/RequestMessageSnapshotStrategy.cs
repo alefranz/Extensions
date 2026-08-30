@@ -1,11 +1,10 @@
 ﻿// Licensed to the .NET Foundation under one or more agreements.
 // The .NET Foundation licenses this file to you under the MIT license.
 
-using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Shared.Diagnostics;
-using Polly;
+using WantsACracker;
 
 namespace WantsACracker.Extensions.Http.Resilience.Internal;
 
@@ -16,7 +15,7 @@ namespace WantsACracker.Extensions.Http.Resilience.Internal;
 internal sealed class RequestMessageSnapshotStrategy : ResilienceStrategy
 {
     protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceAction<TResult, TState> callback,
         ResilienceContext context,
         TState state)
     {

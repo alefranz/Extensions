@@ -2,15 +2,15 @@
   "Name": "WantsACracker.Extensions.Resilience, Version=8.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35",
   "Types": [
     {
-      "Type": "static class Polly.ResilienceContextExtensions",
+      "Type": "static class WantsACracker.ResilienceContextExtensions",
       "Stage": "Stable",
       "Methods": [
         {
-          "Member": "static Microsoft.Extensions.Http.Diagnostics.RequestMetadata? Polly.ResilienceContextExtensions.GetRequestMetadata(this Polly.ResilienceContext context);",
+          "Member": "static Microsoft.Extensions.Http.Diagnostics.RequestMetadata? WantsACracker.ResilienceContextExtensions.GetRequestMetadata(this WantsACracker.ResilienceContext context);",
           "Stage": "Stable"
         },
         {
-          "Member": "static void Polly.ResilienceContextExtensions.SetRequestMetadata(this Polly.ResilienceContext context, Microsoft.Extensions.Http.Diagnostics.RequestMetadata requestMetadata);",
+          "Member": "static void WantsACracker.ResilienceContextExtensions.SetRequestMetadata(this WantsACracker.ResilienceContext context, Microsoft.Extensions.Http.Diagnostics.RequestMetadata requestMetadata);",
           "Stage": "Stable"
         }
       ]

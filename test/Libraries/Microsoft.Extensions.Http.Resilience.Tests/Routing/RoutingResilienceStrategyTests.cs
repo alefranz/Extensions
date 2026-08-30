@@ -5,7 +5,7 @@ using System;
 using System.Net.Http;
 using FluentAssertions;
 using Moq;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 using Xunit;
 
@@ -18,7 +18,9 @@ public class RoutingResilienceStrategyTests
     {
         var strategy = Create(() => Mock.Of<RequestRoutingStrategy>());
 
-        strategy.Invoking(s => s.Execute(() => { })).Should().Throw<InvalidOperationException>().WithMessage("The HTTP request message was not found in the resilience context.");
+        var exception = strategy.Invoking(s => s.Execute((ResilienceContext c, object? state) => true, ResilienceContextPool.Shared.Get(), default))
+            .Should().Throw<InvalidOperationException>();
+        exception.WithMessage("The HTTP request message was not found in the resilience context.");
     }
 
     [Fact]
@@ -28,7 +30,9 @@ public class RoutingResilienceStrategyTests
         var context = ResilienceContextPool.Shared.Get();
         context.SetRequestMessage(null);
 
-        strategy.Invoking(s => s.Execute(_ => { }, context)).Should().Throw<InvalidOperationException>().WithMessage("The HTTP request message was not found in the resilience context.");
+        var exception = strategy.Invoking(s => s.Execute((ResilienceContext c, object? state) => true, context, default))
+            .Should().Throw<InvalidOperationException>();
+        exception.WithMessage("The HTTP request message was not found in the resilience context.");
     }
 
     [Fact]
@@ -40,7 +44,7 @@ public class RoutingResilienceStrategyTests
         var context = ResilienceContextPool.Shared.Get();
         context.SetRequestMessage(request);
 
-        strategy.Invoking(s => s.Execute(_ => { }, context)).Should().NotThrow();
+        strategy.Invoking(s => s.Execute((ResilienceContext c, object? state) => true, context, default)).Should().NotThrow();
     }
 
     private static ResiliencePipeline Create(Func<RequestRoutingStrategy>? provider) =>

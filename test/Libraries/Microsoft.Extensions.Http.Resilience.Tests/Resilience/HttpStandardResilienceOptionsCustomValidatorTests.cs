@@ -5,14 +5,11 @@ using System;
 using System.Collections.Generic;
 #if NET6_0_OR_GREATER
 using System.Linq;
-using Microsoft;
-using Microsoft.Extensions;
-using Microsoft.Extensions.Http;
 using WantsACracker.Extensions.Http.Resilience;
 #endif
-using Polly;
-using Polly.Retry;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
+using WantsACracker.Retry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test.Resilience;

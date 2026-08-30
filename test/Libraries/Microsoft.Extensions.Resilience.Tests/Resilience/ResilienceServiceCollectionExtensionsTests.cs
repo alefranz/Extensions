@@ -10,8 +10,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.ExceptionSummarization;
 using Microsoft.Extensions.Options;
 using Moq;
-using Polly.Telemetry;
 using WantsACracker.Extensions.Resilience.Internal;
+using WantsACracker.Telemetry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Resilience.Test.Resilience;

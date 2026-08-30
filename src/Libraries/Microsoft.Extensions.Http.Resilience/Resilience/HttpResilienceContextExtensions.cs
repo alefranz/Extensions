@@ -8,7 +8,7 @@ using Microsoft.Shared.DiagnosticIds;
 using Microsoft.Shared.Diagnostics;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 
-namespace Polly;
+namespace WantsACracker;
 
 /// <summary>
 /// Provides utility methods for working with <see cref="ResilienceContext"/>.
@@ -28,7 +28,7 @@ public static class HttpResilienceContextExtensions
     public static HttpRequestMessage? GetRequestMessage(this ResilienceContext context)
     {
         _ = Throw.IfNull(context);
-        return context.Properties.GetValue(ResilienceKeys.RequestMessage, default);
+        return context.Properties.GetValue(ResilienceKeys.RequestMessage);
     }
 
     /// <summary>

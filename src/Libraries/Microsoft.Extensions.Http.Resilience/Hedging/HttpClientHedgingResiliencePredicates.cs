@@ -7,8 +7,8 @@ using System.Net.Http;
 using System.Threading;
 using Microsoft.Shared.DiagnosticIds;
 using Microsoft.Shared.Diagnostics;
-using Polly;
-using Polly.CircuitBreaker;
+using WantsACracker;
+using WantsACracker.CircuitBreaker;
 
 namespace WantsACracker.Extensions.Http.Resilience;
 

@@ -3,7 +3,7 @@
 
 using FluentAssertions;
 using Microsoft.Extensions.Http.Diagnostics;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Resilience;
 using Xunit;
 

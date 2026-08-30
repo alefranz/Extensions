@@ -4,10 +4,10 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Polly;
-using Polly.Retry;
-using Polly.Timeout;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Retry;
+using WantsACracker.Timeout;
 
 namespace WantsACracker.Extensions.Http.Resilience;
 

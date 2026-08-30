@@ -3,7 +3,7 @@
 
 using System;
 using System.Net.Http;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
@@ -60,7 +60,7 @@ public class HttpResilienceContextExtensionsTests
         var context = ResilienceContextPool.Shared.Get();
         context.SetRequestMessage(null);
 
-        Assert.True(context.Properties.TryGetValue(ResilienceKeys.RequestMessage, out HttpRequestMessage? request));
+        Assert.True(context.Properties.TryGetValue<HttpRequestMessage?>(ResilienceKeys.RequestMessage, out HttpRequestMessage? request));
         Assert.Null(request);
     }
 
@@ -71,7 +71,7 @@ public class HttpResilienceContextExtensionsTests
         using var request = new HttpRequestMessage();
         context.SetRequestMessage(request);
 
-        Assert.True(context.Properties.TryGetValue(ResilienceKeys.RequestMessage, out HttpRequestMessage? actualRequest));
+        Assert.True(context.Properties.TryGetValue<HttpRequestMessage?>(ResilienceKeys.RequestMessage, out HttpRequestMessage? actualRequest));
         Assert.Same(request, actualRequest);
     }
 }

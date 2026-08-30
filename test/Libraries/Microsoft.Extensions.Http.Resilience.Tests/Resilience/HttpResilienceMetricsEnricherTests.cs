@@ -4,9 +4,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using FluentAssertions;
-using Polly;
-using Polly.Telemetry;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Telemetry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test.Resilience;

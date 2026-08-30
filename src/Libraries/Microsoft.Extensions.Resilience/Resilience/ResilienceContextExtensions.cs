@@ -5,7 +5,7 @@ using System;
 using Microsoft.Extensions.Http.Diagnostics;
 using Microsoft.Shared.Diagnostics;
 
-namespace Polly;
+namespace WantsACracker;
 
 /// <summary>
 /// Extensions for <see cref="ResilienceContext"/>.
@@ -38,6 +38,6 @@ public static class ResilienceContextExtensions
     {
         _ = Throw.IfNull(context);
 
-        return context.Properties.GetValue(_requestMetadataKey, null);
+        return context.Properties.GetValue(_requestMetadataKey);
     }
 }

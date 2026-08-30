@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Http.Diagnostics;
 using Microsoft.Shared.Diagnostics;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 
 namespace WantsACracker.Extensions.Http.Resilience;

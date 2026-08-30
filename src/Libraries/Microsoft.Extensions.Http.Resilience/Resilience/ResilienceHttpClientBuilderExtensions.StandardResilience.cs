@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Microsoft.Shared.Diagnostics;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using WantsACracker.Extensions.Http.Resilience.Internal.Validators;

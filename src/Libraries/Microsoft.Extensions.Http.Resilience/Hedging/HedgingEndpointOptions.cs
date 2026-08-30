@@ -4,8 +4,8 @@
 using System;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.Extensions.Options;
-using Polly.Timeout;
 using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
+using WantsACracker.Timeout;
 
 namespace WantsACracker.Extensions.Http.Resilience;
 

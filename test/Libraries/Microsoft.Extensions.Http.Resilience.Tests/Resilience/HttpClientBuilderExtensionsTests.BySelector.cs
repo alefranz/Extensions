@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Moq;
-using Polly;
-using Polly.Registry;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
+using WantsACracker.Registry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test;

@@ -5,17 +5,15 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Polly;
-using Polly.Registry;
-using Polly.Testing;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
+using WantsACracker.Registry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test;
@@ -265,7 +263,7 @@ public sealed partial class HttpClientBuilderExtensionsTests : IDisposable
 
         using var client = builder.Services.BuildServiceProvider().GetRequiredService<IHttpClientFactory>().CreateClient("test");
 
-        client.Timeout.Should().Be(Timeout.InfiniteTimeSpan);
+        client.Timeout.Should().Be(System.Threading.Timeout.InfiniteTimeSpan);
     }
 
     private static void AddStandardResilienceHandler(

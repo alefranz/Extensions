@@ -3,7 +3,7 @@
 
 using System.Net.Http;
 using System.Threading.Tasks;
-using Polly.CircuitBreaker;
+using WantsACracker.CircuitBreaker;
 
 namespace WantsACracker.Extensions.Http.Resilience;
 

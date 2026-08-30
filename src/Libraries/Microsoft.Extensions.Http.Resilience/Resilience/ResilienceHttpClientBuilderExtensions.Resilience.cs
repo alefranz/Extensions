@@ -7,11 +7,11 @@ using System.Net.Http;
 using Microsoft.Extensions.Diagnostics.ExceptionSummarization;
 using Microsoft.Shared.DiagnosticIds;
 using Microsoft.Shared.Diagnostics;
-using Polly;
-using Polly.Registry;
-using Polly.Telemetry;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience;
 using WantsACracker.Extensions.Http.Resilience.Internal;
+using WantsACracker.Registry;
+using WantsACracker.Telemetry;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -105,8 +105,13 @@ public static partial class ResilienceHttpClientBuilderExtensions
 
         if (pipelineKeyProvider == null)
         {
-            var pipeline = resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(pipelineName, string.Empty));
-            return _ => pipeline;
+            // Build the pipeline eagerly so that misconfigured options fail fast
+            // with an OptionsValidationException when the handler is created,
+            // mirroring the reference implementation. The selector still fetches
+            // the pipeline per request (instead of caching the instance) so that
+            // dynamically reloaded pipelines take effect for subsequent requests.
+            _ = resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(pipelineName, string.Empty));
+            return _ => resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(pipelineName, string.Empty));
         }
         else
         {

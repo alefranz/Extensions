@@ -5,7 +5,7 @@ using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.Shared.Diagnostics;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 
 namespace WantsACracker.Extensions.Http.Resilience.Routing.Internal;
@@ -23,7 +23,7 @@ internal sealed class RoutingResilienceStrategy : ResilienceStrategy
     }
 
     protected override async ValueTask<Outcome<TResult>> ExecuteCore<TResult, TState>(
-        Func<ResilienceContext, TState, ValueTask<Outcome<TResult>>> callback,
+        ResilienceAction<TResult, TState> callback,
         ResilienceContext context,
         TState state)
     {

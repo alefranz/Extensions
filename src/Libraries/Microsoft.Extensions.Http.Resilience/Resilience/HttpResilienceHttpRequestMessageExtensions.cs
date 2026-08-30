@@ -2,7 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using Microsoft.Shared.Diagnostics;
-using Polly;
+using WantsACracker;
 
 namespace System.Net.Http;
 

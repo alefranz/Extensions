@@ -4,8 +4,8 @@
 using System;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Polly;
-using Polly.Retry;
+using WantsACracker;
+using WantsACracker.Retry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test.Polly;
@@ -43,7 +43,7 @@ public class HttpRetryStrategyOptionsExtensionsTests
     [InlineData("GET", true)]
     public async Task DisableFor_PositiveScenario(string httpMethod, bool shouldHandle)
     {
-        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => PredicateResult.True() };
+        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => new ValueTask<bool>(true) };
         options.DisableFor(HttpMethod.Post, HttpMethod.Delete);
 
         using var request = new HttpRequestMessage { Method = new HttpMethod(httpMethod) };
@@ -55,7 +55,7 @@ public class HttpRetryStrategyOptionsExtensionsTests
     [Fact]
     public async Task DisableFor_RespectsOriginalShouldHandlePredicate()
     {
-        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => PredicateResult.False() };
+        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => new ValueTask<bool>(false) };
         options.DisableFor(HttpMethod.Post);
 
         using var request = new HttpRequestMessage { Method = HttpMethod.Get };
@@ -67,7 +67,7 @@ public class HttpRetryStrategyOptionsExtensionsTests
     [Fact]
     public async Task DisableFor_ResponseMessageIsNull_RetrievesRequestMessageFromContext()
     {
-        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => PredicateResult.True() };
+        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => new ValueTask<bool>(true) };
         options.DisableFor(HttpMethod.Post);
 
         using var request = new HttpRequestMessage { Method = HttpMethod.Post };
@@ -80,7 +80,7 @@ public class HttpRetryStrategyOptionsExtensionsTests
     [Fact]
     public async Task DisableFor_RequestMessageIsNull_DoesNotDisableRetries()
     {
-        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => PredicateResult.True() };
+        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => new ValueTask<bool>(true) };
         options.DisableFor(HttpMethod.Post);
 
         using var response = new HttpResponseMessage { RequestMessage = null };
@@ -102,7 +102,7 @@ public class HttpRetryStrategyOptionsExtensionsTests
     [InlineData("OPTIONS", true)]
     public async Task DisableForUnsafeHttpMethods_PositiveScenario(string httpMethod, bool shouldHandle)
     {
-        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => PredicateResult.True() };
+        var options = new HttpRetryStrategyOptions { ShouldHandle = _ => new ValueTask<bool>(true) };
         options.DisableForUnsafeHttpMethods();
 
         using var request = new HttpRequestMessage { Method = new HttpMethod(httpMethod) };
@@ -115,7 +115,7 @@ public class HttpRetryStrategyOptionsExtensionsTests
     {
         return new RetryPredicateArguments<HttpResponseMessage>(
             context ?? ResilienceContextPool.Shared.Get(),
-            Outcome.FromResult(response),
+            response is null ? Outcome.FromVoid<HttpResponseMessage>() : Outcome.FromResult(response),
             attemptNumber: 1);
     }
 }

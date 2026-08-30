@@ -4,7 +4,7 @@
 using System;
 using System.Diagnostics.CodeAnalysis;
 using Microsoft.Shared.Diagnostics;
-using Polly.DependencyInjection;
+using WantsACracker.DependencyInjection;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 
 namespace WantsACracker.Extensions.Http.Resilience;

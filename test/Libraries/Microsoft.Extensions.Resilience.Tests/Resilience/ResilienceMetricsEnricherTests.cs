@@ -8,10 +8,10 @@ using FluentAssertions;
 using Microsoft.Extensions.Diagnostics.ExceptionSummarization;
 using Microsoft.Extensions.Http.Diagnostics;
 using Moq;
-using Polly;
-using Polly.Telemetry;
+using WantsACracker;
 using WantsACracker.Extensions.Resilience;
 using WantsACracker.Extensions.Resilience.Internal;
+using WantsACracker.Telemetry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Resilience.Test.Resilience;

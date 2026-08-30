@@ -3,7 +3,7 @@
 
 using System.Net.Http;
 using Microsoft.Shared.Text;
-using Polly.Telemetry;
+using WantsACracker.Telemetry;
 
 namespace WantsACracker.Extensions.Http.Resilience.Internal;
 

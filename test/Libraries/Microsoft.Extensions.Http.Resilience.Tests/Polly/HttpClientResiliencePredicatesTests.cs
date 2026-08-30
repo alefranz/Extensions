@@ -5,8 +5,8 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
-using Polly;
-using Polly.Timeout;
+using WantsACracker;
+using WantsACracker.Timeout;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test.Polly;

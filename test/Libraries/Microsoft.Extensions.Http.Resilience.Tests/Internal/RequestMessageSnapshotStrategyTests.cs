@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
 using Moq;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using Xunit;
 
@@ -23,12 +23,13 @@ public class RequestMessageSnapshotStrategyTests
         context.SetRequestMessage(request);
 
         using var response = await strategy.ExecuteAsync(
-            context =>
+            (ResilienceContext ctx, object? state) =>
             {
-                context.Properties.GetValue(ResilienceKeys.RequestSnapshot, null!).Should().NotBeNull();
+                ctx.Properties.GetValue(ResilienceKeys.RequestSnapshot).Should().NotBeNull();
                 return new ValueTask<HttpResponseMessage>(new HttpResponseMessage());
             },
-            context);
+            context,
+            default);
     }
 
     [Fact]
@@ -36,7 +37,7 @@ public class RequestMessageSnapshotStrategyTests
     {
         var strategy = Create();
 
-        strategy.Invoking(s => s.Execute(() => { })).Should().Throw<InvalidOperationException>();
+        strategy.Invoking(s => s.Execute((ResilienceContext c, object? state) => true, ResilienceContextPool.Shared.Get(), default)).Should().Throw<InvalidOperationException>();
     }
 
     [Fact]
@@ -46,7 +47,7 @@ public class RequestMessageSnapshotStrategyTests
         var context = ResilienceContextPool.Shared.Get();
         context.SetRequestMessage(null);
 
-        strategy.Invoking(s => s.Execute(_ => { }, context)).Should().Throw<InvalidOperationException>();
+        strategy.Invoking(s => s.Execute((ResilienceContext c, object? state) => true, context, default)).Should().Throw<InvalidOperationException>();
     }
 
     private static ResiliencePipeline Create() => new ResiliencePipelineBuilder().AddStrategy(_ => new RequestMessageSnapshotStrategy(), Mock.Of<ResilienceStrategyOptions>()).Build();

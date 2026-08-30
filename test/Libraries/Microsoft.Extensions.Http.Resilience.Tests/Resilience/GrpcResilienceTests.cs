@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Test.Grpc;
 using Xunit;
 

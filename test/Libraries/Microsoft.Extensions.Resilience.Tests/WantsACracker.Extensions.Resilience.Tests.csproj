@@ -5,6 +5,22 @@
   </PropertyGroup>
 
   <PropertyGroup>
+    <!-- The WantsACracker core package is intentionally unsigned; these delay-signed (public-key)
+         test assemblies referencing it are fine on .NET, so the strong-name mismatch (CS8002) is
+         suppressed. -->
+    <NoWarn>$(NoWarn);CS8002</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <!-- The WantsACracker core package is intentionally unsigned, and the project under test
+         references it by its unsigned identity. StrongNamer re-signs unsigned references with
+         its own key, which would change that identity and break compilation, so it is disabled
+         here. Tests only target .NET (8+), where the runtime does not enforce strong-name
+         verification of referenced assemblies. -->
+    <DisableStrongNamer>true</DisableStrongNamer>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <InjectSharedNumericExtensions>true</InjectSharedNumericExtensions>
   </PropertyGroup>
 

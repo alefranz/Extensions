@@ -7,8 +7,8 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Diagnostics.ExceptionSummarization;
 using Microsoft.Extensions.Http.Diagnostics;
 using Microsoft.Shared.Diagnostics;
-using Polly.Telemetry;
 using WantsACracker.Extensions.Resilience.Internal;
+using WantsACracker.Telemetry;
 
 namespace Microsoft.Extensions.DependencyInjection;
 

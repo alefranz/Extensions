@@ -165,6 +165,9 @@ publish/
 
 # NuGet Packages
 *.nupkg
+# wants-a-cracker branch: keep the locally packed WantsACracker core package that
+# the renamed resilience projects restore from the eng/local-packages feed.
+!eng/local-packages/*.nupkg
 # The packages folder can be ignored because of Package Restore
 packages/*
 packages

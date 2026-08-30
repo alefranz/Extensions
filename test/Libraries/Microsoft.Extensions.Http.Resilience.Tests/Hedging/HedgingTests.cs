@@ -13,7 +13,7 @@ using FluentAssertions;
 using Microsoft.Extensions.Compliance.Redaction;
 using Microsoft.Extensions.DependencyInjection;
 using Moq;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 using WantsACracker.Extensions.Http.Resilience.Test.Helpers;

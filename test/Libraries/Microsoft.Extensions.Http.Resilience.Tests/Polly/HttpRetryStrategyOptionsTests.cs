@@ -9,9 +9,9 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly;
-using Polly.Retry;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Test.Hedging;
+using WantsACracker.Retry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test.Polly;
@@ -56,7 +56,7 @@ public class HttpRetryStrategyOptionsTests
     public async Task ShouldHandleResultAsError_DefaultValue_ShouldClassify(HttpStatusCode statusCode, bool expectedCondition)
     {
         var response = new HttpResponseMessage { StatusCode = statusCode };
-        var isTransientFailure = await _testClass.ShouldHandle(CreateArgs(Outcome.FromResult(response)));
+        var isTransientFailure = await _testClass.ShouldHandle!(CreateArgs(Outcome.FromResult(response)));
 
         Assert.Equal(expectedCondition, isTransientFailure);
         response.Dispose();
@@ -67,7 +67,7 @@ public class HttpRetryStrategyOptionsTests
     public async Task ShouldHandleException_DefaultValue_ShouldClassify(Exception exception, CancellationToken? token, bool expectedToHandle)
     {
         var args = CreateArgs(Outcome.FromException<HttpResponseMessage>(exception), token ?? default);
-        var shouldHandle = await _testClass.ShouldHandle(args);
+        var shouldHandle = await _testClass.ShouldHandle!(args);
         Assert.Equal(expectedToHandle, shouldHandle);
     }
 
@@ -81,7 +81,7 @@ public class HttpRetryStrategyOptionsTests
     public async Task ShouldHandleResultAsError_DefaultInstance_ShouldClassify(HttpStatusCode statusCode, bool expectedCondition)
     {
         var response = new HttpResponseMessage { StatusCode = statusCode };
-        var isTransientFailure = await new HttpRetryStrategyOptions().ShouldHandle(CreateArgs(Outcome.FromResult(response)));
+        var isTransientFailure = await new HttpRetryStrategyOptions().ShouldHandle!(CreateArgs(Outcome.FromResult(response)));
         Assert.Equal(expectedCondition, isTransientFailure);
         response.Dispose();
     }
@@ -91,7 +91,7 @@ public class HttpRetryStrategyOptionsTests
     public async Task ShouldHandleException_DefaultInstance_ShouldClassify(Exception exception, CancellationToken? token, bool expectedToHandle)
     {
         var args = CreateArgs(Outcome.FromException<HttpResponseMessage>(exception), token ?? default);
-        var shouldHandle = await new HttpRetryStrategyOptions().ShouldHandle(args);
+        var shouldHandle = await new HttpRetryStrategyOptions().ShouldHandle!(args);
         Assert.Equal(expectedToHandle, shouldHandle);
     }
 
@@ -112,7 +112,7 @@ public class HttpRetryStrategyOptionsTests
 
         result = await options.DelayGenerator(
             new(ResilienceContextPool.Shared.Get(),
-            Outcome.FromResult<HttpResponseMessage>(null),
+            Outcome.FromVoid<HttpResponseMessage>(),
             0));
         result.Should().BeNull();
 

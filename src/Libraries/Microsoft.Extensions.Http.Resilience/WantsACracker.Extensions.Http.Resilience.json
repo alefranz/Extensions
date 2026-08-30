@@ -26,7 +26,7 @@
       ]
     },
     {
-      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpCircuitBreakerStrategyOptions : Polly.CircuitBreaker.CircuitBreakerStrategyOptions<System.Net.Http.HttpResponseMessage>",
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpCircuitBreakerStrategyOptions : WantsACracker.CircuitBreaker.CircuitBreakerStrategyOptions<System.Net.Http.HttpResponseMessage>",
       "Stage": "Stable",
       "Methods": [
         {
@@ -40,11 +40,11 @@
       "Stage": "Stable",
       "Methods": [
         {
-          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientHedgingResiliencePredicates.IsTransient(Polly.Outcome<System.Net.Http.HttpResponseMessage> outcome);",
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientHedgingResiliencePredicates.IsTransient(WantsACracker.Outcome<System.Net.Http.HttpResponseMessage> outcome);",
           "Stage": "Stable"
         },
         {
-          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientHedgingResiliencePredicates.IsTransient(Polly.Outcome<System.Net.Http.HttpResponseMessage> outcome, System.Threading.CancellationToken cancellationToken);",
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientHedgingResiliencePredicates.IsTransient(WantsACracker.Outcome<System.Net.Http.HttpResponseMessage> outcome, System.Threading.CancellationToken cancellationToken);",
           "Stage": "Experimental"
         }
       ]
@@ -54,17 +54,17 @@
       "Stage": "Stable",
       "Methods": [
         {
-          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientResiliencePredicates.IsTransient(Polly.Outcome<System.Net.Http.HttpResponseMessage> outcome);",
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientResiliencePredicates.IsTransient(WantsACracker.Outcome<System.Net.Http.HttpResponseMessage> outcome);",
           "Stage": "Stable"
         },
         {
-          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientResiliencePredicates.IsTransient(Polly.Outcome<System.Net.Http.HttpResponseMessage> outcome, System.Threading.CancellationToken cancellationToken);",
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.HttpClientResiliencePredicates.IsTransient(WantsACracker.Outcome<System.Net.Http.HttpResponseMessage> outcome, System.Threading.CancellationToken cancellationToken);",
           "Stage": "Experimental"
         }
       ]
     },
     {
-      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpHedgingStrategyOptions : Polly.Hedging.HedgingStrategyOptions<System.Net.Http.HttpResponseMessage>",
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpHedgingStrategyOptions : WantsACracker.Hedging.HedgingStrategyOptions<System.Net.Http.HttpResponseMessage>",
       "Stage": "Stable",
       "Methods": [
         {
@@ -74,7 +74,7 @@
       ]
     },
     {
-      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpRateLimiterStrategyOptions : Polly.RateLimiting.RateLimiterStrategyOptions",
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpRateLimiterStrategyOptions : WantsACracker.RateLimiting.RateLimiterStrategyOptions",
       "Stage": "Stable",
       "Methods": [
         {
@@ -84,15 +84,15 @@
       ]
     },
     {
-      "Type": "static class Polly.HttpResilienceContextExtensions",
+      "Type": "static class WantsACracker.HttpResilienceContextExtensions",
       "Stage": "Experimental",
       "Methods": [
         {
-          "Member": "static System.Net.Http.HttpRequestMessage? Polly.HttpResilienceContextExtensions.GetRequestMessage(this Polly.ResilienceContext context);",
+          "Member": "static System.Net.Http.HttpRequestMessage? WantsACracker.HttpResilienceContextExtensions.GetRequestMessage(this WantsACracker.ResilienceContext context);",
           "Stage": "Experimental"
         },
         {
-          "Member": "static void Polly.HttpResilienceContextExtensions.SetRequestMessage(this Polly.ResilienceContext context, System.Net.Http.HttpRequestMessage? requestMessage);",
+          "Member": "static void WantsACracker.HttpResilienceContextExtensions.SetRequestMessage(this WantsACracker.ResilienceContext context, System.Net.Http.HttpRequestMessage? requestMessage);",
           "Stage": "Experimental"
         }
       ]
@@ -102,11 +102,11 @@
       "Stage": "Stable",
       "Methods": [
         {
-          "Member": "static Polly.ResilienceContext? System.Net.Http.HttpResilienceHttpRequestMessageExtensions.GetResilienceContext(this System.Net.Http.HttpRequestMessage requestMessage);",
+          "Member": "static WantsACracker.ResilienceContext? System.Net.Http.HttpResilienceHttpRequestMessageExtensions.GetResilienceContext(this System.Net.Http.HttpRequestMessage requestMessage);",
           "Stage": "Stable"
         },
         {
-          "Member": "static void System.Net.Http.HttpResilienceHttpRequestMessageExtensions.SetResilienceContext(this System.Net.Http.HttpRequestMessage requestMessage, Polly.ResilienceContext? resilienceContext);",
+          "Member": "static void System.Net.Http.HttpResilienceHttpRequestMessageExtensions.SetResilienceContext(this System.Net.Http.HttpRequestMessage requestMessage, WantsACracker.ResilienceContext? resilienceContext);",
           "Stage": "Stable"
         }
       ]
@@ -126,7 +126,7 @@
       ]
     },
     {
-      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpRetryStrategyOptions : Polly.Retry.RetryStrategyOptions<System.Net.Http.HttpResponseMessage>",
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpRetryStrategyOptions : WantsACracker.Retry.RetryStrategyOptions<System.Net.Http.HttpResponseMessage>",
       "Stage": "Stable",
       "Methods": [
         {
@@ -224,7 +224,7 @@
       ]
     },
     {
-      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpTimeoutStrategyOptions : Polly.Timeout.TimeoutStrategyOptions",
+      "Type": "class WantsACracker.Extensions.Http.Resilience.HttpTimeoutStrategyOptions : WantsACracker.Timeout.TimeoutStrategyOptions",
       "Stage": "Stable",
       "Methods": [
         {
@@ -294,6 +294,64 @@
       ]
     },
     {
+      "Type": "readonly record struct WantsACracker.Extensions.Http.Resilience.Internal.HttpKey",
+      "Stage": "Stable",
+      "Methods": [
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.HttpKey(string Name, string InstanceName);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.HttpKey();",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "override string WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.ToString();",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.operator !=(WantsACracker.Extensions.Http.Resilience.Internal.HttpKey left, WantsACracker.Extensions.Http.Resilience.Internal.HttpKey right);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "static bool WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.operator ==(WantsACracker.Extensions.Http.Resilience.Internal.HttpKey left, WantsACracker.Extensions.Http.Resilience.Internal.HttpKey right);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "override int WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.GetHashCode();",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "override bool WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.Equals(object obj);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "bool WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.Equals(WantsACracker.Extensions.Http.Resilience.Internal.HttpKey other);",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "void WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.Deconstruct(out string Name, out string InstanceName);",
+          "Stage": "Stable"
+        }
+      ],
+      "Fields": [
+        {
+          "Member": "static readonly System.Collections.Generic.IEqualityComparer<WantsACracker.Extensions.Http.Resilience.Internal.HttpKey> WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.BuilderComparer",
+          "Stage": "Stable"
+        }
+      ],
+      "Properties": [
+        {
+          "Member": "string WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.Name { get; init; }",
+          "Stage": "Stable"
+        },
+        {
+          "Member": "string WantsACracker.Extensions.Http.Resilience.Internal.HttpKey.InstanceName { get; init; }",
+          "Stage": "Stable"
+        }
+      ]
+    },
+    {
       "Type": "class WantsACracker.Extensions.Http.Resilience.OrderedGroupsRoutingOptions",
       "Stage": "Stable",
       "Methods": [
@@ -314,11 +372,11 @@
       "Stage": "Stable",
       "Methods": [
         {
-          "Member": "WantsACracker.Extensions.Http.Resilience.ResilienceHandler.ResilienceHandler(System.Func<System.Net.Http.HttpRequestMessage, Polly.ResiliencePipeline<System.Net.Http.HttpResponseMessage>> pipelineProvider);",
+          "Member": "WantsACracker.Extensions.Http.Resilience.ResilienceHandler.ResilienceHandler(System.Func<System.Net.Http.HttpRequestMessage, WantsACracker.ResiliencePipeline<System.Net.Http.HttpResponseMessage>> pipelineProvider);",
           "Stage": "Stable"
         },
         {
-          "Member": "WantsACracker.Extensions.Http.Resilience.ResilienceHandler.ResilienceHandler(Polly.ResiliencePipeline<System.Net.Http.HttpResponseMessage> pipeline);",
+          "Member": "WantsACracker.Extensions.Http.Resilience.ResilienceHandler.ResilienceHandler(WantsACracker.ResiliencePipeline<System.Net.Http.HttpResponseMessage> pipeline);",
           "Stage": "Stable"
         },
         {
@@ -368,11 +426,11 @@
       "Stage": "Stable",
       "Methods": [
         {
-          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, string pipelineName, System.Action<Polly.ResiliencePipelineBuilder<System.Net.Http.HttpResponseMessage>> configure);",
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, string pipelineName, System.Action<WantsACracker.ResiliencePipelineBuilder<System.Net.Http.HttpResponseMessage>> configure);",
           "Stage": "Stable"
         },
         {
-          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, string pipelineName, System.Action<Polly.ResiliencePipelineBuilder<System.Net.Http.HttpResponseMessage>, WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext> configure);",
+          "Member": "static WantsACracker.Extensions.Http.Resilience.IHttpResiliencePipelineBuilder Microsoft.Extensions.DependencyInjection.ResilienceHttpClientBuilderExtensions.AddResilienceHandler(this Microsoft.Extensions.DependencyInjection.IHttpClientBuilder builder, string pipelineName, System.Action<WantsACracker.ResiliencePipelineBuilder<System.Net.Http.HttpResponseMessage>, WantsACracker.Extensions.Http.Resilience.ResilienceHandlerContext> configure);",
           "Stage": "Stable"
         },
         {

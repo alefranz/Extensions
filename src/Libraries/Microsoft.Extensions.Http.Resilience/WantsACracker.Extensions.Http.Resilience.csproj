@@ -3,6 +3,15 @@
     <RootNamespace>WantsACracker.Extensions.Http.Resilience</RootNamespace>
     <!-- No published WantsACracker.Extensions.Http.Resilience baseline exists to validate against yet. -->
     <EnablePackageValidation>false</EnablePackageValidation>
+    <!-- The WantsACracker core package is an intentionally unsigned independent
+         package; these delay-signed (public-key) assemblies referencing it are
+         fine on .NET, so the strong-name mismatch (CS8002) is suppressed.
+         SYSLIB1202: the Http*StrategyOptions types are empty subclasses of the
+         WantsACracker strategy-options types, which validate their values in the
+         Add* builder methods rather than via data annotations, so the
+         data-validation source generator finds no validatable members on the
+         subclass; the warning is suppressed. -->
+    <NoWarn>$(NoWarn);CS8002;SYSLIB1202</NoWarn>
     <TargetFrameworks>$(NetCoreTargetFrameworks);netstandard2.0;net462</TargetFrameworks>
     <Description>Resilience mechanisms for HttpClient.</Description>
     <Workstream>Resilience</Workstream>
@@ -37,6 +46,10 @@
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Extensions.Resilience\WantsACracker.Extensions.Resilience.csproj" />
     <ProjectReference Include="..\Microsoft.Extensions.Http.Diagnostics\Microsoft.Extensions.Http.Diagnostics.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WantsACracker" />
   </ItemGroup>
 
   <ItemGroup>

@@ -7,9 +7,9 @@ using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using FluentAssertions;
-using Polly;
-using Polly.CircuitBreaker;
-using Polly.Timeout;
+using WantsACracker;
+using WantsACracker.CircuitBreaker;
+using WantsACracker.Timeout;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test.Polly;
@@ -57,7 +57,7 @@ public class HttpCircuitBreakerStrategyOptionsTests
     public async Task ShouldHandleResultAsError_DefaultValue_ShouldClassify(HttpStatusCode statusCode, bool expectedCondition)
     {
         using var response = new HttpResponseMessage { StatusCode = statusCode };
-        var isTransientFailure = await _testObject.ShouldHandle(CreateArgs(response));
+        var isTransientFailure = await _testObject.ShouldHandle!(CreateArgs(response));
         Assert.Equal(expectedCondition, isTransientFailure);
     }
 
@@ -65,7 +65,7 @@ public class HttpCircuitBreakerStrategyOptionsTests
     [MemberData(nameof(HandledExceptionsClassified))]
     public async Task ShouldHandleException_DefaultValue_ShouldClassify(Exception exception, bool expectedToHandle)
     {
-        var shouldHandle = await _testObject.ShouldHandle(CreateArgs(exception));
+        var shouldHandle = await _testObject.ShouldHandle!(CreateArgs(exception));
         Assert.Equal(expectedToHandle, shouldHandle);
     }
 

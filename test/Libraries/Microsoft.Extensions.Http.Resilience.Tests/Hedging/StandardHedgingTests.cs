@@ -11,14 +11,12 @@ using FluentAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
-using Polly;
-using Polly.Hedging;
-using Polly.Registry;
-using Polly.Testing;
-using Polly.Timeout;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 using WantsACracker.Extensions.Http.Resilience.Test.Helpers;
+using WantsACracker.Hedging;
+using WantsACracker.Registry;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test.Hedging;
@@ -115,13 +113,13 @@ public sealed class StandardHedgingTests : HedgingTests<IStandardHedgingHandlerB
         var secondary = ResilienceContextPool.Shared.Get();
         using var response = new HttpResponseMessage(HttpStatusCode.OK);
 
-        var args = new HedgingActionGeneratorArguments<HttpResponseMessage>(primary, secondary, 0, _ => Outcome.FromResultAsValueTask(response));
-        generator.Invoking(g => g(args)).Should().Throw<InvalidOperationException>().WithMessage("Request message snapshot is not attached to the resilience context.");
+        var args = new HedgingActionGeneratorArguments<HttpResponseMessage>(primary, secondary, 0, _ => new ValueTask<Outcome<HttpResponseMessage>>(Outcome.FromResult(response)));
+        generator!.Invoking(g => g(args)).Should().Throw<InvalidOperationException>().WithMessage("Request message snapshot is not attached to the resilience context.");
 
         using var request = new HttpRequestMessage();
         using var snapshot = RequestMessageSnapshot.Create(request);
         primary.Properties.Set(ResilienceKeys.RequestSnapshot, snapshot);
-        generator.Invoking(g => g(args)).Should().NotThrow();
+        generator!.Invoking(g => g(args)).Should().NotThrow();
     }
 
 #if NET6_0_OR_GREATER
@@ -245,7 +243,7 @@ public sealed class StandardHedgingTests : HedgingTests<IStandardHedgingHandlerB
             },
             out var reloadAction).GetSection("standard");
 
-        Builder.Configure(config).Configure(options => options.Hedging.Delay = Timeout.InfiniteTimeSpan);
+        Builder.Configure(config).Configure(options => options.Hedging.Delay = System.Threading.Timeout.InfiniteTimeSpan);
         SetupRouting();
         SetupRoutes(10);
 
@@ -270,7 +268,7 @@ public sealed class StandardHedgingTests : HedgingTests<IStandardHedgingHandlerB
     {
         var client = CreateClientWithHandler();
 
-        client.Timeout.Should().Be(Timeout.InfiniteTimeSpan);
+        client.Timeout.Should().Be(System.Threading.Timeout.InfiniteTimeSpan);
     }
 
     [Theory]

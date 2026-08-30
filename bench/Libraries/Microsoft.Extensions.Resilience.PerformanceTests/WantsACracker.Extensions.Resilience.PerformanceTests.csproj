@@ -8,4 +8,10 @@
     <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Resilience\WantsACracker.Extensions.Resilience.csproj" />
     <ProjectReference Include="..\..\..\src\Libraries\Microsoft.Extensions.Telemetry.Abstractions\Microsoft.Extensions.Telemetry.Abstractions.csproj" />
   </ItemGroup>
+
+  <!-- The renamed src project no longer references Polly (it uses WantsACracker),
+       so this benchmark's direct Polly usage needs an explicit package reference. -->
+  <ItemGroup>
+    <PackageReference Include="Polly" />
+  </ItemGroup>
 </Project>

@@ -5,9 +5,9 @@ using System;
 using System.Net;
 using System.Net.Http;
 using FluentAssertions;
-using Polly;
-using Polly.CircuitBreaker;
-using Polly.Timeout;
+using WantsACracker;
+using WantsACracker.CircuitBreaker;
+using WantsACracker.Timeout;
 using Xunit;
 
 namespace WantsACracker.Extensions.Http.Resilience.Test.Hedging;
@@ -30,7 +30,7 @@ public class HttpClientHedgingResiliencePredicatesTests
         Assert.True(HttpClientHedgingResiliencePredicates.IsTransient(Outcome.FromException<HttpResponseMessage>(new BrokenCircuitException())));
         Assert.True(HttpClientHedgingResiliencePredicates.IsTransient(Outcome.FromException<HttpResponseMessage>(new HttpRequestException())));
         Assert.False(HttpClientHedgingResiliencePredicates.IsTransient(Outcome.FromException<HttpResponseMessage>(new InvalidOperationException())));
-        Assert.False(HttpClientHedgingResiliencePredicates.IsTransient(Outcome.FromResult<HttpResponseMessage>(null)));
+        Assert.False(HttpClientHedgingResiliencePredicates.IsTransient(Outcome.FromVoid<HttpResponseMessage>()));
     }
 
     [InlineData(HttpStatusCode.InternalServerError, true)]

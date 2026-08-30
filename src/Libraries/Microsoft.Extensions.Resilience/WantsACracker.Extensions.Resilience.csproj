@@ -3,6 +3,10 @@
     <RootNamespace>WantsACracker.Extensions.Resilience</RootNamespace>
     <!-- No published WantsACracker.Extensions.Resilience baseline exists to validate against yet. -->
     <EnablePackageValidation>false</EnablePackageValidation>
+    <!-- The WantsACracker core package is an intentionally unsigned independent
+         package; these delay-signed (public-key) assemblies referencing it are
+         fine on .NET, so the strong-name mismatch (CS8002) is suppressed. -->
+    <NoWarn>$(NoWarn);CS8002</NoWarn>
     <TargetFrameworks>$(NetCoreTargetFrameworks);netstandard2.0;net462</TargetFrameworks>
     <Description>Extensions to the Polly libraries to enrich telemetry with metadata and exception summaries.</Description>
     <Workstream>Resilience</Workstream>
@@ -26,8 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Polly.Extensions" />
-    <PackageReference Include="Polly.RateLimiting" />
+    <PackageReference Include="WantsACracker" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics" />
     <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
   </ItemGroup>

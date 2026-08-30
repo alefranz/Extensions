@@ -3,7 +3,7 @@
 
 using System.Net.Http;
 using Microsoft.Extensions.Http.Diagnostics;
-using Polly;
+using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience.Routing.Internal;
 
 namespace WantsACracker.Extensions.Http.Resilience.Internal;

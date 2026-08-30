@@ -8,8 +8,8 @@ using System.Net.Http;
 using System.Threading;
 using Microsoft.Shared.DiagnosticIds;
 using Microsoft.Shared.Diagnostics;
-using Polly;
-using Polly.Timeout;
+using WantsACracker;
+using WantsACracker.Timeout;
 
 namespace WantsACracker.Extensions.Http.Resilience;
 

@@ -3,9 +3,9 @@
 
 using System.Net.Http;
 using System.Threading.Tasks;
-using Polly.CircuitBreaker;
-using Polly.Hedging;
-using Polly.Timeout;
+using WantsACracker.CircuitBreaker;
+using WantsACracker.Hedging;
+using WantsACracker.Timeout;
 
 namespace WantsACracker.Extensions.Http.Resilience;
 

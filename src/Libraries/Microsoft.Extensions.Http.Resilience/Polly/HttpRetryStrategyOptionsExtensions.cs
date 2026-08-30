@@ -6,8 +6,8 @@ using System.Linq;
 using System.Net.Http;
 using Microsoft.Shared.DiagnosticIds;
 using Microsoft.Shared.Diagnostics;
-using Polly;
-using Polly.Retry;
+using WantsACracker;
+using WantsACracker.Retry;
 
 namespace WantsACracker.Extensions.Http.Resilience;
 
