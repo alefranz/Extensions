@@ -40,6 +40,15 @@ clientBuilder.AddStandardResilienceHandler().Configure(o =>
 });
 ```
 
+### Retrying requests with content
+
+The standard resilience handler never silently retries a request whose body cannot be replayed. The pipeline is selected per request based on the request's content:
+
+- The content is considered **replayable** when it is absent (the request has no content) or when it is one of the built-in bufferable `HttpContent` types: `StringContent`, `ByteArrayContent`, `FormUrlEncodedContent`, `JsonContent`, or `MultipartContent`. Requests with replayable content are sent through the standard pipeline, including the retry pipeline.
+- **All other content** — including a non-seekable `StreamContent` and any custom `HttpContent` subclass — is treated as **non-replayable**. Such requests are sent through an identical pipeline without the retry pipeline, so the request body is sent at most once and is never silently re-sent.
+
+This rule matches the replayability rule of the `WantsACracker` standard resilience handler.
+
 ### Hedging
 
 The standard hedging pipeline uses a pool of circuit breakers to ensure that unhealthy endpoints are not hedged against. By default, the selection from pool is based on the URL Authority (scheme + host + port). It is recommended that you configure the way the strategies are selected by calling the `SelectPipelineByAuthority()` extensions. The last three strategies are applied to each individual endpoint.
