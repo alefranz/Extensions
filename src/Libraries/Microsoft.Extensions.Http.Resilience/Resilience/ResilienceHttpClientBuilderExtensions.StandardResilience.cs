@@ -2,6 +2,8 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 
 using System;
+using System.Net.Http;
+using System.Net.Http.Json;
 using System.Threading;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +13,7 @@ using WantsACracker;
 using WantsACracker.Extensions.Http.Resilience;
 using WantsACracker.Extensions.Http.Resilience.Internal;
 using WantsACracker.Extensions.Http.Resilience.Internal.Validators;
+using WantsACracker.Registry;
 
 namespace Microsoft.Extensions.DependencyInjection;
 
@@ -72,25 +75,92 @@ public static partial class ResilienceHttpClientBuilderExtensions
         _ = builder.Services.AddOptionsWithValidateOnStart<HttpStandardResilienceOptions, HttpStandardResilienceOptionsCustomValidator>(optionsName);
         _ = builder.Services.AddOptionsWithValidateOnStart<HttpStandardResilienceOptions, HttpStandardResilienceOptionsValidator>(optionsName);
 
-        _ = builder.AddResilienceHandler(StandardIdentifier, (builder, context) =>
-        {
-            context.EnableReloads<HttpStandardResilienceOptions>(optionsName);
+        // Two standard pipelines: the ordinary one with the retry strategy and
+        // an identical pipeline without it. The handler below picks the pipeline
+        // per request, so that requests whose content cannot be safely replayed
+        // are never re-sent (mirroring the WantsACracker StandardResilienceHandler).
+        _ = builder.AddHttpResiliencePipeline(StandardIdentifier, (pipelineBuilder, context) =>
+            ConfigureStandardPipeline(pipelineBuilder, context, optionsName, includeRetry: true));
 
-            var monitor = context.ServiceProvider.GetRequiredService<IOptionsMonitor<HttpStandardResilienceOptions>>();
-            var options = monitor.Get(optionsName);
+        _ = builder.AddHttpResiliencePipeline(StandardIdentifier + "-no-retry", (pipelineBuilder, context) =>
+            ConfigureStandardPipeline(pipelineBuilder, context, optionsName, includeRetry: false));
 
-            _ = builder
-                .AddRateLimiter(options.RateLimiter)
-                .AddTimeout(options.TotalRequestTimeout)
-                .AddRetry(options.Retry)
-                .AddCircuitBreaker(options.CircuitBreaker)
-                .AddTimeout(options.AttemptTimeout);
-        });
+        _ = builder.AddHttpMessageHandler(serviceProvider =>
+            new ResilienceHandler(CreateStandardPipelineSelector(
+                serviceProvider,
+                PipelineNameHelper.GetName(builder.Name, StandardIdentifier),
+                PipelineNameHelper.GetName(builder.Name, StandardIdentifier + "-no-retry"))));
 
         // Disable the HttpClient timeout to allow the timeout strategies to control the timeout.
         _ = builder.ConfigureHttpClient(client => client.Timeout = Timeout.InfiniteTimeSpan);
 
         return new HttpStandardResiliencePipelineBuilder(optionsName, builder.Services);
+    }
+
+    private static void ConfigureStandardPipeline(
+        ResiliencePipelineBuilder<HttpResponseMessage> pipelineBuilder,
+        ResilienceHandlerContext context,
+        string optionsName,
+        bool includeRetry)
+    {
+        context.EnableReloads<HttpStandardResilienceOptions>(optionsName);
+
+        var monitor = context.ServiceProvider.GetRequiredService<IOptionsMonitor<HttpStandardResilienceOptions>>();
+        var options = monitor.Get(optionsName);
+
+        _ = pipelineBuilder
+            .AddRateLimiter(options.RateLimiter)
+            .AddTimeout(options.TotalRequestTimeout);
+
+        if (includeRetry)
+        {
+            _ = pipelineBuilder.AddRetry(options.Retry);
+        }
+
+        _ = pipelineBuilder
+            .AddCircuitBreaker(options.CircuitBreaker)
+            .AddTimeout(options.AttemptTimeout);
+    }
+
+    private static Func<HttpRequestMessage, ResiliencePipeline<HttpResponseMessage>> CreateStandardPipelineSelector(
+        IServiceProvider serviceProvider,
+        string standardName,
+        string noRetryName)
+    {
+        var resilienceProvider = serviceProvider.GetRequiredService<ResiliencePipelineProvider<HttpKey>>();
+        var keyProvider = serviceProvider.GetPipelineKeyProvider(standardName);
+
+        if (keyProvider == null)
+        {
+            // Build the pipelines eagerly so that misconfigured options fail fast
+            // with an OptionsValidationException when the handler is created. The
+            // selector still fetches the pipeline per request (instead of caching
+            // the instance) so that dynamically reloaded pipelines take effect.
+            _ = resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(standardName, string.Empty));
+            _ = resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(noRetryName, string.Empty));
+
+            return request => HasReplayableContent(request)
+                ? resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(standardName, string.Empty))
+                : resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(noRetryName, string.Empty));
+        }
+        else
+        {
+            // Eagerly check that the pipeline key provider is correctly configured.
+            TouchPipelineKey(keyProvider);
+
+            return request => HasReplayableContent(request)
+                ? resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(standardName, keyProvider(request)))
+                : resilienceProvider.GetPipeline<HttpResponseMessage>(new HttpKey(noRetryName, string.Empty));
+        }
+    }
+
+    private static bool HasReplayableContent(HttpRequestMessage request)
+    {
+        HttpContent? content = request.Content;
+
+        return content is null
+            || content is StringContent or ByteArrayContent or FormUrlEncodedContent or JsonContent
+            || content is MultipartContent;
     }
 
     private sealed record HttpStandardResiliencePipelineBuilder(string PipelineName, IServiceCollection Services) : IHttpStandardResiliencePipelineBuilder;

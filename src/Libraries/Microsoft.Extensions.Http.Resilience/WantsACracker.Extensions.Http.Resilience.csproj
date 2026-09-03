@@ -68,6 +68,13 @@
     <PackageReference Include="WantsACracker" />
   </ItemGroup>
 
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0' OR '$(TargetFramework)' == 'net462'">
+    <!-- WantsACracker divergence (see UPSTREAM.md): the standard handler classifies JsonContent
+         request bodies as replayable on every TFM; the System.Net.Http.Json reference is only
+         needed on the legacy TFMs, mirroring the WantsACracker core package. -->
+    <PackageReference Include="System.Net.Http.Json" />
+  </ItemGroup>
+
   <ItemGroup>
     <!-- wants-a-cracker: pack a package-specific third-party notices file at the package root -->
     <None Include="THIRD-PARTY-NOTICES.TXT" Pack="true" PackagePath="\" />
