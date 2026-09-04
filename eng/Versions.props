@@ -82,7 +82,9 @@
     <MicrosoftExtensionsDiagnosticsHealthChecksVersion>9.0.18</MicrosoftExtensionsDiagnosticsHealthChecksVersion>
     <MicrosoftExtensionsFeaturesVersion>9.0.18</MicrosoftExtensionsFeaturesVersion>
     <MicrosoftExtensionsHttpPollyVersion>9.0.18</MicrosoftExtensionsHttpPollyVersion>
-    <MicrosoftExtensionsObjectPoolVersion>9.0.18</MicrosoftExtensionsObjectPoolVersion>
+    <!-- wants-a-cracker: bumped 9.0.18 -> 9.0.19 (minimal patch required by the published
+         Microsoft.Extensions.Telemetry 10.9.0 consumed by the renamed packages; see UPSTREAM.md divergence 8). -->
+    <MicrosoftExtensionsObjectPoolVersion>9.0.19</MicrosoftExtensionsObjectPoolVersion>
     <!-- Dependencies from https://github.com/dotnet/efcore -->
     <MicrosoftEntityFrameworkCoreSqliteVersion>9.0.18</MicrosoftEntityFrameworkCoreSqliteVersion>
     <!-- Dependencies from https://github.com/dotnet/arcade -->
@@ -139,7 +141,9 @@
     <MicrosoftExtensionsDiagnosticsHealthChecksNet10Version>10.0.10</MicrosoftExtensionsDiagnosticsHealthChecksNet10Version>
     <MicrosoftExtensionsFeaturesNet10Version>10.0.10</MicrosoftExtensionsFeaturesNet10Version>
     <MicrosoftExtensionsHttpPollyNet10Version>10.0.10</MicrosoftExtensionsHttpPollyNet10Version>
-    <MicrosoftExtensionsObjectPoolNet10Version>10.0.10</MicrosoftExtensionsObjectPoolNet10Version>
+    <!-- wants-a-cracker: bumped 10.0.10 -> 10.0.11 (minimal patch required by the published
+         Microsoft.Extensions.Telemetry 10.9.0 consumed by the renamed packages; see UPSTREAM.md divergence 8). -->
+    <MicrosoftExtensionsObjectPoolNet10Version>10.0.11</MicrosoftExtensionsObjectPoolNet10Version>
     <!-- Dependencies from https://github.com/dotnet/efcore -->
     <MicrosoftEntityFrameworkCoreSqliteNet10Version>10.0.10</MicrosoftEntityFrameworkCoreSqliteNet10Version>
     <!-- Dependencies from https://github.com/dotnet/arcade -->
@@ -195,7 +199,9 @@
     <MicrosoftExtensionsDiagnosticsHealthChecksLTSVersion>8.0.29</MicrosoftExtensionsDiagnosticsHealthChecksLTSVersion>
     <MicrosoftExtensionsFeaturesLTSVersion>8.0.29</MicrosoftExtensionsFeaturesLTSVersion>
     <MicrosoftExtensionsHttpPollyLTSVersion>8.0.29</MicrosoftExtensionsHttpPollyLTSVersion>
-    <MicrosoftExtensionsObjectPoolLTSVersion>8.0.29</MicrosoftExtensionsObjectPoolLTSVersion>
+    <!-- wants-a-cracker: bumped 8.0.29 -> 8.0.30 (minimal patch required by the published
+         Microsoft.Extensions.Telemetry 10.9.0 consumed by the renamed packages; see UPSTREAM.md divergence 8). -->
+    <MicrosoftExtensionsObjectPoolLTSVersion>8.0.30</MicrosoftExtensionsObjectPoolLTSVersion>
     <!-- Dependencies from https://github.com/dotnet/efcore -->
     <MicrosoftEntityFrameworkCoreSqliteLTSVersion>8.0.29</MicrosoftEntityFrameworkCoreSqliteLTSVersion>
   </PropertyGroup>

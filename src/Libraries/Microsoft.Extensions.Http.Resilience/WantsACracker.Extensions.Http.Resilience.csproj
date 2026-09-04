@@ -13,6 +13,9 @@
          subclass; the warning is suppressed. -->
     <NoWarn>$(NoWarn);CS8002;SYSLIB1202</NoWarn>
     <TargetFrameworks>$(NetCoreTargetFrameworks);netstandard2.0;net462</TargetFrameworks>
+    <!-- The published sibling package ships net462/netstandard2.0 assets; this only silences the
+         repo-standard "not tested with net462" compat warning (same as Microsoft.Extensions.Caching.Hybrid). -->
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <Description>HTTP resilience integration for IHttpClientFactory, with a source-compatible migration path for supported Microsoft.Extensions.Http.Resilience scenarios.</Description>
     <Workstream>Resilience</Workstream>
   </PropertyGroup>
@@ -61,7 +64,14 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Microsoft.Extensions.Resilience\WantsACracker.Extensions.Resilience.csproj" />
-    <ProjectReference Include="..\Microsoft.Extensions.Http.Diagnostics\Microsoft.Extensions.Http.Diagnostics.csproj" />
+  </ItemGroup>
+
+  <!-- wants-a-cracker divergence (see UPSTREAM.md): the un-renamed sibling
+       dependency is consumed from the published 10.9.0 line instead of the
+       in-tree local-train project (10.10.0-dev is unpublished, which would
+       make the packed package unresolvable from public feeds). -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http.Diagnostics" />
   </ItemGroup>
 
   <ItemGroup>

@@ -8,6 +8,9 @@
          fine on .NET, so the strong-name mismatch (CS8002) is suppressed. -->
     <NoWarn>$(NoWarn);CS8002</NoWarn>
     <TargetFrameworks>$(NetCoreTargetFrameworks);netstandard2.0;net462</TargetFrameworks>
+    <!-- The published sibling packages ship net462/netstandard2.0 assets; this only silences the
+         repo-standard "not tested with net462" compat warning (same as Microsoft.Extensions.Caching.Hybrid). -->
+    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
     <Description>Extensions to the WantsACracker resilience pipeline to enrich telemetry with metadata and exception summaries.</Description>
     <Workstream>Resilience</Workstream>
   </PropertyGroup>
@@ -40,9 +43,13 @@
     <MinMutationScore>100</MinMutationScore>
   </PropertyGroup>
 
+  <!-- wants-a-cracker divergence (see UPSTREAM.md): the two un-renamed sibling
+       dependencies are consumed from the published 10.9.0 line instead of the
+       in-tree local-train projects (10.10.0-dev is unpublished, which would
+       make the packed package unresolvable from public feeds). -->
   <ItemGroup>
-    <ProjectReference Include="..\Microsoft.Extensions.Diagnostics.ExceptionSummarization\Microsoft.Extensions.Diagnostics.ExceptionSummarization.csproj" />
-    <ProjectReference Include="..\Microsoft.Extensions.Telemetry.Abstractions\Microsoft.Extensions.Telemetry.Abstractions.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Diagnostics.ExceptionSummarization" />
+    <PackageReference Include="Microsoft.Extensions.Telemetry.Abstractions" />
   </ItemGroup>
 
   <ItemGroup>
