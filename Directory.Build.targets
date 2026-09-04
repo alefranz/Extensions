@@ -114,4 +114,13 @@
       <Analyzer Remove="@(_Microsoft_Extensions_Logging_AbstractionsAnalyzer)" />
     </ItemGroup>
   </Target>
+
+  <!-- wants-a-cracker (divergence 7 in UPSTREAM.md): the two published preview packages ship under
+       the product's preview identity, 0.1.0-preview.1. Arcade's Version.BeforeCommonTargets.targets
+       (imported above) unconditionally recomputes Version from eng/Versions.props and a local
+       build's label is always "dev", so the override must land after that evaluation, scoped to
+       exactly the two WantsACracker src projects by their Authors identity. -->
+  <PropertyGroup Condition="'$(Authors)' == 'WantsACracker contributors'">
+    <Version>0.1.0-preview.1</Version>
+  </PropertyGroup>
 </Project>
