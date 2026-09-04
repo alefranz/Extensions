@@ -1,40 +1,42 @@
-# Microsoft.Extensions.Resilience
+# WantsACracker.Extensions.Resilience
 
-Extensions to the Polly libraries to enrich telemetry with metadata and exception summaries.
+Extensions to the WantsACracker resilience pipeline that enrich telemetry with request metadata and exception summaries. This package depends on the independently implemented `WantsACracker` core package, which is added transitively.
 
 ## Install the package
 
 From the command-line:
 
 ```console
-dotnet add package Microsoft.Extensions.Resilience
+dotnet add package WantsACracker.Extensions.Resilience
 ```
 
 Or directly in the C# project file:
 
 ```xml
 <ItemGroup>
-  <PackageReference Include="Microsoft.Extensions.Resilience" Version="[CURRENTVERSION]" />
+  <PackageReference Include="WantsACracker.Extensions.Resilience" Version="0.1.0-preview.1" />
 </ItemGroup>
 ```
 
 ## Usage Examples
 
-The services can be registered using the following method:
+The enricher can be registered with the following method (in the `Microsoft.Extensions.DependencyInjection` namespace):
 
 ```csharp
 public static IServiceCollection AddResilienceEnricher(this IServiceCollection services)
 ```
 
-This will optionally consume the `IExceptionSummarizer` service if it has been registered and add that data to Polly's telemetry. It will also include `RequestMetadata` that can be set or retrieved with these extensions:
+When a resilience pipeline executes, this enricher adds telemetry tags for the current operation. It optionally consumes the `IExceptionSummarizer` service if it has been registered and includes that data in the telemetry.
+
+Request metadata can be attached to a `WantsACracker.ResilienceContext` with these extensions (in the `WantsACracker` namespace):
 
 ```csharp
-public static void SetRequestMetadata(this ResilienceContext context, RequestMetadata requestMetadata)
-public static RequestMetadata? GetRequestMetadata(this ResilienceContext context)
+public static void SetRequestMetadata(this WantsACracker.ResilienceContext context, RequestMetadata requestMetadata)
+public static RequestMetadata? GetRequestMetadata(this WantsACracker.ResilienceContext context)
 ```
 
-See the Polly docs for details about working with [`ResilienceContext`](https://www.pollydocs.org/advanced/resilience-context.html).
+where `RequestMetadata` is `Microsoft.Extensions.Http.Diagnostics.RequestMetadata`. Metadata set on the context is included in the telemetry emitted while the pipeline runs.
 
 ## Feedback & Contributing
 
-We welcome feedback and contributions in [our GitHub repo](https://github.com/dotnet/extensions).
+The source lives in the [WantsACracker fork of dotnet/extensions](https://github.com/alefranz/Extensions) on the `wants-a-cracker` branch. Feedback and contributions are welcome there.
