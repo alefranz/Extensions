@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- WantsACracker clean-consumer smoke app (see smoke/README.md).
+       Consumes ONLY the three 0.1.0-preview.1 packages as NuGet package
+       references (never project references), from the temporary local feed
+       the smoke script assembles. This project is copied to a temporary
+       workspace by smoke/run-clean-consumer.sh and built there; it is not
+       part of any repository solution. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>consumer</AssemblyName>
+    <RootNamespace>WantsACrackerSmoke</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Version>0.1.0</Version>
+    <Authors>WantsACracker smoke test</Authors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WantsACracker" Version="0.1.0-preview.1" />
+    <PackageReference Include="WantsACracker.Extensions.Resilience" Version="0.1.0-preview.1" />
+    <PackageReference Include="WantsACracker.Extensions.Http.Resilience" Version="0.1.0-preview.1" />
+  </ItemGroup>
+</Project>
