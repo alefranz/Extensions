@@ -1,0 +1,27 @@
+# WantsACracker minimum release guard (preview-path step 4, divergence 10).
+#
+# Additive-only: the upstream dotnet/extensions workflows are untouched. This
+# is the thin CI wrapper for the checked-in command `smoke/run-release-guard.sh`
+# (see smoke/README.md), which runs the build, the renamed test suites, the
+# API-baseline surface check, the pack + exactly-three-nupkg clean-consumer
+# smoke, and the package-content checks — any failure fails the build.
+name: WantsACracker release guard
+
+on:
+  push:
+    branches:
+      - wants-a-cracker
+  pull_request:
+    branches:
+      - wants-a-cracker
+
+jobs:
+  guard:
+    name: Build, test, pack, API surface, package content, clean-consumer smoke
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the wants-a-cracker branch
+        uses: actions/checkout@v4
+      - name: Run the minimum release guard (one checked-in command)
+        run: bash smoke/run-release-guard.sh

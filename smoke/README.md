@@ -20,15 +20,33 @@ smoke/run-clean-consumer.sh
 
 No arguments; runnable from any working directory. Requirements: `bash`, and network access to `nuget.org` for the published sibling dependencies and the net8.0 reference pack — the scenario itself needs no network (loopback only). All intermediate state is kept in a temporary directory that is removed on exit; the pack output goes to the gitignored `artifacts/` tree, so the run leaves **no tracked build output** behind.
 
-## Intended CI entry point (preview-path step 4)
+## Release guard (preview-path step 4, divergence 10)
 
-Invoke the same script, unchanged, as a standalone step/job after the repository's build and test steps on each PR and push to `wants-a-cracker`:
+`run-release-guard.sh` is the one checked-in release-guard command; it runs, in
+order (non-zero exit on any failure):
+
+1. Builds the two renamed src projects (Release, all TFMs, repo build flow).
+2. Runs the two renamed test suites on `net8.0`.
+3. Checks the API surface: the build runs the ApiLifecycle analyzer against the
+   committed API-baseline jsons, and the guard asserts those baselines are
+   untouched afterwards.
+4. Invokes **this script, unchanged** (`bash smoke/run-clean-consumer.sh`).
+5. Runs package-content checks on the three preview nupkgs (nuspec id/version,
+   MIT expression licence, README + THIRD-PARTY-NOTICES at the package root,
+   `WantsACracker 0.1.0-preview.1` declared in every TFM dependency group, no
+   Polly anywhere).
+
+Locally (any plain checkout):
 
 ```sh
-bash smoke/run-clean-consumer.sh
+smoke/run-release-guard.sh
 ```
 
-It bootstraps its own SDK and packs, so no other job output is required.
+CI: the thin wrapper `.github/workflows/wantsacracker-release-guard.yml` runs
+exactly `bash smoke/run-release-guard.sh` on pushes to `wants-a-cracker` and
+PRs targeting it (the upstream dotnet/extensions workflows are untouched; no
+publishing, signing, matrix, or other platform expansion). The guard is
+additive-only and leaves no tracked build output behind.
 
 ## Layout
 
