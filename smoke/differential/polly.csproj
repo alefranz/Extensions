@@ -1,0 +1,28 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- Reference side (Polly 8.4.2) of the differential compatibility harness (see smoke/README.md).
+        References Microsoft.Extensions.Http.Resilience 10.9.0 - the published sibling of the
+        fork's 10.10.0-dev upstream baseline, which resolves Microsoft.Extensions.Resilience
+        10.9.0 pinning exactly Polly.Core/Polly.Extensions/Polly.RateLimiting 8.4.2, the
+        compatibility surface this harness proves against. No 8.4.x version of this package
+        exists on nuget.org (8.4.0/8.5.0 resolve Polly 8.3.0), so 8.4.2 cannot be referenced
+        directly; the script asserts the resolved graph carries exactly Polly 8.4.2. This is
+        the one non-local package fetch the harness performs. This project is copied to
+        a temporary workspace by smoke/run-differential.sh and built there; it is not part of
+        any repository solution. -->
+  <!-- The scenario source is the same smoke/differential/Program.cs as the WantsACracker side,
+        transformed by the script's marker-pair swap (see the Program.cs header and
+        smoke/README.md). -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>differential</AssemblyName>
+    <RootNamespace>WantsACrackerDifferential</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Version>0.1.0</Version>
+    <Authors>WantsACracker differential harness</Authors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="10.9.0" />
+  </ItemGroup>
+</Project>

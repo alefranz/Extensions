@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <!-- WantsACracker side of the differential compatibility harness (see smoke/README.md).
+        Consumes ONLY the three 0.1.0-preview.1 packages as NuGet package references (never
+        project references), from the temporary local feed smoke/run-differential.sh assembles.
+        This project is copied to a temporary workspace by the script and built there; it is
+        not part of any repository solution. -->
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <AssemblyName>differential</AssemblyName>
+    <RootNamespace>WantsACrackerDifferential</RootNamespace>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Version>0.1.0</Version>
+    <Authors>WantsACracker differential harness</Authors>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="WantsACracker" Version="0.1.0-preview.1" />
+    <PackageReference Include="WantsACracker.Extensions.Resilience" Version="0.1.0-preview.1" />
+    <PackageReference Include="WantsACracker.Extensions.Http.Resilience" Version="0.1.0-preview.1" />
+  </ItemGroup>
+</Project>
