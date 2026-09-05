@@ -50,6 +50,8 @@ This rule matches the replayability rule of the `WantsACracker` standard resilie
 
 ### Hedging
 
+`AddStandardHedgingHandler()` and its routing surface are **experimental** in `0.1.0-preview.1`: they are available for evaluation but are outside the supported initial-release scope, are not covered by the P0 conformance suite, and may change before 1.0.
+
 The standard hedging pipeline uses a pool of circuit breakers to ensure that unhealthy endpoints are not hedged against. By default, the selection from the pool is based on the URL authority (scheme + host + port). It is recommended that you configure the way the strategies are selected by calling the `SelectPipelineByAuthority()` extension.
 
 ```csharp
