@@ -11,9 +11,10 @@
 #   1. Install Microsoft.Sbom.DotNetTool (pinned version) into a scratch tool
 #      path (repo-local pinned SDK; removed on exit).
 #   2. Build + pack both fork projects (the repo build flow, same as
-#      smoke/run-deterministic-pack.sh) and unpack the main nupkgs — the SBOM
-#      input is the SHIPPED file set of each package (the nupkg's own
-#      contents).
+#      smoke/run-deterministic-pack.sh, with the git revision pinned to the
+#      all-zeros placeholder — see the revision-pinning note below) and
+#      unpack the main nupkgs — the SBOM input is the SHIPPED file set of
+#      each package (the nupkg's own contents).
 #   3. Run `sbom-tool generate` on each drop directory with fixed inputs: the
 #      pinned tool version, a fixed generation timestamp
 #      (-gt 2023-11-14T22:13:20Z = SOURCE_DATE_EPOCH 1700000000, the same
@@ -28,9 +29,13 @@
 #
 # Determinism, documented exactly as the deterministic-pack slice documented
 # its fields: the pinned tool version + fixed inputs make each SBOM's content
-# a pure function of that package's bytes (itself a function of this branch's
-# commit + the repo-local pinned SDK, the same function
-# smoke/run-deterministic-pack.sh gates). The tool's residual
+# a pure function of that package's bytes. The SBOM build pins the git
+# revision to the all-zeros placeholder (see the revision-pinning note
+# below), so the package's bytes — and hence each SBOM — are a pure function
+# of the source tree + the repo-local pinned SDK, independent of the commit
+# being checked out (the same source+SDK function
+# smoke/run-deterministic-pack.sh gates, plus the documented revision pin).
+# The tool's residual
 # non-deterministic fields — asserted to be exactly these, all neutralized by
 # the canonicalization — are: (1) the file-traversal order in the top-level
 # `files` array and in the package's `hasFiles`; (2) the random GUID embedded
@@ -55,6 +60,27 @@
 # individual file checksums it aggregates over). The checked-in artifacts
 # are one raw generation each: their raw bytes differ from a fresh
 # generation only in those six documented fields.
+#
+# Revision pinning (why the checked-in SBOMs can reproduce at all): the
+# pack embeds the git HEAD in three places — the nuspec `<repository
+# commit>` (from `SourceRevisionId`), the `OriginalRepoCommitHash`
+# AssemblyMetadataAttribute in every DLL (Arcade's
+# `RepoOriginalSourceRevisionId`, set upstream in `Directory.Build.targets`),
+# and the PDB's SourceLink document-map URI
+# (`https://raw.githubusercontent.com/alefranz/Extensions/<commit>/*`).
+# Unpinned, a checked-in SBOM can therefore NEVER reproduce from the commit
+# that contains it: any regeneration re-stamps the new HEAD into the pack
+# before the SBOM is taken (a fixed point — the SBOM would have to describe
+# a pack stamped with its own, future, commit). The SBOM build therefore
+# passes `-p:SourceRevisionId=`, `-p:RepoOriginalSourceRevisionId=`, and
+# `-p:EnableSourceLink=false` (the all-zeros revision) to both the build.sh
+# and the dotnet pack calls. The SBOMs describe this revision-pinned build
+# variant: the nuspec `<repository commit>` and the DLL's
+# `OriginalRepoCommitHash` are the all-zeros placeholder, and the PDBs carry
+# no SourceLink document map. Every product file's content is byte-identical
+# to a live pack; a live pack at any commit differs from the SBOM's input
+# only in those revision metadata fields (the PDBs are not in the main
+# nupkg, so they never enter the SBOM).
 #
 # Entry point:
 #   eng/sbom/generate-sboms.sh            (verify: regenerate + canonical compare)
@@ -119,21 +145,39 @@ sbom_tool="$work/tools/sbom-tool"
 
 # --- 2. Build + pack + unpack: the SBOM input is the shipped file set -------
 
-step "2. Build + pack both fork projects (repo build flow) and unpack the main nupkgs"
+step "2. Build + pack both fork projects (repo build flow, revision-pinned) and unpack the main nupkgs"
 # Clean the two projects' build state (Arcade artifacts layout) so the pack
 # is a fresh restore + build + pack of the checked-in state.
 rm -rf "artifacts/bin/$res_proj" "artifacts/obj/$res_proj" \
        "artifacts/bin/$http_proj" "artifacts/obj/$http_proj" \
        "artifacts/packages"
+# Revision pin (see the header): the SBOM build stamps the all-zeros
+# placeholder instead of the git HEAD, so the checked-in SBOMs reproduce
+# from any commit (the pack would otherwise embed the HEAD in the nuspec
+# <repository commit>, the DLL's OriginalRepoCommitHash, and the PDB's
+# SourceLink doc-map URI).
+sbom_revision="0000000000000000000000000000000000000000"
 # One build.sh call per project: the repo wrapper (eng/build.sh) resolves
 # -projects with realpath, which does not accept a semicolon-separated list.
 ./build.sh -restore -build -c Release -projects "$resilience_src" \
+  -p:SourceRevisionId="$sbom_revision" \
+  -p:RepoOriginalSourceRevisionId="$sbom_revision" \
+  -p:EnableSourceLink=false \
   || fail "build.sh ($res_proj) failed"
 ./build.sh -restore -build -c Release -projects "$http_src" \
+  -p:SourceRevisionId="$sbom_revision" \
+  -p:RepoOriginalSourceRevisionId="$sbom_revision" \
+  -p:EnableSourceLink=false \
   || fail "build.sh ($http_proj) failed"
 "$dotnet" pack "$resilience_src" -c Release --nologo \
+  -p:SourceRevisionId="$sbom_revision" \
+  -p:RepoOriginalSourceRevisionId="$sbom_revision" \
+  -p:EnableSourceLink=false \
   || fail "dotnet pack ($res_proj) failed"
 "$dotnet" pack "$http_src" -c Release --nologo \
+  -p:SourceRevisionId="$sbom_revision" \
+  -p:RepoOriginalSourceRevisionId="$sbom_revision" \
+  -p:EnableSourceLink=false \
   || fail "dotnet pack ($http_proj) failed"
 for proj in "$res_proj" "$http_proj"; do
   nupkg="artifacts/packages/Release/Shipping/$proj.$version.nupkg"
@@ -234,8 +278,8 @@ done
 
 if [ "$update" = 1 ]; then
   echo
-  echo "SBOM UPDATE PASS: the checked-in artifacts under eng/sbom/ are the fresh raw generations (pinned tool $tool_version, fixed timestamp; verify with eng/sbom/generate-sboms.sh)."
+  echo "SBOM UPDATE PASS: the checked-in artifacts under eng/sbom/ are the fresh raw generations (revision-pinned build variant; pinned tool $tool_version, fixed timestamp; verify with eng/sbom/generate-sboms.sh)."
 else
   echo
-  echo "SBOM REPRO PASS: the checked-in SBOMs under eng/sbom/ reproduce from the checked-in state (canonical byte-identity under the pinned tool $tool_version; raw variance limited to the documented fields: the files/hasFiles traversal order, the documentNamespace GUID, the purl tag_id GUID, the psmdcp GUID filename, the _rels/.rels content hashes, and the derived packageVerificationCode)."
+  echo "SBOM REPRO PASS: the checked-in SBOMs under eng/sbom/ reproduce from the checked-in state (revision-pinned build variant; canonical byte-identity under the pinned tool $tool_version; raw variance limited to the documented fields: the files/hasFiles traversal order, the documentNamespace GUID, the purl tag_id GUID, the psmdcp GUID filename, the _rels/.rels content hashes, and the derived packageVerificationCode)."
 fi
