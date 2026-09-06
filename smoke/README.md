@@ -125,7 +125,7 @@ exception type (documented below).
 | 1 | `retry-503-then-success` — `Retries_on_http_5xx` | `response:200 (server-attempts=2)` | `response:200 (server-attempts=2)` | MATCH |
 | 2 | `retry-408-then-success` — `Retries_on_http_408` | `response:200 (server-attempts=2)` | `response:200 (server-attempts=2)` | MATCH |
 | 3 | `retry-429-retry-after` — `Retries_on_http_429_and_honours_retry_after_delay` | `response:200,honoured-retry-after:yes (server-attempts=2)` | `response:200,honoured-retry-after:yes (server-attempts=2)` | MATCH |
-| 4 | `retry-connection-abort-then-success` — `Retries_on_transient_http_request_exception` | `response:200 (server-attempts=2)` | `response:200 (server-attempts=2)` | MATCH |
+| 4 | `retry-connection-abort-then-success` — `Retries_on_transient_http_request_exception` | `response:200 (server-attempts=5)` | `response:200 (server-attempts=5)` | MATCH |
 | 5 | `no-retry-404` — `Does_not_retry_on_http_4xx_other_than_408_and_429` | `response:404 (server-attempts=1)` | `response:404 (server-attempts=1)` | MATCH |
 | 6 | `retry-exhaustion-last-response` — `Stops_after_max_attempts_and_surfaces_the_last_response` | `response:503 (server-attempts=3)` | `response:503 (server-attempts=3)` | MATCH |
 | 7 | `retry-exhaustion-last-error` — `Stops_after_max_attempts_and_surfaces_the_last_error` + `Final_failure_with_exception_propagates_the_error_without_returning_a_response` | `exception:HttpRequestException (server-attempts=12)` | `exception:HttpRequestException (server-attempts=12)` | MATCH |
@@ -151,10 +151,14 @@ The raw-TCP scenarios' server counts include the transport's own transparent con
 retries: when a **replayable** request's connection is aborted before a response,
 `SocketsHttpHandler` retries it on up to 3 further connections before surfacing the
 failure (4 accepted connections per aborted GET; a non-replayable POST control opens
-exactly 1 — probed on this runtime). Scenario 7's 3 resilience attempts therefore account
-for 12 accepted connections on both sides, and scenario 4's `server-attempts=2` is one
-aborted connection plus the transport retry that receives the `200` (the resilience layer
-there observes a single success).
+exactly 1 — probed on this runtime). Scenario 4's `server-attempts=5` is the four aborted
+connections of the first resilience attempt — the transport's entire transparent-retry
+budget, whose exhaustion is what surfaces the connection failure to the resilience layer —
+plus the fifth connection, on which the resilience retry receives the `200`: the recovery
+is the resilience retry itself (with it doing nothing the call would fail with
+`HttpRequestException` after the four aborted connections, so the scenario would not
+pass), and scenario 7's 3 resilience attempts therefore account for 12 accepted
+connections on both sides.
 
 The two documented differences:
 
@@ -187,8 +191,11 @@ handler's form:
   a raw-TCP loopback server that closes the connection without reading the request or
   answering. Leaving the request unread (in flight) is what makes the abort reliable: the
   client surfaces it immediately as `HttpRequestException`, whereas a connection that was
-  fully read first and then closed is not surfaced until the client's own timeout. Both
-  sides retry the abort and recover (4) or exhaust the budget on it (7).
+  fully read first and then closed is not surfaced until the client's own timeout. The
+  transport's transparent connection retry (4 accepted connections per aborted replayable
+  GET) is exhausted before the failure reaches the resilience layer, so scenario 4's
+  recovery is a resilience retry on the fifth accepted connection and scenario 7 exhausts
+  the resilience budget on the abort (3 attempts × 4 connections = 12).
 - **(b) Options-validation divergence** — the 8.4.2 reference's options validation rejects
   `Retry.MaxRetryAttempts = 0` (the preview allows it). Where a core fact uses `0`, the
   seam uses `1`, the lowest value both sides accept (scenarios 10, 13, 14 and the shared

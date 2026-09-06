@@ -269,13 +269,17 @@ expected() {
       # Retry-After header (honoured by default on both sides).
       echo "$1: response:200,honoured-retry-after:yes (server-attempts=2)" ;;
     retry-connection-abort-then-success:*)
-      # Identical on both sides: the first attempt's connection is aborted (the raw-TCP
-      # server closes it without reading or answering) and the recovery happens on the
-      # transport's own transparent connection retry (SocketsHttpHandler retries a
-      # replayable request on new connections when they are aborted before a response —
-      # the same mechanism the retry-exhaustion-last-error count below reflects), so the
-      # resilience layer observes a single success: 1 aborted + 1 recovered connection.
-      echo "$1: response:200 (server-attempts=2)" ;;
+      # Identical on both sides: every connection of the first resilience attempt is
+      # aborted (the raw-TCP server closes each without reading or answering), and
+      # SocketsHttpHandler transparently retries an aborted replayable connection on up
+      # to 3 further connections before surfacing the failure — 4 accepted connections
+      # per aborted GET (the same mechanism the retry-exhaustion-last-error count below
+      # reflects). The four aborted connections exhaust the transport budget of the
+      # first resilience attempt, so the connection failure surfaces to the resilience
+      # layer, which retries: its fifth accepted connection receives the 200. The
+      # recovery is the resilience retry itself — with it doing nothing the call would
+      # fail with HttpRequestException after the four aborted connections.
+      echo "$1: response:200 (server-attempts=5)" ;;
     no-retry-404:*)
       echo "$1: response:404 (server-attempts=1)" ;;
     retry-exhaustion-last-response:*)

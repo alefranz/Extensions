@@ -18,10 +18,14 @@
 //     WAC marker is removed and every POLLY marker line is uncommented in place
 //     (smoke/differential/polly.csproj references Microsoft.Extensions.Http.Resilience 10.9.0).
 //
-// The request sequences and the observable expectations are byte-identical for both sides;
-// only the marked configuration lines differ, each one recording a genuine surface difference
-// between the 8.4.2 reference model and the 0.1.0-preview.1 surface (documented in
-// smoke/README.md).
+// The request sequences are byte-identical for both sides, and so are the observable
+// expectations — except for the two documented per-side differences (the no-retry
+// non-replayable gate, and the rate-limiter queue-overload rejection: the 8.4.2 reference
+// throws the non-cancellation RateLimiterRejectedException, while the preview rejects with
+// an OperationCanceledException that names the full queue), whose per-side expectations
+// the script carries. Only the marked configuration lines differ, each one recording a
+// genuine surface difference between the 8.4.2 reference model and the 0.1.0-preview.1
+// surface (documented in smoke/README.md).
 //
 // Each scenario runs against a fresh in-process loopback server (an HttpListener, or a
 // raw-TCP server for the two connection-abort scenarios — see ScenarioServer) and a fresh
@@ -121,16 +125,24 @@ await RunAsync(
         // this seam the failure a client actually observes is a connection abort (an
         // HttpRequestException carrying an IOException/SocketException inner), not a bare
         // HttpRequestException (see the limitations in smoke/README.md). The scenario runs
-        // on the raw-TCP transport: the first attempt's connection is closed without being
-        // read or answered, which is what the client observes as the abort. The recovery
-        // (server-attempts=2) is the transport's own transparent connection retry, not a
-        // resilience retry, so the resilience layer observes a single success.
+        // on the raw-TCP transport: every connection of the first resilience attempt is
+        // closed without being read or answered. SocketsHttpHandler transparently retries
+        // an aborted replayable connection on up to 3 further connections before
+        // surfacing the failure (4 accepted connections per aborted GET — the same
+        // mechanism the retry-exhaustion-last-error count below reflects), so the first
+        // four accepted connections are the entire transport budget of the first
+        // resilience attempt, and only then does the connection failure surface to the
+        // resilience layer. The recovery (server-attempts=5) is therefore the resilience
+        // retry itself: its fifth accepted connection receives the 200. With the
+        // resilience retry doing nothing the call would fail with HttpRequestException
+        // after the four aborted connections — the transport alone cannot recover this
+        // request.
         options.Retry.MaxRetryAttempts = 3;
         options.Retry.Delay = TimeSpan.FromMilliseconds(50);
         options.Retry.MaxDelay = TimeSpan.FromMilliseconds(50);
     },
     (client, _) => SendOnceAsync(client),
-    attempt => attempt == 1 ? Respond(503, abort: true) : Respond(200),
+    attempt => attempt <= 4 ? Respond(503, abort: true) : Respond(200),
     rawTcp: true);
 
 await RunAsync(
@@ -519,9 +531,14 @@ await RunAsync(
     "rate-limiter-queue-overload-rejection",
     options =>
     {
-        // Identical on both sides: one permit and no queue — while the first request
-        // holds the permit, the second is rejected immediately with a cancellation that
-        // identifies the full queue, distinct from a plain caller cancellation.
+        // One permit and no queue (identical configuration on both sides): while the
+        // first request holds the permit, the second is rejected immediately without
+        // reaching the server, distinct from a plain caller cancellation. The rejection
+        // type is a documented per-side difference: the preview rejects with an
+        // OperationCanceledException whose message identifies the full queue
+        // (queue-rejection:yes), while the 8.4.2 reference throws the non-cancellation
+        // RateLimiterRejectedException, whose message does not name the queue
+        // (queue-rejection:no) — see smoke/README.md.
         options.RateLimiter.DefaultRateLimiterOptions = new ConcurrencyLimiterOptions
         {
             PermitLimit = 1,
