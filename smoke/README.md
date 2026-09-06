@@ -230,6 +230,104 @@ reference side, a marker transformation that is not exactly the pair swap, an ap
 exit failure, or a per-scenario outcome that is neither the expected one for its side
 nor a documented difference.
 
+## Deterministic-pack check (preview-path step 6, first slice, divergence 13)
+
+`run-deterministic-pack.sh` answers two questions (release-guard stage 7):
+
+1. **Fork local-pack determinism** — two consecutive packs of each of the two
+   renamed src projects, from the same clean state (the two projects'
+   `artifacts/bin|obj` removed between rounds; repo build flow; repo-local
+   pinned SDK), are identical **after the documented normalization** — for
+   each project both the main nupkg and the legacy `.symbols.nupkg` (the
+   previously observed drift `4bbb69fd…` vs `3c55df22…` was closed by this
+   check).
+2. **Core → fork feed handoff** — a fresh clone of the core repository at the
+   pinned core commit (`3da5b8c`, a scratch path, never the sibling
+   checkout), built and packed with the repo-local pinned SDK, is identical
+   after the same normalization to the committed feed nupkg
+   (`eng/local-packages/WantsACracker.0.1.0-preview.1.nupkg`, sha256
+   `6df716e8…`) — the previously observed cross-checkout variance
+   (`06fa2342…` vs `99a2c2e0…`, 70 changed netstandard DLL bytes) is closed:
+   its cause was the absolute PDB paths embedded in the DLLs' debug
+   directories (plus the SourceLink document map and the NuGet-cache content
+   paths, see below), which the core normalizes at its source.
+
+### Normalization strategy (checked in; the same strategy applies to the fork
+packs and the core pack)
+
+- **Deterministic build content at the source:** the portable-PDB identity is
+  a content hash, not a random GUID. The fork already sets `Deterministic`
+  unconditionally (upstream `Directory.Build.props`, untouched); the core
+  sets it explicitly and maps debug paths to the canonical prefix
+  `WantsACracker` (PathMap), so the committed feed nupkg is reproducible
+  from **any** checkout of the pinned commit.
+- **Check-time zip normalization:** source-level timestamp normalization is
+  impossible on the pinned SDK 10.0.111 (`global.json`; an upstream pin this
+  fork must not change) — its `NuGet.Build.Tasks.Pack` targets pass only
+  `Deterministic`, not `DeterministicTimestamp`, so `SOURCE_DATE_EPOCH` is
+  honored by no SDK pack path on this toolchain. The check therefore rebuilds
+  each nupkg canonically — sorted entries, fixed date_time
+  (2023-11-14T22:13:20Z = `SOURCE_DATE_EPOCH` 1700000000, the
+  reproducible-builds convention), stable attributes, canonical
+  `nuget.psmdcp` name, canonical `_rels/.rels` Target/Id for that entry —
+  and asserts byte-identity of the normalized packages. On SDKs whose pack
+  targets do honor the timestamp (e.g. 10.0.400, which also names the
+  psmdcp deterministically) the same check behaves identically.
+- **Variance accounting:** for each compared pair the check additionally
+  unpacks the raw nupkgs and asserts the raw byte variance is limited to
+  exactly the documented fields — identical file sets; the only file allowed
+  to differ is `_rels/.rels`, and only on the psmdcp relationship line (its
+  Target is the GUID filename, its Id is random, on pack targets that roll
+  them); everything else — including the psmdcp content — is
+  byte-identical. The zip entry timestamps are the third documented field
+  (not visible in unpacked content; they differ by construction on 10.0.111).
+
+The fork packs are asserted within this checkout: their remaining
+machine-specific bytes are the absolute `artifacts/` debug paths, constant
+within a checkout; cross-checkout byte-identity of the fork packs would
+require changing upstream build files, which the narrow-divergence rule
+forbids.
+
+### Two core-side findings neutralized in the core's `Directory.Build.props`
+(core commits `10ddbad` + `3da5b8c`, found by building sibling vs
+fresh-clone checkouts with separate `NUGET_PACKAGES`)
+
+1. The .NET 10 SDK auto-imports `Microsoft.SourceLink.Common` (the
+   repository has git metadata) and embeds a SourceLink document map into
+   every PDB whose keys are the **absolute checkout paths**; PathMap does
+   not rewrite it, so the PDB content hash — and the PE checksum / debug
+   identity it feeds — differed per checkout. The core sets
+   `EnableSourceLink=false` at the source until the follow-up CI plumbing
+   makes SourceLink reproducible (the main nupkg ships no PDB, so nothing is
+   lost at the package level today).
+2. The netstandard2.0 build compiles the `Nullable` package's contentFiles
+   `.cs` straight from the package cache, so the cache path entered the PDB
+   document list and identity. The core's PathMap gains a conditional second
+   entry mapping `$(NUGET_PACKAGES)` to the canonical prefix `nuget` (the
+   checks and the feed pack always set `NUGET_PACKAGES`).
+
+### Result (2026-09-06, from the checked-in state)
+
+`smoke/run-deterministic-pack.sh` → exit 0, `DET-PACK PASS`: all four fork
+nupkg pairs byte-identical after normalization and the fresh core pack
+(identical normalized sha256 to the committed feed). The core's own
+`ci/run-deterministic-pack.sh` (same strategy, same gate) → exit 0
+(normalized sha256 `e658a798…`). A cross-checkout build of core
+`3da5b8c` (sibling vs fresh scratch clone, separate caches) produced
+byte-identical DLL+PDB for `netstandard2.0`, `net8.0` and `net10.0`.
+
+### How to run
+
+```sh
+smoke/run-deterministic-pack.sh
+```
+
+No arguments. Requirements: `bash`, `python3`, `unzip`, the repo-local
+pinned SDK (stages 1–2 run the repo build flow, which provides
+`.dotnet/dotnet`), and network access to the core repository for the stage-4
+fresh clone (hermetic once in the cache). The script exits non-zero on any
+failure at any stage.
+
 ## Layout
 
 - `run-clean-consumer.sh` — the single checked-in command.
@@ -237,3 +335,4 @@ nor a documented difference.
 - `run-differential.sh` — the differential harness command (above).
 - `differential/Program.cs` — the dual-side scenario source (marker pairs; the full 24-scenario P0 set — today exactly one marker pair, the options-type alias).
 - `differential/wantsacracker.csproj`, `differential/polly.csproj` — the two out-of-tree app project files (package references only: the three preview packages / `Microsoft.Extensions.Http.Resilience 10.9.0`).
+- `run-deterministic-pack.sh` — the deterministic-pack check (above; release-guard stage 7).

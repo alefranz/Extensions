@@ -29,6 +29,13 @@
 #      claim at the shared AddStandardResilienceHandler() seam — the three
 #      0.1.0-preview.1 packages (no Polly in the graph) versus the Polly
 #      8.4.2 reference (Microsoft.Extensions.Http.Resilience 10.9.0).
+#   7. The deterministic-pack check
+#      (bash smoke/run-deterministic-pack.sh, divergence 13): two consecutive
+#      clean-state packs of both fork projects are byte-identical (nupkg +
+#      .symbols.nupkg, zip entry timestamps pinned to the documented epoch),
+#      and a fresh core pack from the pinned core commit (fresh scratch
+#      clone, repo-local pinned SDK) is byte-identical to the committed feed
+#      nupkg (the Core -> fork feed handoff).
 #
 # Locally runnable from a plain checkout (bash + the repo build flow; the
 # repo-local SDK is bootstrapped by stage 1). No tracked build output is
@@ -155,5 +162,10 @@ check_fork_pack "$http_nupkg" "http" "WantsACracker.Extensions.Http.Resilience" 
 step "6. Differential compatibility proof (bash smoke/run-differential.sh, full P0 set)"
 bash "$script_dir/run-differential.sh" || fail "the differential compatibility harness failed"
 
+# --- 7. The deterministic-pack check ------------------------------------------
+
+step "7. Deterministic-pack check (bash smoke/run-deterministic-pack.sh, divergence 13)"
+bash "$script_dir/run-deterministic-pack.sh" || fail "the deterministic-pack check failed"
+
 echo
-echo "GUARD PASS: build (0w/0e, all TFMs), test suites (net8.0), API-baseline surface, pack, package-content checks, the clean-consumer smoke, and the full-P0 differential compatibility proof all passed for the $version preview set."
+echo "GUARD PASS: build (0w/0e, all TFMs), test suites (net8.0), API-baseline surface, pack, package-content checks, the clean-consumer smoke, the full-P0 differential compatibility proof, and the deterministic-pack check (fork double-pack byte-identity + Core -> fork feed handoff byte-identity) all passed for the $version preview set."

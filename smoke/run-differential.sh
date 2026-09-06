@@ -61,7 +61,7 @@ cd "$repo_root"
 version="0.1.0-preview.1"
 polly_version="8.4.2"
 ref_package_version="10.9.0"  # Microsoft.Extensions.Http.Resilience -> Polly $polly_version (see header)
-core_nupkg_sha256="99a2c2e08248fbb301751569b696c57bf0549a3ceef6c3913856bfd157935fc8"
+core_nupkg_sha256="6df716e82896fc6eec518859ee85936a5e526749fba320d02916f52d09318234"
 
 fail() { echo "DIFF FAIL: $*" >&2; exit 1; }
 step() { echo; echo "== $* =="; }
