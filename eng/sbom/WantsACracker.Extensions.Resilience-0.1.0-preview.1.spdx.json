@@ -1,0 +1,415 @@
+{
+  "files": [
+    {
+      "fileName": "./WantsACracker.Extensions.Resilience.nuspec",
+      "SPDXID": "SPDXRef-File--WantsACracker.Extensions.Resilience.nuspec-CF967955941E99E4373911B86D1BCFA1547E5C44",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9764cc52f01e9c2127f74b37ace7e4ae449e2a4480f23fe5dea38da65e09ad3f"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cf967955941e99e4373911b86d1bcfa1547e5c44"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/net8.0/WantsACracker.Extensions.Resilience.dll",
+      "SPDXID": "SPDXRef-File--lib-net8.0-WantsACracker.Extensions.Resilience.dll-63AF6A2D0B98E6E5B2E91111E0FBD00D91AE9FB9",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4e6adf867031312739934deb8e5577a423dbf75c0dbc3c7662d99bccde0aa88f"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "63af6a2d0b98e6e5b2e91111e0fbd00d91ae9fb9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./package/services/metadata/core-properties/9525c24e09b84e06b16bfe8238691243.psmdcp",
+      "SPDXID": "SPDXRef-File--package-services-metadata-core-properties-9525c24e09b84e06b16bfe8238691243.psmdcp-A717BF7D81EAAB4CC976E92B4569F754083E9E2B",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "272b2d2fc45d3cf36ee3f980cb56155865ce3abd6ea2e73dfb7626a8f147534a"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "a717bf7d81eaab4cc976e92b4569f754083e9e2b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./THIRD-PARTY-NOTICES.TXT",
+      "SPDXID": "SPDXRef-File--THIRD-PARTY-NOTICES.TXT-2531BAFFC37550A68926009AD043B91E9C22A1B2",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "367dfce20a3d5e0aaea2fe2cb36e25b3738504d0b99a13420562f54cfce844c1"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "2531baffc37550a68926009ad043b91e9c22a1b2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/net462/WantsACracker.Extensions.Resilience.xml",
+      "SPDXID": "SPDXRef-File--lib-net462-WantsACracker.Extensions.Resilience.xml-F31F5E2812A60C26AAD7CF9A8409605EFEF6E521",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9040be301fa179a7bee7b9a9b940cb9493aaf6250f756850b9417d0aac7d2c72"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f31f5e2812a60c26aad7cf9a8409605efef6e521"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/net9.0/WantsACracker.Extensions.Resilience.dll",
+      "SPDXID": "SPDXRef-File--lib-net9.0-WantsACracker.Extensions.Resilience.dll-3C4493B2CAA6D7990C98A8DED7A594D7CBC99F71",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "04e82d32e040b6b47a919e2d0b2af9acfcb4728bf5f1f2c7b08283616fb4fdaa"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "3c4493b2caa6d7990c98a8ded7a594d7cbc99f71"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./buildTransitive/net462/WantsACracker.Extensions.Resilience.targets",
+      "SPDXID": "SPDXRef-File--buildTransitive-net462-WantsACracker.Extensions.Resilience.targets-9EDDB6390A31D9D25F70245640DDF6C480DB359A",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a0964b3cc35476854e7644db8bb0430c6ae5b126be76bc81bd755ab60877511d"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "9eddb6390a31d9d25f70245640ddf6c480db359a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./README.md",
+      "SPDXID": "SPDXRef-File--README.md-68F670B2F1E234143C809D1A9B4F25480334731B",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "dbd02469e933d73fa197af035f9bfd990a47c1f634295e2f1fad339ed48032be"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "68f670b2f1e234143c809d1a9b4f25480334731b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/net462/WantsACracker.Extensions.Resilience.dll",
+      "SPDXID": "SPDXRef-File--lib-net462-WantsACracker.Extensions.Resilience.dll-072A923E2367047E26EAC6CEEAC8D47539C0BB6F",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a72ac42bfd19179e920eb9d52056bccc018ed8cbf72a01d88056e216fe647063"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "072a923e2367047e26eac6ceeac8d47539c0bb6f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/netstandard2.0/WantsACracker.Extensions.Resilience.dll",
+      "SPDXID": "SPDXRef-File--lib-netstandard2.0-WantsACracker.Extensions.Resilience.dll-88D782BE6CA1DDE01957ABD084D21257FC49CBEE",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "54552a1ec1d6fef8f3c46c91b66848ba6abb6cd5578b4af888943d48def3e10f"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "88d782be6ca1dde01957abd084d21257fc49cbee"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/net10.0/WantsACracker.Extensions.Resilience.xml",
+      "SPDXID": "SPDXRef-File--lib-net10.0-WantsACracker.Extensions.Resilience.xml-0782E097D961F3627C93C5850B399C9DEFE04098",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f0aa9c23962c1c192d4508ab0086e76855b2576c2383ca828cedf87b897e12e8"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0782e097d961f3627c93c5850b399c9defe04098"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/net9.0/WantsACracker.Extensions.Resilience.xml",
+      "SPDXID": "SPDXRef-File--lib-net9.0-WantsACracker.Extensions.Resilience.xml-0782E097D961F3627C93C5850B399C9DEFE04098",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f0aa9c23962c1c192d4508ab0086e76855b2576c2383ca828cedf87b897e12e8"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0782e097d961f3627c93c5850b399c9defe04098"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./_rels/.rels",
+      "SPDXID": "SPDXRef-File---rels-.rels-CCA8FE2BE13A1A8C8A4542B38B46B9BF0F3ACEC2",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1068cf7f25f3796d25c75289d6585e1b35c5f317d1f461fb9b73cd3727dc3495"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "cca8fe2be13a1a8c8a4542b38b46b9bf0f3acec2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./[Content_Types].xml",
+      "SPDXID": "SPDXRef-File---Content-Types-.xml-E11669A4628F6E09B6923DC2AA3C40349B550EBD",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "290d6c7435f453b63bdbed6ce7b3a1d8d34a0f6333c542698d7b97c9c5215db4"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "e11669a4628f6e09b6923dc2aa3c40349b550ebd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/net8.0/WantsACracker.Extensions.Resilience.xml",
+      "SPDXID": "SPDXRef-File--lib-net8.0-WantsACracker.Extensions.Resilience.xml-0782E097D961F3627C93C5850B399C9DEFE04098",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f0aa9c23962c1c192d4508ab0086e76855b2576c2383ca828cedf87b897e12e8"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "0782e097d961f3627c93c5850b399c9defe04098"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/netstandard2.0/WantsACracker.Extensions.Resilience.xml",
+      "SPDXID": "SPDXRef-File--lib-netstandard2.0-WantsACracker.Extensions.Resilience.xml-F31F5E2812A60C26AAD7CF9A8409605EFEF6E521",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9040be301fa179a7bee7b9a9b940cb9493aaf6250f756850b9417d0aac7d2c72"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "f31f5e2812a60c26aad7cf9a8409605efef6e521"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./buildTransitive/net8.0/_._",
+      "SPDXID": "SPDXRef-File--buildTransitive-net8.0--.--DA39A3EE5E6B4B0D3255BFEF95601890AFD80709",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "da39a3ee5e6b4b0d3255bfef95601890afd80709"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "fileName": "./lib/net10.0/WantsACracker.Extensions.Resilience.dll",
+      "SPDXID": "SPDXRef-File--lib-net10.0-WantsACracker.Extensions.Resilience.dll-389BECDD37ABAA2DE818332A484295D5DC796852",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2d173d0b8871da8b62c1bb56ab1fc57b82712b91c6f4bb9bb4c65d891730b996"
+        },
+        {
+          "algorithm": "SHA1",
+          "checksumValue": "389becdd37abaa2de818332a484295d5dc796852"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoInFiles": [
+        "NOASSERTION"
+      ],
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "packages": [
+    {
+      "name": "WantsACracker.Extensions.Resilience",
+      "SPDXID": "SPDXRef-RootPackage",
+      "downloadLocation": "NOASSERTION",
+      "packageVerificationCode": {
+        "packageVerificationCodeValue": "8eb996698bad5703ad1a3d8d1394a6481a3b70f3"
+      },
+      "filesAnalyzed": true,
+      "licenseConcluded": "NOASSERTION",
+      "licenseInfoFromFiles": [
+        "NOASSERTION"
+      ],
+      "licenseDeclared": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "versionInfo": "0.1.0-preview.1",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:swid/WantsACracker%20contributors/spdx.org/WantsACracker.Extensions.Resilience@0.1.0-preview.1?tag_id=2928177c-081e-4763-8736-e0e71b3d2e85"
+        }
+      ],
+      "supplier": "Organization: WantsACracker contributors",
+      "hasFiles": [
+        "SPDXRef-File--lib-net462-WantsACracker.Extensions.Resilience.dll-072A923E2367047E26EAC6CEEAC8D47539C0BB6F",
+        "SPDXRef-File--README.md-68F670B2F1E234143C809D1A9B4F25480334731B",
+        "SPDXRef-File--buildTransitive-net462-WantsACracker.Extensions.Resilience.targets-9EDDB6390A31D9D25F70245640DDF6C480DB359A",
+        "SPDXRef-File--lib-net9.0-WantsACracker.Extensions.Resilience.dll-3C4493B2CAA6D7990C98A8DED7A594D7CBC99F71",
+        "SPDXRef-File--lib-net462-WantsACracker.Extensions.Resilience.xml-F31F5E2812A60C26AAD7CF9A8409605EFEF6E521",
+        "SPDXRef-File--THIRD-PARTY-NOTICES.TXT-2531BAFFC37550A68926009AD043B91E9C22A1B2",
+        "SPDXRef-File--package-services-metadata-core-properties-9525c24e09b84e06b16bfe8238691243.psmdcp-A717BF7D81EAAB4CC976E92B4569F754083E9E2B",
+        "SPDXRef-File--lib-net8.0-WantsACracker.Extensions.Resilience.dll-63AF6A2D0B98E6E5B2E91111E0FBD00D91AE9FB9",
+        "SPDXRef-File--WantsACracker.Extensions.Resilience.nuspec-CF967955941E99E4373911B86D1BCFA1547E5C44",
+        "SPDXRef-File--buildTransitive-net8.0--.--DA39A3EE5E6B4B0D3255BFEF95601890AFD80709",
+        "SPDXRef-File--lib-net8.0-WantsACracker.Extensions.Resilience.xml-0782E097D961F3627C93C5850B399C9DEFE04098",
+        "SPDXRef-File---Content-Types-.xml-E11669A4628F6E09B6923DC2AA3C40349B550EBD",
+        "SPDXRef-File--lib-net10.0-WantsACracker.Extensions.Resilience.dll-389BECDD37ABAA2DE818332A484295D5DC796852",
+        "SPDXRef-File--lib-netstandard2.0-WantsACracker.Extensions.Resilience.xml-F31F5E2812A60C26AAD7CF9A8409605EFEF6E521",
+        "SPDXRef-File---rels-.rels-CCA8FE2BE13A1A8C8A4542B38B46B9BF0F3ACEC2",
+        "SPDXRef-File--lib-net9.0-WantsACracker.Extensions.Resilience.xml-0782E097D961F3627C93C5850B399C9DEFE04098",
+        "SPDXRef-File--lib-net10.0-WantsACracker.Extensions.Resilience.xml-0782E097D961F3627C93C5850B399C9DEFE04098",
+        "SPDXRef-File--lib-netstandard2.0-WantsACracker.Extensions.Resilience.dll-88D782BE6CA1DDE01957ABD084D21257FC49CBEE"
+      ]
+    }
+  ],
+  "externalDocumentRefs": [],
+  "relationships": [
+    {
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-RootPackage",
+      "spdxElementId": "SPDXRef-DOCUMENT"
+    }
+  ],
+  "spdxVersion": "SPDX-2.2",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "WantsACracker.Extensions.Resilience 0.1.0-preview.1",
+  "documentNamespace": "https://spdx.org/spdxdocs/sbom-tool-4.1.5-6cb74d47-b36e-4e8d-a92e-f8f3297e98d9/WantsACracker.Extensions.Resilience/0.1.0-preview.1/wantsacracker-extensions-resilience-0.1.0-preview.1",
+  "creationInfo": {
+    "created": "2023-11-14T22:13:20Z",
+    "creators": [
+      "Organization: WantsACracker contributors",
+      "Tool: Microsoft.SBOMTool-4.1.5"
+    ]
+  },
+  "documentDescribes": [
+    "SPDXRef-RootPackage"
+  ]
+}

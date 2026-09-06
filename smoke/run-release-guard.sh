@@ -21,7 +21,7 @@
 #      zero Polly, offline 503 -> retry -> 200 scenario.
 #   5. Package-content checks on the three preview nupkgs: nuspec id/version,
 #      MIT expression licence, README + THIRD-PARTY-NOTICES at the package
-#      root (fork packs), every TFM dependency group declaring
+#      root (all three packages), every TFM dependency group declaring
 #      WantsACracker 0.1.0-preview.1, no Polly anywhere.
 #   6. The differential compatibility proof
 #      (bash smoke/run-differential.sh, divergence 12): the full P0 HTTP
@@ -129,6 +129,10 @@ check_nuspec() { # $1 = nuspec, $2 = expected id
 # 5a. The committed core nupkg (the smoke already sha256-verified it)
 unpack "$core_nupkg" "core"
 check_nuspec "$work/core/WantsACracker.nuspec" "WantsACracker"
+[ -f "$work/core/README.md" ] \
+  || fail "WantsACracker: README.md is missing at the package root"
+[ -f "$work/core/THIRD-PARTY-NOTICES.TXT" ] \
+  || fail "WantsACracker: THIRD-PARTY-NOTICES.TXT is missing at the package root"
 for tfm in netstandard2.0 net8.0 net10.0; do
   [ -d "$work/core/lib/$tfm" ] || fail "the core nupkg is missing lib/$tfm"
 done

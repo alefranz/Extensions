@@ -242,11 +242,11 @@ nor a documented difference.
    previously observed drift `4bbb69fd…` vs `3c55df22…` was closed by this
    check).
 2. **Core → fork feed handoff** — a fresh clone of the core repository at the
-   pinned core commit (`3da5b8c`, a scratch path, never the sibling
+   pinned core commit (`a9a20e4`, a scratch path, never the sibling
    checkout), built and packed with the repo-local pinned SDK, is identical
    after the same normalization to the committed feed nupkg
    (`eng/local-packages/WantsACracker.0.1.0-preview.1.nupkg`, sha256
-   `6df716e8…`) — the previously observed cross-checkout variance
+   `cbe26bf0…`) — the previously observed cross-checkout variance
    (`06fa2342…` vs `99a2c2e0…`, 70 changed netstandard DLL bytes) is closed:
    its cause was the absolute PDB paths embedded in the DLLs' debug
    directories (plus the SourceLink document map and the NuGet-cache content
