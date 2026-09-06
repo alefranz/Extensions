@@ -2,10 +2,10 @@
 #
 # WantsACracker differential compatibility harness (preview-path step 5; see smoke/README.md).
 #
-# Drives a representative subset of the independently authored P0 HTTP scenarios through BOTH
-# sides of the source-level compatibility claim, at the shared public seam (a named HttpClient
-# wired with AddStandardResilienceHandler()), and fails on any outcome that is not the expected
-# one for its side:
+# Drives the full independently authored P0 HTTP scenario set (all 24 behavioural facts of
+# the standard-handler surface) through BOTH sides of the source-level compatibility claim,
+# at the shared public seam (a named HttpClient wired with AddStandardResilienceHandler()),
+# and fails on any outcome that is not the expected one for its side:
 #
 #   * the WantsACracker side — the three 0.1.0-preview.1 packages (the committed core feed
 #     nupkg, sha256-verified, + fresh packs of the two fork projects), restored from an empty
@@ -25,10 +25,14 @@
 # the trailing "// @@WAC@@" and its 8.4.2 counterpart as a "//@@POLLY@@" comment). The WantsACracker
 # build compiles the file as-is; the Polly build removes the @@WAC@@ lines and uncomments the
 # @@POLLY@@ lines, and the script verifies the transformation is exactly that pair swap.
-# All scenarios are fully offline (in-process loopback HttpListener).
+# All scenarios are fully offline (in-process loopback — an HttpListener, or the raw-TCP
+# server for the two connection-abort scenarios).
 #
 # Per scenario the harness records: matching behaviour (MATCH), or a documented difference
 # (DIFFERENCE — the scenario must be on the KNOWN_DIFFERENCES list below, with the reason).
+# One scenario (the retry-storm total timeout) carries a band expectation for the
+# server-attempt count — the count varies with the exponential-backoff jitter — and both
+# sides falling in the band is a MATCH (the raw lines may then differ only in the count).
 #
 # Stages, in order (any failure aborts with a non-zero exit code):
 #
@@ -219,15 +223,37 @@ done
 
 step "Per-scenario results"
 
-# Expected outcome per side, per scenario. A scenario present in KNOWN_DIFFERENCES must
-# differ between the sides, with the reason as documented in smoke/README.md; every other
-# scenario must produce the identical line on both sides.
+# Expected outcome per side, per scenario. The array lists the scenarios in the order
+# smoke/differential/Program.cs runs them (one observed line per scenario, in order). A
+# scenario present in known_difference_reason must differ between the sides, with the
+# reason as documented in smoke/README.md; every other scenario must produce the identical
+# line on both sides. The final "(server-attempts=...)" clause is an exact count, except
+# where an inclusive "(server-attempts:A-B)" band is expected (side_ok).
 scenarios=(
   "retry-503-then-success"
+  "retry-408-then-success"
+  "retry-429-retry-after"
+  "retry-connection-abort-then-success"
+  "no-retry-404"
+  "retry-exhaustion-last-response"
+  "retry-exhaustion-last-error"
+  "retry-cancellation-during-backoff"
   "attempt-timeout-then-retry"
+  "attempt-timeout-rejects"
   "total-timeout-fails"
+  "total-timeout-dominates-client-timeout"
+  "caller-cancellation-not-timeout"
   "circuit-breaker-opens"
+  "circuit-breaker-fails-fast"
+  "circuit-breaker-half-open-recovery"
+  "circuit-breaker-successful-probe-closes"
+  "circuit-breaker-below-ratio-stays-closed"
+  "rate-limiter-queues-beyond-limit"
+  "rate-limiter-queue-overload-rejection"
+  "rate-limiter-queue-cancellation"
+  "rate-limiter-permits-no-leak"
   "no-retry-non-replayable"
+  "replay-bufferable-content"
 )
 
 expected() {
@@ -236,10 +262,59 @@ expected() {
   case "$1:$2" in
     retry-503-then-success:*)
       echo "$1: response:200 (server-attempts=2)" ;;
+    retry-408-then-success:*)
+      echo "$1: response:200 (server-attempts=2)" ;;
+    retry-429-retry-after:*)
+      # ~1 s observed wait: the base backoff is 50 ms, so it can only come from the
+      # Retry-After header (honoured by default on both sides).
+      echo "$1: response:200,honoured-retry-after:yes (server-attempts=2)" ;;
+    retry-connection-abort-then-success:*)
+      # Identical on both sides: the first attempt's connection is aborted (the raw-TCP
+      # server closes it without reading or answering) and the recovery happens on the
+      # transport's own transparent connection retry (SocketsHttpHandler retries a
+      # replayable request on new connections when they are aborted before a response —
+      # the same mechanism the retry-exhaustion-last-error count below reflects), so the
+      # resilience layer observes a single success: 1 aborted + 1 recovered connection.
+      echo "$1: response:200 (server-attempts=2)" ;;
+    no-retry-404:*)
+      echo "$1: response:404 (server-attempts=1)" ;;
+    retry-exhaustion-last-response:*)
+      echo "$1: response:503 (server-attempts=3)" ;;
+    retry-exhaustion-last-error:*)
+      # Identical on both sides: every attempt's connection is aborted (raw-TCP transport),
+      # the budget is exhausted, and the last error (the connection failure) surfaces.
+      # The count is 12, not 3: each of the 3 resilience attempts is a replayable GET,
+      # and SocketsHttpHandler transparently retries an aborted connection on up to 3
+      # further connections before surfacing the failure — 4 accepted connections per
+      # attempt (a non-replayable POST control opens exactly 1; probed on this runtime),
+      # so 3 attempts x 4 connections = 12.
+      echo "$1: exception:HttpRequestException (server-attempts=12)" ;;
+    retry-cancellation-during-backoff:*)
+      # Raw seam behaviour: both sides surface the BCL TaskCanceledException from the
+      # cancellation-aware backoff delay (the standalone WantsACracker handler normalizes
+      # it to a plain OperationCanceledException, which this seam does not — documented
+      # in smoke/README.md). No second attempt starts on either side.
+      echo "$1: exception:TaskCanceledException (server-attempts=1)" ;;
     attempt-timeout-then-retry:*)
       echo "$1: response:200 (server-attempts=2)" ;;
+    attempt-timeout-rejects:*)
+      # Identical on both sides: the timeout rejection is transient and retried once
+      # (the reference's options validation rejects MaxRetryAttempts = 0 — a documented
+      # validation divergence, the preview allows it — so the seam uses 1), then the
+      # dedicated resilience timeout exception surfaces.
+      echo "$1: exception:TimeoutRejectedException (server-attempts=2)" ;;
     total-timeout-fails:*)
       echo "$1: exception:TimeoutRejectedException (server-attempts=2)" ;;
+    total-timeout-dominates-client-timeout:*)
+      # Both sides set HttpClient.Timeout to infinite at registration (the client-timeout
+      # token), and the resilience total timeout is the only timeout in force. The exact
+      # attempt count varies with the exponential-backoff jitter, so both sides must fall
+      # in the inclusive band.
+      echo "$1: exception:TimeoutRejectedException,client-timeout:infinite,total-timeout-dominated:yes (server-attempts:4-6)" ;;
+    caller-cancellation-not-timeout:*)
+      # Identical on both sides: the caller's own cancellation surfaces (raw BCL
+      # TaskCanceledException at this seam, never the resilience timeout exception).
+      echo "$1: exception:TaskCanceledException (server-attempts=1)" ;;
     circuit-breaker-opens:*)
       # Identical on both sides: with retry=1 the breaker opens within the first send
       # (after the second failed attempt), so one 503 is followed by four breaker-open
@@ -247,12 +322,84 @@ expected() {
       # (CircuitBreakerOpenException is the legacy v7 name), the same type name the
       # preview throws.
       echo "$1: response:503,exception:BrokenCircuitException,exception:BrokenCircuitException,exception:BrokenCircuitException,exception:BrokenCircuitException (server-attempts=2)" ;;
+    circuit-breaker-fails-fast:*)
+      # Identical on both sides: five failed attempts (two per send) cross the
+      # 5 / 0.5 threshold on the third send's first attempt; that send's retry and the
+      # three following sends fail fast without reaching the server.
+      echo "$1: response:503,response:503,exception:BrokenCircuitException,exception:BrokenCircuitException,exception:BrokenCircuitException,exception:BrokenCircuitException (server-attempts=5)" ;;
+    circuit-breaker-half-open-recovery:*)
+      # Identical on both sides: the breaker opens on the third send's first attempt;
+      # sends three (retry) and four fail fast, and after the break duration the
+      # half-open probe succeeds and the circuit recovers.
+      echo "$1: response:503,response:503,exception:BrokenCircuitException,exception:BrokenCircuitException,response:200 (server-attempts=6)" ;;
+    circuit-breaker-successful-probe-closes:*)
+      # Identical on both sides: the successful half-open probe closes the circuit —
+      # the following burst of six requests all reach the server.
+      echo "$1: response:503,response:503,exception:BrokenCircuitException,exception:BrokenCircuitException,exception:BrokenCircuitException,response:200,response:200,response:200,response:200,response:200,response:200,response:200 (server-attempts=12)" ;;
+    circuit-breaker-below-ratio-stays-closed:*)
+      # Identical on both sides: two failures out of seven executions (0.29) stay below
+      # the 0.5 ratio — the circuit never opens and every send reaches the server.
+      echo "$1: response:503,response:200,response:200,response:200,response:200,response:200 (server-attempts=7)" ;;
+    rate-limiter-queues-beyond-limit:*)
+      echo "$1: response:200,response:200 (server-attempts=2)" ;;
+    rate-limiter-queue-overload-rejection:wac)
+      # Documented difference (see known_difference_reason): the preview rejects the full
+      # queue with a cancellation that names the queue; the 8.4.2 reference throws its
+      # dedicated non-cancellation rejection exception.
+      echo "$1: exception:OperationCanceledException,queue-rejection:yes,response:200 (server-attempts=1)" ;;
+    rate-limiter-queue-overload-rejection:polly)
+      echo "$1: exception:RateLimiterRejectedException,queue-rejection:no,response:200 (server-attempts=1)" ;;
+    rate-limiter-queue-cancellation:*)
+      # Identical on both sides: both pass the caller's token to the BCL ConcurrencyLimiter,
+      # so the queue cancellation surfaces with the caller's token (distinguishing it from
+      # the overload rejection).
+      echo "$1: exception:TaskCanceledException,caller-token:yes,response:200 (server-attempts=1)" ;;
+    rate-limiter-permits-no-leak:*)
+      echo "$1: response:400,response:400,response:400,response:200,fast-recovery:yes (server-attempts=4)" ;;
     no-retry-non-replayable:wac)
       echo "$1: response:503 (server-attempts=1)" ;;
     no-retry-non-replayable:polly)
       echo "$1: exception:HttpRequestException (server-attempts=1)" ;;
+    replay-bufferable-content:*)
+      # Identical on both sides: bufferable content may be replayed — the retried attempt
+      # re-sends the identical body, which the server observes on both attempts.
+      echo "$1: response:200,bodies:payload,payload (server-attempts=2)" ;;
     *)
       fail "no expectation defined for scenario '$1' (side '$2')" ;;
+  esac
+}
+
+# side_ok <observed-line> <expected-line>: exact line match, or — when the expectation
+# carries an inclusive "(server-attempts:A-B)" band — an exact match of everything before
+# the attempts clause plus the observed count inside the band.
+side_ok() {
+  local obs="$1" exp="$2"
+  local obs_body obs_n exp_body exp_n lo hi
+  case "$obs" in
+    *" (server-attempts="*) ;;
+    *) fail "observed line carries no (server-attempts=<n>) clause: $obs" ;;
+  esac
+  obs_body="${obs% (server-attempts=*}"
+  obs_n="${obs##*(server-attempts=}"
+  obs_n="${obs_n%)}"
+  [[ "$obs_n" =~ ^[0-9]+$ ]] || fail "observed server-attempts is not an integer: $obs"
+  case "$exp" in
+    *" (server-attempts:"*)
+      exp_body="${exp% (server-attempts:*}"
+      exp_n="${exp##*(server-attempts:}"
+      exp_n="${exp_n%)}"
+      [[ "$exp_n" == *-* && "${exp_n%-*}" =~ ^[0-9]+$ && "${exp_n#*-}" =~ ^[0-9]+$ ]] \
+        || fail "band expectation is malformed (expected (server-attempts:A-B)): $exp"
+      lo="${exp_n%-*}"
+      hi="${exp_n#*-}"
+      [ "$obs_body" = "$exp_body" ] && [ "$obs_n" -ge "$lo" ] && [ "$obs_n" -le "$hi" ]
+      ;;
+    *" (server-attempts="*)
+      [ "$obs" = "$exp" ]
+      ;;
+    *)
+      fail "expected line carries no (server-attempts=...) clause: $exp"
+      ;;
   esac
 }
 
@@ -260,6 +407,8 @@ known_difference_reason() {
   case "$1" in
     "no-retry-non-replayable")
       echo "documented difference: the WantsACracker standard handler never retries non-replayable request bodies (fork UPSTREAM.md divergence 5, fork README policy), so the original 503 surfaces after the single attempt; the 8.4.2 reference composes the retry strategy unconditionally, and its retry's second attempt fails with HttpRequestException (the request content cannot be sent twice), so that exception — not the 503 — surfaces. Same single server attempt on both sides" ;;
+    "rate-limiter-queue-overload-rejection")
+      echo "documented difference: the overload rejection type differs — the 8.4.2 reference throws RateLimiterRejectedException (Polly.Core; derives from ExecutionRejectedException, i.e. a non-cancellation exception whose message does not name the queue), while the preview rejects the full queue with an OperationCanceledException whose message identifies the full queue (core RateLimiterResilienceStrategy). Both sides reject after exactly one server attempt, and both keep the rejection distinct from a plain caller cancellation (the sibling queue-cancellation scenario MATCHes on the caller token)" ;;
     *)
       echo "" ;;
   esac
@@ -274,7 +423,7 @@ wac_lines="$(cat "$work/out-wac.txt")"
 polly_lines="$(cat "$work/out-polly.txt")"
 
 overall="PASS"
-printf '%-28s  %-44s  %-44s  %s\n' "scenario" "wantsacracker (observed)" "polly $polly_version (observed)" "result"
+printf '%-42s  %-44s  %-44s  %s\n' "scenario" "wantsacracker (observed)" "polly $polly_version (observed)" "result"
 for i in "${!scenarios[@]}"; do
   name="${scenarios[$i]}"
   wac_obs="$(sed -n "$((i + 1))p" "$work/out-wac.txt")"
@@ -283,13 +432,17 @@ for i in "${!scenarios[@]}"; do
   polly_exp="$(expected "$name" "polly")"
 
   status=""
-  if [ "$wac_obs" != "$wac_exp" ]; then
+  if ! side_ok "$wac_obs" "$wac_exp"; then
     status="MISMATCH (WantsACracker)"
     overall="FAIL"
-  elif [ "$polly_obs" != "$polly_exp" ]; then
+  elif ! side_ok "$polly_obs" "$polly_exp"; then
     status="MISMATCH (Polly)"
     overall="FAIL"
   elif [ "$wac_obs" = "$polly_obs" ]; then
+    status="MATCH"
+  elif [[ "$wac_exp" == *" (server-attempts:"* ]]; then
+    # Both sides met their (band) expectation; the raw lines then differ only in the
+    # per-side attempt count the band tolerates — matching behaviour.
     status="MATCH"
   else
     reason="$(known_difference_reason "$name")"
@@ -302,10 +455,10 @@ for i in "${!scenarios[@]}"; do
   fi
 
   if [ "$status" = "DIFFERENCE" ]; then
-    printf '%-28s  %-44s  %-44s  %s\n' "$name" "$wac_obs" "$polly_obs" "$status"
-    printf '%-28s  %s\n' "" "$(known_difference_reason "$name")"
+    printf '%-42s  %-44s  %-44s  %s\n' "$name" "$wac_obs" "$polly_obs" "$status"
+    printf '%-42s  %s\n' "" "$(known_difference_reason "$name")"
   else
-    printf '%-28s  %-44s  %-44s  %s\n' "$name" "$wac_obs" "$polly_obs" "$status"
+    printf '%-42s  %-44s  %-44s  %s\n' "$name" "$wac_obs" "$polly_obs" "$status"
   fi
 done
 

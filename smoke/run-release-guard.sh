@@ -23,6 +23,12 @@
 #      MIT expression licence, README + THIRD-PARTY-NOTICES at the package
 #      root (fork packs), every TFM dependency group declaring
 #      WantsACracker 0.1.0-preview.1, no Polly anywhere.
+#   6. The differential compatibility proof
+#      (bash smoke/run-differential.sh, divergence 12): the full P0 HTTP
+#      scenario set through both sides of the source-level compatibility
+#      claim at the shared AddStandardResilienceHandler() seam — the three
+#      0.1.0-preview.1 packages (no Polly in the graph) versus the Polly
+#      8.4.2 reference (Microsoft.Extensions.Http.Resilience 10.9.0).
 #
 # Locally runnable from a plain checkout (bash + the repo build flow; the
 # repo-local SDK is bootstrapped by stage 1). No tracked build output is
@@ -144,5 +150,10 @@ check_fork_pack() { # $1 = nupkg, $2 = name, $3 = id, $4 = required sibling ("" 
 check_fork_pack "$res_nupkg"  "res"  "WantsACracker.Extensions.Resilience" ""
 check_fork_pack "$http_nupkg" "http" "WantsACracker.Extensions.Http.Resilience" "WantsACracker.Extensions.Resilience"
 
+# --- 6. The differential compatibility proof ---------------------------------
+
+step "6. Differential compatibility proof (bash smoke/run-differential.sh, full P0 set)"
+bash "$script_dir/run-differential.sh" || fail "the differential compatibility harness failed"
+
 echo
-echo "GUARD PASS: build (0w/0e, all TFMs), test suites (net8.0), API-baseline surface, pack, package-content checks, and the clean-consumer smoke all passed for the $version preview set."
+echo "GUARD PASS: build (0w/0e, all TFMs), test suites (net8.0), API-baseline surface, pack, package-content checks, the clean-consumer smoke, and the full-P0 differential compatibility proof all passed for the $version preview set."
