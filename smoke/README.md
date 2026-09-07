@@ -296,10 +296,14 @@ fresh-clone checkouts with separate `NUGET_PACKAGES`)
    repository has git metadata) and embeds a SourceLink document map into
    every PDB whose keys are the **absolute checkout paths**; PathMap does
    not rewrite it, so the PDB content hash — and the PE checksum / debug
-   identity it feeds — differed per checkout. The core sets
-   `EnableSourceLink=false` at the source until the follow-up CI plumbing
-   makes SourceLink reproducible (the main nupkg ships no PDB, so nothing is
-   lost at the package level today).
+   identity it feeds — differed per checkout. The core keeps
+   `EnableSourceLink=false` as the **default (local)** build, so the default
+   pack ships no PDB and no map, and adds a CI-pack variant
+   (`-p:EnableSourceLink=true`, which canonicalizes the auto-imported
+   checkout-path SourceRoot to `WantsACracker/*`) whose per-TFM PDBs carry a
+   canonical, checkout-independent document map — asserted by the core's
+   release guard (stage 3) and proven cross-checkout byte-identical by its
+   deterministic-pack check (stage 4).
 2. The netstandard2.0 build compiles the `Nullable` package's contentFiles
    `.cs` straight from the package cache, so the cache path entered the PDB
    document list and identity. The core's PathMap gains a conditional second
