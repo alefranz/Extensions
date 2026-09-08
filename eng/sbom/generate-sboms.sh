@@ -34,7 +34,15 @@
 # below), so the package's bytes — and hence each SBOM — are a pure function
 # of the source tree + the repo-local pinned SDK, independent of the commit
 # being checked out (the same source+SDK function
-# smoke/run-deterministic-pack.sh gates, plus the documented revision pin).
+# smoke/run-deterministic-pack.sh gates, plus the documented revision pin),
+# but PATH-BOUND: the packed DLLs embed the generation checkout's absolute
+# `artifacts/obj/...` debug paths (divergence 13 — the fork does not
+# canonicalize them, which would require changing upstream build files) and
+# the nuspec's `<repository>` element carries a
+# `branch="refs/heads/<branch>"` attribute only when the pack runs on that
+# branch. Both flow into the SBOM's file hashes, so each checked-in SBOM
+# binds to the generation checkout's path and branch: reproducible from any
+# commit of the source tree, but from this checkout's path.
 # The tool's residual
 # non-deterministic fields — asserted to be exactly these, all neutralized by
 # the canonicalization — are: (1) the file-traversal order in the top-level
