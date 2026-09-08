@@ -70,25 +70,28 @@
 # generation only in those six documented fields.
 #
 # Revision pinning (why the checked-in SBOMs can reproduce at all): the
-# pack embeds the git HEAD in three places — the nuspec `<repository
+# pack can embed the git HEAD in three places — the nuspec `<repository
 # commit>` (from `SourceRevisionId`), the `OriginalRepoCommitHash`
-# AssemblyMetadataAttribute in every DLL (Arcade's
-# `RepoOriginalSourceRevisionId`, set upstream in `Directory.Build.targets`),
+# AssemblyMetadataAttribute in the DLLs (emitted by
+# `Directory.Build.targets:71-74` — untouched upstream — only when Arcade's
+# `RepoOriginalSourceRevisionId` property is set; the default build never
+# sets it, so an unpinned local DLL carries no commit attribute at all),
 # and the PDB's SourceLink document-map URI
 # (`https://raw.githubusercontent.com/alefranz/Extensions/<commit>/*`).
 # Unpinned, a checked-in SBOM can therefore NEVER reproduce from the commit
 # that contains it: any regeneration re-stamps the new HEAD into the pack
 # before the SBOM is taken (a fixed point — the SBOM would have to describe
 # a pack stamped with its own, future, commit). The SBOM build therefore
-# passes `-p:SourceRevisionId=`, `-p:RepoOriginalSourceRevisionId=`, and
-# `-p:EnableSourceLink=false` (the all-zeros revision) to both the build.sh
+# passes `-p:SourceRevisionId=0000…0` and `-p:RepoOriginalSourceRevisionId=0000…0`
+# (the explicit all-zeros placeholder — the dotnet CLI silently drops empty
+# `-p:Foo=` values), plus `-p:EnableSourceLink=false`, to both the build.sh
 # and the dotnet pack calls. The SBOMs describe this revision-pinned build
-# variant: the nuspec `<repository commit>` and the DLL's
+# variant: the nuspec `<repository commit>` and the DLLs'
 # `OriginalRepoCommitHash` are the all-zeros placeholder, and the PDBs carry
-# no SourceLink document map. Every product file's content is byte-identical
-# to a live pack; a live pack at any commit differs from the SBOM's input
-# only in those revision metadata fields (the PDBs are not in the main
-# nupkg, so they never enter the SBOM).
+# no SourceLink document map. Every product file's content is identical to
+# a live pack's except in those revision metadata fields; a live pack at any
+# commit differs from the SBOM's input only in those revision metadata fields
+# (the PDBs are not in the main nupkg, so they never enter the SBOM).
 #
 # Entry point:
 #   eng/sbom/generate-sboms.sh            (verify: regenerate + canonical compare)
