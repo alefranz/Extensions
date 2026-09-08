@@ -133,6 +133,11 @@ Everything else — build infrastructure, other libraries, analyzers, documentat
     - `smoke/README.md` (fork-owned): the live-state references updated to the new core commit and feed-nupkg sha.
     - Rationale: preview-path step 6 requires the release-truth artifacts (release notes, per-package SBOMs with pinned reproducible generation, verified licence/notices content) before the release gate; the fork is the convergence point where the two fork packages and the committed feed nupkg all live, so the fork-side artifacts and the feed regeneration belong here. Being purely additive, it changes no upstream content and keeps the divergence narrow.
 
+15. **2026-09-08 — Provenance wording sync: "independently implemented" → "a separately structured implementation" in the two fork-owned package docs** (docs-only; the same one-phrase swap in the four fork-owned files named below; no existing upstream file is changed):
+    - `src/Libraries/Microsoft.Extensions.Resilience/README.md` and `src/Libraries/Microsoft.Extensions.Http.Resilience/README.md` (packed as the per-package user documentation): the "independently implemented `WantsACracker` core package" sentence becomes "the separately structured `WantsACracker` core package".
+    - `src/Libraries/Microsoft.Extensions.Resilience/THIRD-PARTY-NOTICES.TXT` and `src/Libraries/Microsoft.Extensions.Http.Resilience/THIRD-PARTY-NOTICES.TXT`: the "independently implemented" footer sentence becomes "a separately structured implementation".
+    - Rationale: product-facing provenance wording is standardised as "separate / separately structured implementation" of a scoped compatibility subset, with no clean-room, "never copied", or historical "not a fork" claims (a whole-history audit confirmed the earlier copied-subset history is a part of this product's history, so the stronger phrasings are not evidence-backed). The swap is the same standardisation the core repository applied in its own docs at the same time; being docs-only and in place, it changes no upstream content and keeps the divergence narrow.
+
 ## Rebase and sync policy
 
 - **Quarterly:** compare the relevant paths to upstream `main`; log each change as adopted, deferred, or rejected in the divergence list above.

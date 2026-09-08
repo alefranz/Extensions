@@ -23,5 +23,5 @@ This package depends on the following MIT-licensed packages:
   None of these dependencies' source is bundled in this package; the
   dependency versions are declared in the package nuspec.
 
-WantsACracker is independently implemented and is not affiliated with Polly,
+WantsACracker is a separately structured implementation and is not affiliated with Polly,
 App vNext, Microsoft or the .NET Foundation.

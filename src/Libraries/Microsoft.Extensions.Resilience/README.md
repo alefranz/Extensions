@@ -1,6 +1,6 @@
 # WantsACracker.Extensions.Resilience
 
-Extensions to the WantsACracker resilience pipeline that enrich telemetry with request metadata and exception summaries. This package depends on the independently implemented `WantsACracker` core package, which is added transitively.
+Extensions to the WantsACracker resilience pipeline that enrich telemetry with request metadata and exception summaries. This package depends on the separately structured `WantsACracker` core package, which is added transitively.
 
 ## Install the package
 

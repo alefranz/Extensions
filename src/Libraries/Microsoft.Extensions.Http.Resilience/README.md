@@ -1,6 +1,6 @@
 # WantsACracker.Extensions.Http.Resilience
 
-Resilience mechanisms for `HttpClient` built on the independently implemented `WantsACracker` core package. This package provides a migration path for supported `Microsoft.Extensions.Http.Resilience` scenarios: the same handler registration surface, with the resilience strategies supplied by `WantsACracker` instead of Polly.
+Resilience mechanisms for `HttpClient` built on the separately structured `WantsACracker` core package. This package provides a migration path for supported `Microsoft.Extensions.Http.Resilience` scenarios: the same handler registration surface, with the resilience strategies supplied by `WantsACracker` instead of Polly.
 
 ## Install the package
 
