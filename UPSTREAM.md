@@ -138,6 +138,10 @@ Everything else — build infrastructure, other libraries, analyzers, documentat
     - `src/Libraries/Microsoft.Extensions.Resilience/THIRD-PARTY-NOTICES.TXT` and `src/Libraries/Microsoft.Extensions.Http.Resilience/THIRD-PARTY-NOTICES.TXT`: the "independently implemented" footer sentence becomes "a separately structured implementation".
     - Rationale: product-facing provenance wording is standardised as "separate / separately structured implementation" of a scoped compatibility subset, with no clean-room, "never copied", or historical "not a fork" claims (a whole-history audit confirmed the earlier copied-subset history is a part of this product's history, so the stronger phrasings are not evidence-backed). The swap is the same standardisation the core repository applied in its own docs at the same time; being docs-only and in place, it changes no upstream content and keeps the divergence narrow.
 
+16. **2026-09-08 — Add the missing `System.Net.Http.Json` attribution to the Http.Resilience notices** (content correction: the fork-owned `src/Libraries/Microsoft.Extensions.Http.Resilience/THIRD-PARTY-NOTICES.TXT`; no existing upstream file is changed):
+    - The notices' dependency list omitted `System.Net.Http.Json` 8.0.1 — a declared dependency of the project for the legacy TFMs (`netstandard2.0` + `net462` in the csproj via `SystemNetHttpJsonLTSVersion`, flowing into those two nuspec dependency groups). The attribution is added to the MIT-licensed dependency group in the entries' existing format (`System.Net.Http.Json 8.0.1 (dotnet/runtime, published)`); no other line in the file changes.
+    - Rationale: the fork-owned notices must describe the package's actual dependency graph; the omission was surfaced by the step-6 PART A review (which corrected only the two stale fork claims in divergence 14). The same content-truth class as the divergence-14 notices fixes; the edit is in place and changes no upstream content.
+
 ## Rebase and sync policy
 
 - **Quarterly:** compare the relevant paths to upstream `main`; log each change as adopted, deferred, or rejected in the divergence list above.

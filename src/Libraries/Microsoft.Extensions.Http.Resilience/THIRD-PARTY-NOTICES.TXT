@@ -17,6 +17,7 @@ This package depends on the following MIT-licensed packages:
   WantsACracker.Extensions.Resilience (this repository, derived from dotnet/extensions)
   Microsoft.Extensions.Http.Diagnostics 10.9.0 (dotnet/extensions, published)
   Microsoft.Extensions.ObjectPool 8.0.30 (dotnet/aspnetcore)
+  System.Net.Http.Json 8.0.1 (dotnet/runtime, published)
   Copyright (c) .NET Foundation and Contributors.
   License: MIT.
 
