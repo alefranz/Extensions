@@ -33,7 +33,7 @@ repo_root="$(cd "$script_dir/.." && pwd)"
 cd "$repo_root"
 
 version="0.1.0-preview.1"
-core_nupkg_sha256="cbe26bf0a2c7b7dc76a0ff07c005db742e8a3c5be8434b8939564d43b657bafe"
+core_nupkg_sha256="8a3c0767688e9a8cda5996d832bc8a6078f00a5e8f4f35b475d2cd48d527033f"
 
 fail() { echo "SMOKE FAIL: $*" >&2; exit 1; }
 step() { echo; echo "== $* =="; }

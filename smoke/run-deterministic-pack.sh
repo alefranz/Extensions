@@ -100,9 +100,9 @@ http_proj="WantsACracker.Extensions.Http.Resilience"
 # regeneration (a Core commit whose packed bytes change) must update both the
 # nupkg and these two values together, and re-run this check.
 core_repo_url="https://github.com/alefranz/WantsACracker-Development.git"
-core_commit="a9a20e49868409c4b5b1a13e1c8f5bd5812853ff"
+core_commit="138a552e1a06a8b363bc226b79eb9534ec46d235"
 core_nupkg="eng/local-packages/WantsACracker.$version.nupkg"
-core_nupkg_sha256="cbe26bf0a2c7b7dc76a0ff07c005db742e8a3c5be8434b8939564d43b657bafe"
+core_nupkg_sha256="8a3c0767688e9a8cda5996d832bc8a6078f00a5e8f4f35b475d2cd48d527033f"
 
 fail() { echo "DET-PACK FAIL: $*" >&2; exit 1; }
 step() { echo; echo "== $* =="; }
