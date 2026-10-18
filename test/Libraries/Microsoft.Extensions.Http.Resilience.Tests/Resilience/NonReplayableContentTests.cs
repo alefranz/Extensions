@@ -22,10 +22,13 @@ namespace WantsACracker.Extensions.Http.Resilience.Test;
 /// replayable rule exercised here is: content is replayable only when it is null
 /// or one of the built-in bufferable <see cref="HttpContent"/> types
 /// (<see cref="StringContent"/>, <see cref="ByteArrayContent"/>,
-/// <see cref="FormUrlEncodedContent"/>, <see cref="System.Net.Http.Json.JsonContent"/>
-/// and <see cref="MultipartContent"/>); every other content shape, including
-/// <see cref="StreamContent"/> and custom <see cref="HttpContent"/> subclasses,
-/// is non-replayable and must be sent at most once.
+/// <see cref="FormUrlEncodedContent"/>, <see cref="System.Net.Http.Json.JsonContent"/>,
+/// and <see cref="MultipartContent"/> — the latter only when every child,
+/// including nested <see cref="MultipartContent"/>, is itself replayable,
+/// because the parent re-serialises its children on every send); every other
+/// content shape, including <see cref="StreamContent"/>, custom
+/// <see cref="HttpContent"/> subclasses, and a <see cref="MultipartContent"/>
+/// with a one-shot child, is non-replayable and must be sent at most once.
 /// </summary>
 public sealed class NonReplayableContentTests
 {
@@ -83,6 +86,35 @@ public sealed class NonReplayableContentTests
 
         response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
         attempts.Should().Be(4, "replayable content keeps the ordinary retry behavior (1 + MaxRetryAttempts)");
+    }
+
+    [Fact]
+    public async Task AddStandardResilienceHandler_MultipartWithOneShotChild_SentAtMostOnce()
+    {
+        var attempts = 0;
+        using var client = CreateStandardClient((_, _) =>
+        {
+            attempts++;
+            return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
+        });
+
+        // The multipart body re-serialises its children on every send, so a
+        // one-shot child (a stream that can be read exactly once) makes the
+        // whole body non-replayable: re-sending it would carry a drained,
+        // silently changed second body. It must therefore go through the
+        // no-retry pipeline and be sent at most once.
+        using var bufferable = new StringContent("buffered");
+        using var oneShot = new StreamContent(new UnseekableStream(_payload));
+        using var multipart = new MultipartContent("form-data");
+        multipart.Add(bufferable);
+        multipart.Add(oneShot);
+
+        using var request = CreatePostRequest(multipart);
+
+        using var response = await client.Client.SendAsync(request);
+
+        response.StatusCode.Should().Be(HttpStatusCode.ServiceUnavailable);
+        attempts.Should().Be(1, "a multipart body with a one-shot child must not be re-sent, even though the first response is transient");
     }
 
     private static HttpRequestMessage CreatePostRequest(HttpContent content)

@@ -158,9 +158,38 @@ public static partial class ResilienceHttpClientBuilderExtensions
     {
         HttpContent? content = request.Content;
 
-        return content is null
-            || content is StringContent or ByteArrayContent or FormUrlEncodedContent or JsonContent
-            || content is MultipartContent;
+        return content is null || IsBufferable(content);
+    }
+
+    // A multipart body re-serialises its children on every send, so it is
+    // only bufferable when every child (including nested multipart content)
+    // is itself bufferable. A one-shot child (for example a StreamContent
+    // over a non-seekable stream) would otherwise be re-sent drained on a
+    // retry — a partial, changed second body — or would throw on the second
+    // serialisation. Deliberate copy of the WantsACracker core rule
+    // (StandardResilienceHandler.IsBufferable); keep in lockstep (UPSTREAM.md
+    // divergence 5).
+    private static bool IsBufferable(HttpContent content)
+    {
+        if (content is StringContent or ByteArrayContent or FormUrlEncodedContent or JsonContent)
+        {
+            return true;
+        }
+
+        if (content is MultipartContent multipart)
+        {
+            foreach (HttpContent child in multipart)
+            {
+                if (!IsBufferable(child))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        return false;
     }
 
     private sealed record HttpStandardResiliencePipelineBuilder(string PipelineName, IServiceCollection Services) : IHttpStandardResiliencePipelineBuilder;
