@@ -13,10 +13,13 @@
 #      'N Error(s)' summary and every distinct 'warning CODE:' line (the
 #      build flow's console logger emits each diagnostic twice — inline and
 #      again in the post-build summary section — so lines are deduplicated
-#      before counting and reconciled against the summary count). Any error
-#      or any warning outside the documented known-warning set (see "Known
-#      warnings" below) fails the guard; the observed counts are printed
-#      and carried into the final GUARD PASS line.
+#      before counting and reconciled against the summary count). The
+#      summary records are required, not defaulted: a missing or malformed
+#      (non-numeric) 'N Warning(s)' or 'N Error(s)' record fails the guard —
+#      counts are never fabricated (fail-closed). Any error or any warning
+#      outside the documented known-warning set (see "Known warnings"
+#      below, matched on exact tokens) fails the guard; the observed counts
+#      are printed and carried into the final GUARD PASS line.
 #   2. Run the two renamed test suites on net8.0.
 #   3. API surface check: the build runs the ApiLifecycle analyzer against
 #      the committed API-baseline jsons; a public-surface drift fails the
@@ -80,16 +83,25 @@
 #       across all observations (the R24 firing run and the non-firing
 #       runs alike).
 #
-#   The documented known-warning set is exactly:
+#   The documented known-warning set is exactly, matched on EXACT tokens
+#   (substring or prefix similarity never matches):
 #
 #     RT0003 "PackageReference Microsoft.Extensions.Diagnostics.
-#     ExceptionSummarization can be removed" in the Resilience project
-#     build, TFM netstandard2.0 — the only project that references the
-#     package and the only TFM whose declared-references TSV is non-empty,
-#     so the scope is structurally determined by code + exact message; an
-#     explicit scope marker in the line, if present, must still agree.
-#     RT0003 is NOT allow-listed globally: any other code, message, project,
-#     or TFM fails the guard.
+#     ExceptionSummarization can be removed" — the diagnostic message (the
+#     text after 'warning RT0003:' up to an optional ' [...]' scope
+#     marker, trimmed) is compared EXACTLY; the unscoped form (no marker)
+#     is the approved R24 form and stays known; if a scope marker is
+#     present it must be a single fully-bracketed
+#     ' [path::TargetFramework=tfm]' token whose path basename is EXACTLY
+#     WantsACracker.Extensions.Resilience.csproj and whose TFM is EXACTLY
+#     netstandard2.0 (a bare TFM marker must be exactly netstandard2.0).
+#     The Resilience project is the only project that references the
+#     package and netstandard2.0 the only TFM whose declared-references
+#     TSV is non-empty, so the scope is structurally determined by code +
+#     exact message. RT0003 is NOT allow-listed globally: any other code,
+#     altered/prefixed/suffixed message, project (e.g.
+#     OtherWantsACracker...csproj), or TFM (e.g. netstandard2.01) fails
+#     the guard.
 #
 #   The known warning is printed, not suppressed (no NoWarn): its count is
 #   reported in the per-project line and in the final GUARD PASS summary.
@@ -101,6 +113,12 @@
 #
 # Entry point (locally and in CI; no arguments):
 #   smoke/run-release-guard.sh
+#
+# Opt-in regression self-test (canned pass/fail cases for the stage-1 check
+# logic only — the exact known-warning matching, including the demonstrated
+# bypasses, and the required-summary fail-closed rule; no builds, no
+# network, and it never runs during a normal guard invocation):
+#   bash smoke/run-release-guard.sh --self-test
 
 set -euo pipefail
 
@@ -133,25 +151,53 @@ build_res_log="$work/resilience-build.log"
 build_http_log="$work/http-build.log"
 build_summary=""
 
+# The documented known-warning tokens (see "Known warnings" in this header).
+# Matching against them is exact: no substring, prefix, or case-insensitive
+# similarity.
+known_message="PackageReference Microsoft.Extensions.Diagnostics.ExceptionSummarization can be removed"
+known_project="WantsACracker.Extensions.Resilience.csproj"
+known_tfm="netstandard2.0"
+
 # is_known_warning <code> <line>
-# True only for the single documented known warning (see "Known warnings" in
-# this header). An explicit scope marker in the line, if present, must agree
-# with the documented scope (Resilience project + TFM netstandard2.0).
+# True only for the single documented known warning, classified on EXACT
+# tokens (see "Known warnings" in this header):
+#   - the code is exactly RT0003;
+#   - the diagnostic message — the text after 'warning RT0003:' up to an
+#     optional ' [...]' scope marker, trimmed — is EXACTLY the documented
+#     message (any prefix, suffix, or alteration is unlisted);
+#   - if a scope marker is present, it must be a single fully-bracketed
+#     ' [path::TargetFramework=tfm]' token at the end of the line, with the
+#     path basename EXACTLY the documented project and the TFM EXACTLY the
+#     documented TFM (a bare TFM marker must be exactly the documented TFM).
+# The unscoped form (no marker) is the approved R24 form and stays known.
+# Anything else — any other code, altered message, other project (e.g.
+# OtherWantsACracker...csproj), or other TFM (e.g. netstandard2.01) — is
+# unlisted and fails the guard.
 is_known_warning() {
   local code="$1" line="$2"
   [ "$code" = "RT0003" ] || return 1
-  case "$line" in
-    *"PackageReference Microsoft.Extensions.Diagnostics.ExceptionSummarization can be removed"*) ;;
-    *) return 1 ;;
+  local rest="${line#*warning RT0003:}"
+  local message marker=""
+  case "$rest" in
+    *"["*) message="${rest%%\[*}"; marker="${rest#*\[}" ;;
+    *)     message="$rest" ;;
   esac
-  if [[ "$line" == *"::TargetFramework="* ]]; then
-    [[ "$line" == *"::TargetFramework=netstandard2.0"* ]] || return 1
-  fi
-  if [[ "$line" =~ \[([A-Za-z0-9.]+)\][[:space:]]*$ ]]; then
-    [ "${BASH_REMATCH[1]}" = "netstandard2.0" ] || return 1
-  fi
-  if [[ "$line" == *.csproj* ]]; then
-    [[ "$line" == *WantsACracker.Extensions.Resilience.csproj* ]] || return 1
+  message="${message#"${message%%[![:space:]]*}"}"
+  message="${message%"${message##*[![:space:]]}"}"
+  [ "$message" = "$known_message" ] || return 1
+  [ -n "$marker" ] || return 0
+  marker="${marker%"${marker##*[![:space:]]}"}"
+  [[ "$marker" == *"]" ]] || return 1
+  case "$marker" in
+    *[*]*|*]*]*) return 1 ;;
+  esac
+  local content="${marker%]}"
+  if [[ "$content" == *"::TargetFramework="* ]]; then
+    local path="${content%%::*}" tfm="${content#*::TargetFramework=}"
+    [ "${path##*/}" = "$known_project" ] || return 1
+    [ "$tfm" = "$known_tfm" ] || return 1
+  else
+    [ "$content" = "$known_tfm" ] || return 1
   fi
   return 0
 }
@@ -161,17 +207,39 @@ is_known_warning() {
 # 'N Warning(s)' / 'N Error(s)' lines summed) and every distinct 'warning
 # CODE:' line (the build flow's console logger emits each diagnostic twice —
 # inline and in the post-build summary section — so lines are deduplicated
-# before counting). Fails the guard on any error or on any warning outside
-# the documented known set (allowed only when <allow-known> is 1), and on a
-# summary/line-count mismatch. Prints the observed per-project counts and
-# appends them to build_summary.
+# before counting). A valid summary record is a digit run immediately before
+# ' Warning(s)' / ' Error(s)'; BOTH records are required before any total is
+# calculated or printed — an empty log, missing summary lines, or a
+# malformed (non-numeric) summary fails the guard (fail-closed; a zero is
+# never fabricated for an unobserved count). Fails the guard on any error or
+# on any warning outside the documented known set (allowed only when
+# <allow-known> is 1), and on a summary/line-count mismatch. Prints the
+# observed per-project counts and appends them to build_summary.
 check_build() {
   local short="$1" full="$2" log="$3" allow_known="$4"
   local warnings errors
-  warnings="$(awk '/[0-9]+ Warning\(s\)/ { s += $1 } END { print s + 0 }' "$log")"
-  errors="$(awk '/[0-9]+ Error\(s\)/ { s += $1 } END { print s + 0 }' "$log")"
-  [ -n "$warnings" ] && [ -n "$errors" ] \
-    || fail "$full: no MSBuild summary ('N Warning(s)' / 'N Error(s)') found in the build output — cannot report a truthful count"
+  warnings="$(awk '{
+      if (match($0, /[0-9]+ Warning\(s\)/)) {
+        tok = substr($0, RSTART, RLENGTH)
+        sub(/ Warning\(s\)$/, "", tok)
+        s += tok; found = 1
+      }
+    }
+    END { if (found) print s }' "$log")"
+  errors="$(awk '{
+      if (match($0, /[0-9]+ Error\(s\)/)) {
+        tok = substr($0, RSTART, RLENGTH)
+        sub(/ Error\(s\)$/, "", tok)
+        s += tok; found = 1
+      }
+    }
+    END { if (found) print s }' "$log")"
+  case "$warnings" in
+    ''|*[!0-9]*) fail "$full: no valid 'N Warning(s)' summary observed in the build output — cannot report a truthful count (fail-closed)" ;;
+  esac
+  case "$errors" in
+    ''|*[!0-9]*) fail "$full: no valid 'N Error(s)' summary observed in the build output — cannot report a truthful count (fail-closed)" ;;
+  esac
 
   if [ "$errors" -gt 0 ]; then
     fail "$full: $errors build error(s):
@@ -219,6 +287,100 @@ $unlisted_list"
     build_summary="${build_summary} — documented known RT0003"
   fi
 }
+
+# --- Self-test mode (opt-in; bash smoke/run-release-guard.sh --self-test) ---
+#
+# Regression cases for the stage-1 check logic: the same is_known_warning /
+# check_build code path the guard uses, fed canned build outputs. Covers the
+# exact known-warning matching — including the demonstrated bypasses (changed
+# message, OtherWantsACracker...csproj, netstandard2.01, wrong project) — and
+# the required-summary fail-closed rule (empty / missing / malformed
+# summaries). Never runs during a normal guard invocation.
+
+# self_case <name> <expect: pass|fail> <allow-known: 1|0> <log>
+self_case() {
+  local name="$1" expect="$2" allow="$3" log="$4"
+  local rc=0 out reason
+  out="$( ( check_build "selftest" "selftest" "$log" "$allow" ) 2>&1 )" || rc=$?
+  if { [ "$expect" = "pass" ] && [ "$rc" -eq 0 ]; } || { [ "$expect" = "fail" ] && [ "$rc" -ne 0 ]; }; then
+    echo "self-test: PASS [$name] expected=$expect observed=$([ "$rc" -eq 0 ] && echo pass || echo fail)"
+  else
+    reason="$(printf '%s\n' "$out" | grep -m1 'GUARD FAIL' || true)"
+    echo "self-test: FAIL [$name] expected=$expect observed=rc=$rc ${reason}" >&2
+    self_failed=1
+  fi
+}
+
+run_self_tests() {
+  local dir="$work/selftest"
+  local known line
+  mkdir -p "$dir"
+  self_failed=0
+  known="CSC : warning RT0003: $known_message"
+  line="$known [/x/src/Libraries/Microsoft.Extensions.Resilience/WantsACracker.Extensions.Resilience.csproj::TargetFramework=$known_tfm]"
+
+  # (a) exact unscoped R24 form (emitted twice, deduplicated) -> known/pass
+  printf '%s\n%s\n    1 Warning(s)\n    0 Error(s)\n' "$known" "$known" > "$dir/a-unscoped.log"
+  self_case "a-unscoped-rt0003-known" pass 1 "$dir/a-unscoped.log"
+
+  # (a2) same line with the exact documented scope marker -> known/pass
+  printf '%s\n    1 Warning(s)\n    0 Error(s)\n' "$line" > "$dir/a2-scoped.log"
+  self_case "a2-scoped-exact-marker-known" pass 1 "$dir/a2-scoped.log"
+
+  # (b) demonstrated bypass: changed-message suffix -> unlisted/FAIL
+  printf '%s BUT THIS IS A DIFFERENT MESSAGE\n    1 Warning(s)\n    0 Error(s)\n' "$known" > "$dir/b-changed-message.log"
+  self_case "b-changed-message-suffix" fail 1 "$dir/b-changed-message.log"
+
+  # (c) demonstrated bypass: OtherWantsACracker...csproj marker -> unlisted/FAIL
+  printf '%s [/x/OtherWantsACracker.Extensions.Resilience.csproj::TargetFramework=%s]\n    1 Warning(s)\n    0 Error(s)\n' "$known" "$known_tfm" > "$dir/c-other-project.log"
+  self_case "c-otherwantsacracker-project" fail 1 "$dir/c-other-project.log"
+
+  # (d) demonstrated bypass: netstandard2.01 prefix-similar TFM -> unlisted/FAIL
+  printf '%s [/x/WantsACracker.Extensions.Resilience.csproj::TargetFramework=netstandard2.01]\n    1 Warning(s)\n    0 Error(s)\n' "$known" > "$dir/d-tfm-prefix.log"
+  self_case "d-tfm-netstandard2-01-prefix" fail 1 "$dir/d-tfm-prefix.log"
+
+  # (e) wrong project, right message -> unlisted/FAIL
+  printf '%s [/x/SomeOther.Project.csproj::TargetFramework=%s]\n    1 Warning(s)\n    0 Error(s)\n' "$known" "$known_tfm" > "$dir/e-wrong-project.log"
+  self_case "e-wrong-project-right-message" fail 1 "$dir/e-wrong-project.log"
+
+  # (f) B2: empty log -> no valid summaries -> FAIL
+  : > "$dir/f-empty.log"
+  self_case "f-empty-log-no-summary" fail 1 "$dir/f-empty.log"
+
+  # (f2) B2: build noise but no summary lines -> FAIL
+  printf 'Determining projects to restore...\nRestore finished in 0.1 s.\n' > "$dir/f2-no-summary.log"
+  self_case "f2-no-summary-lines" fail 1 "$dir/f2-no-summary.log"
+
+  # (g) B2: malformed (non-numeric) summary -> FAIL
+  printf '%s\n  Warning(s)\n    0 Error(s)\n' "$known" > "$dir/g-malformed.log"
+  self_case "g-malformed-summary" fail 1 "$dir/g-malformed.log"
+
+  # (h) clean 0w/0e with both valid summaries -> pass
+  printf '    0 Warning(s)\n    0 Error(s)\n' > "$dir/h-clean.log"
+  self_case "h-clean-zero-state" pass 0 "$dir/h-clean.log"
+
+  # (i) unlisted CS0618 -> FAIL
+  printf '%s(1,1): warning CS0618: %s\n    1 Warning(s)\n    0 Error(s)\n' \
+    "/x/src/Libraries/Microsoft.Extensions.Resilience/Foo.cs" "'R27Probe' is obsolete: use 'New'" > "$dir/i-cs0618.log"
+  self_case "i-unlisted-cs0618" fail 1 "$dir/i-cs0618.log"
+
+  # (j) a build error present -> FAIL
+  printf '%s(1,1): error CS0103: %s\n    0 Warning(s)\n    1 Error(s)\n' \
+    "/x/src/Libraries/Microsoft.Extensions.Resilience/Foo.cs" "The name 'Missing' does not exist in the current context" > "$dir/j-error.log"
+  self_case "j-build-error" fail 1 "$dir/j-error.log"
+
+  if [ "$self_failed" -eq 0 ]; then
+    echo "self-test: all 12 cases behaved as expected"
+    return 0
+  fi
+  echo "self-test: one or more cases misbehaved" >&2
+  return 1
+}
+
+if [ "${1:-}" = "--self-test" ]; then
+  run_self_tests
+  exit $?
+fi
 
 # One build.sh call per project: the repo wrapper (eng/build.sh) resolves
 # -projects with realpath, which does not accept a semicolon-separated list.

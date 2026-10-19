@@ -52,10 +52,22 @@ RT0003
 (`PackageReference Microsoft.Extensions.Diagnostics.ExceptionSummarization can
 be removed`) for `WantsACracker.Extensions.Resilience` / `netstandard2.0`, from
 the repo-pinned ReferenceTrimmer 3.3.1 analyzer (netstandard2.0-only and
-build-state-dependent; not a product signal). The known warning is printed,
-not suppressed, and the final `GUARD PASS` line carries the actual observed
-per-project counts. The script header's "Known warnings" section is the
-detailed home.
+build-state-dependent; not a product signal). The known set is matched on
+**exact tokens**: the diagnostic message is compared exactly, the unscoped
+form (no marker) is the approved form, and an explicit scope marker, if
+present, must be a single fully-bracketed token naming exactly
+`WantsACracker.Extensions.Resilience.csproj` and TFM exactly `netstandard2.0`
+(a bare TFM marker must be exactly `netstandard2.0`) — prefix-similar
+projects or TFMs (e.g. `OtherWantsACracker...csproj`, `netstandard2.01`)
+never match. The summary records are **required, not defaulted**: a missing
+or malformed (non-numeric) `N Warning(s)` / `N Error(s)` record fails the
+guard instead of fabricating a zero. The known warning is printed, not
+suppressed, and the final `GUARD PASS` line carries the actual observed
+per-project counts. An opt-in regression self-test
+(`bash smoke/run-release-guard.sh --self-test`) feeds the stage-1 check logic
+canned pass/fail cases (the exact-matching bypasses and the missing/malformed
+summary cases); it never runs during a normal guard invocation. The script
+header's "Known warnings" section is the detailed home.
 
 Locally (any plain checkout):
 
