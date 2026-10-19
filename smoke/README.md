@@ -6,9 +6,11 @@
 
 1. Builds and packs the two renamed src projects at `0.1.0-preview.1` (repo build flow, repo-local pinned SDK).
 2. Collects **exactly** the three preview nupkgs into a temporary local feed: the committed core feed nupkg (`eng/local-packages/WantsACracker.0.1.0-preview.1.nupkg`, sha256-verified) plus fresh packs of `WantsACracker.Extensions.Resilience` and `WantsACracker.Extensions.Http.Resilience`.
-3. Restores and builds the minimal consumer app in `clean-consumer/` — a named `HttpClient` wired through the real `AddHttpClient("smoke")` + `AddStandardResilienceHandler()` path, using **package references only** (never project references) to exactly the three packages — from an **empty isolated `NUGET_PACKAGES` cache**, against the feed plus `nuget.org` (the published `10.9.0` sibling dependencies resolve from `nuget.org`).
-4. Verifies the resolved dependency graph: exactly the expected 29-package set at the expected versions (the three preview packages at `0.1.0-preview.1`, the three un-renamed siblings and their transitive closure at their pinned versions) and **no `Polly` package anywhere** (checked in `project.assets.json` and in the populated cache).
-5. Runs a fully **offline** scenario: a small in-process loopback `HttpListener` answers `503` to the first request; the standard handler's retry recovers and the retried response is `200`. The consumer exits `0` only then.
+3. Restores and builds the minimal consumer app in `clean-consumer/` for **both `net8.0` and `net10.0`** — a named `HttpClient` wired through the real `AddHttpClient("smoke")` + `AddStandardResilienceHandler()` path **and** a typed client resolved from DI (`AddHttpClient<T>()`), using **package references only** (never project references) to exactly the three packages — from an **empty isolated `NUGET_PACKAGES` cache**, against the feed plus `nuget.org` (the published `10.9.0` sibling dependencies resolve from `nuget.org`).
+4. Verifies the resolved dependency graph: exactly the expected package set at the expected versions (the three preview packages at `0.1.0-preview.1`, the published siblings and their transitive closure per TFM — the `net8.0` target's closure plus the `net10.0` target's `10.0.11` closure, 46 entries in total; the per-TFM selection of each package's per-TFM dependency group is the reason for the two `Microsoft.Extensions.*` version lines), the per-TFM asset selection of the three candidate packages (`net8.0` → `lib/net8.0`, `net10.0` → `lib/net10.0`), and **no `Polly` package anywhere** (checked in `project.assets.json` and in the populated cache).
+5. Runs the fully **offline** scenarios on **both runtimes** (the built app is run, not only compiled, for each): (a) a named client — a small in-process loopback `HttpListener` answers `503` to the first request, the standard handler's retry recovers, and the server saw **exactly 2 attempts**; (b) a slow request the caller cancels after the server has received it — the cancellation surfaces as an `OperationCanceledException` carrying the caller's own token (never the resilience timeout exception), exactly **1 attempt** reaches the server (caller cancellation is not retried), and the **next request on the same client succeeds normally**; (c) a typed client resolved from DI — the same observable retry behaviour (`503` → `200`, exactly 2 attempts) proves the resilience pipeline is attached. The consumer exits `0` only if every scenario passes on that runtime.
+
+The call-site delta versus the Polly `8.4.2` baseline (the differential harness in `differential/` is that baseline reference) is exactly the declared package and the namespace: the reference's `Microsoft.Extensions.Http.Resilience 10.9.0` (which pins Polly `8.4.2`) becomes the three `WantsACracker 0.1.0-preview.1` packages, and `using Microsoft.Extensions.Http.Resilience;` becomes `using WantsACracker.Extensions.Http.Resilience;` (the options type keeps its name, `HttpStandardResilienceOptions`). The registration calls (`AddHttpClient(name)` / `AddHttpClient<T>()` + `AddStandardResilienceHandler` with the same option names), the typed-client class, and every request call are unchanged.
 
 The script exits non-zero on any failure at any stage: build/pack, restore, build, run, feed drift, an unexpected resolved package set or version, or a resolved/downloaded Polly package.
 
@@ -18,7 +20,7 @@ The script exits non-zero on any failure at any stage: build/pack, restore, buil
 smoke/run-clean-consumer.sh
 ```
 
-No arguments; runnable from any working directory. Requirements: `bash`, and network access to `nuget.org` for the published sibling dependencies and the net8.0 reference pack — the scenario itself needs no network (loopback only). All intermediate state is kept in a temporary directory that is removed on exit; the pack output goes to the gitignored `artifacts/` tree, so the run leaves **no tracked build output** behind.
+No arguments; runnable from any working directory. Requirements: `bash`, `python3`, the repo-local pinned SDK (which carries the `net8.0` and `net10.0` runtimes and reference packs the consumer runs and builds against), and network access to `nuget.org` for the published sibling dependencies — the scenarios themselves need no network (loopback only). All intermediate state is kept in a temporary directory that is removed on exit; the pack output goes to the gitignored `artifacts/` tree, so the run leaves **no tracked build output** behind.
 
 ## Release guard (preview-path step 4, divergence 10)
 
@@ -242,11 +244,11 @@ nor a documented difference.
    previously observed drift `4bbb69fd…` vs `3c55df22…` was closed by this
    check).
 2. **Core → fork feed handoff** — a fresh clone of the core repository at the
-   pinned core commit (`138a552e`, a scratch path, never the sibling
+   pinned core commit (`f1e456d1`, a scratch path, never the sibling
    checkout), built and packed with the repo-local pinned SDK, is identical
    after the same normalization to the committed feed nupkg
    (`eng/local-packages/WantsACracker.0.1.0-preview.1.nupkg`, sha256
-   `8a3c0767…`) — the previously observed cross-checkout variance
+   `ea72b15f…`) — the previously observed cross-checkout variance
    (`06fa2342…` vs `99a2c2e0…`, 70 changed netstandard DLL bytes) is closed:
    its cause was the absolute PDB paths embedded in the DLLs' debug
    directories (plus the SourceLink document map and the NuGet-cache content
@@ -335,7 +337,7 @@ failure at any stage.
 ## Layout
 
 - `run-clean-consumer.sh` — the single checked-in command.
-- `clean-consumer/consumer.csproj`, `clean-consumer/Program.cs` — the consumer app source. The script copies them into the temporary workspace and builds them **out-of-tree** (no repo `Directory.Build.props` inheritance, no repository solution membership), so building them never creates build output inside the repository. The `nuget.config` pinning the temporary feed is generated by the script in the workspace (the feed path is run-specific).
+- `clean-consumer/consumer.csproj`, `clean-consumer/Program.cs` — the consumer app source (multi-targeted `net8.0;net10.0`; the named- and typed-client scenarios above). The script copies them into the temporary workspace and builds them **out-of-tree** (no repo `Directory.Build.props` inheritance, no repository solution membership), so building them never creates build output inside the repository. The `nuget.config` pinning the temporary feed is generated by the script in the workspace (the feed path is run-specific).
 - `run-differential.sh` — the differential harness command (above).
 - `differential/Program.cs` — the dual-side scenario source (marker pairs; the full 24-scenario P0 set — today exactly one marker pair, the options-type alias).
 - `differential/wantsacracker.csproj`, `differential/polly.csproj` — the two out-of-tree app project files (package references only: the three preview packages / `Microsoft.Extensions.Http.Resilience 10.9.0`).

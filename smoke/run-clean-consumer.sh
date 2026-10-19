@@ -11,13 +11,17 @@
 #      feed nupkg under eng/local-packages, sha256-verified, + the two fresh
 #      fork packs) into a temporary local feed.
 #   3. From an empty isolated NUGET_PACKAGES cache, restore and build the
-#      minimal named-HttpClient consumer app (smoke/clean-consumer/, package
-#      references only — never project references) against that feed plus
-#      nuget.org.
+#      minimal consumer app (smoke/clean-consumer/, package references only —
+#      never project references) for net8.0 and net10.0 against that feed
+#      plus nuget.org.
 #   4. Verify the resolved dependency graph: exactly the expected package
-#      set at the expected versions, and no Polly package anywhere.
-#   5. Run the offline scenario: the first request to the named client gets
-#      503, the standard handler's retry succeeds, the app exits 0.
+#      set at the expected versions, per-TFM asset selection for the three
+#      candidate packages, and no Polly package anywhere.
+#   5. Run the offline scenarios on both runtimes: 503 -> 200 retry with the
+#      exact attempt count (named and typed clients), and a cancelled slow
+#      request followed by a successful request (caller cancellation
+#      classified and cleaned up). The app exits 0 only if every scenario
+#      passes on that runtime.
 #
 # All intermediate state lives in a mktemp directory removed on exit; the
 # consumer is built out-of-tree, so no tracked build output is left behind
@@ -33,7 +37,7 @@ repo_root="$(cd "$script_dir/.." && pwd)"
 cd "$repo_root"
 
 version="0.1.0-preview.1"
-core_nupkg_sha256="8a3c0767688e9a8cda5996d832bc8a6078f00a5e8f4f35b475d2cd48d527033f"
+core_nupkg_sha256="ea72b15f486e8365d9e5d00741d2bf2e36410cdf8d0bb5c67815d0104cf597ad"
 
 fail() { echo "SMOKE FAIL: $*" >&2; exit 1; }
 step() { echo; echo "== $* =="; }
@@ -122,28 +126,56 @@ if grep -qi '"polly' "$assets"; then
 fi
 
 resolved="$(grep -oE '"[A-Za-z0-9][A-Za-z0-9._-]*/[0-9][^"]*": \{' "$assets" | sed 's/": {$//' | tr -d '"' | sort -u)"
+# The consumer is multi-targeted (net8.0;net10.0), so the expected set is the
+# union of the per-TFM closures. The net8.0 closure is the original
+# single-target set, unchanged. The net10.0 closure additionally carries the
+# shared Microsoft.Extensions.* packages at 10.0.11: NuGet selects each
+# package's per-TFM dependency group per target, and the net9.0/net10.0
+# groups of the published 10.9.0 siblings (and the fork packages' net10.0
+# groups, e.g. Microsoft.Extensions.ObjectPool >= 10.0.11) pull the 10.0.11
+# closure. This is a legitimate TFM/version change of the multi-targeting —
+# inspected 2026-10-19 (C3) — not a drift of the candidate set: all three
+# preview packages stay at 0.1.0-preview.1 and the 10.9.0 siblings are
+# unchanged on both targets.
 expected_resolved="$(printf '%s\n' \
   "Microsoft.Extensions.AmbientMetadata.Application/10.9.0" \
   "Microsoft.Extensions.Compliance.Abstractions/10.9.0" \
+  "Microsoft.Extensions.Configuration/10.0.11" \
   "Microsoft.Extensions.Configuration/8.0.0" \
+  "Microsoft.Extensions.Configuration.Abstractions/10.0.11" \
   "Microsoft.Extensions.Configuration.Abstractions/8.0.0" \
+  "Microsoft.Extensions.Configuration.Binder/10.0.11" \
   "Microsoft.Extensions.Configuration.Binder/8.0.2" \
+  "Microsoft.Extensions.DependencyInjection/10.0.11" \
   "Microsoft.Extensions.DependencyInjection/8.0.1" \
+  "Microsoft.Extensions.DependencyInjection.Abstractions/10.0.11" \
   "Microsoft.Extensions.DependencyInjection.Abstractions/8.0.2" \
   "Microsoft.Extensions.DependencyInjection.AutoActivation/10.9.0" \
+  "Microsoft.Extensions.Diagnostics/10.0.11" \
   "Microsoft.Extensions.Diagnostics/8.0.1" \
+  "Microsoft.Extensions.Diagnostics.Abstractions/10.0.11" \
   "Microsoft.Extensions.Diagnostics.Abstractions/8.0.1" \
   "Microsoft.Extensions.Diagnostics.ExceptionSummarization/10.9.0" \
+  "Microsoft.Extensions.FileProviders.Abstractions/10.0.11" \
   "Microsoft.Extensions.FileProviders.Abstractions/8.0.0" \
+  "Microsoft.Extensions.Hosting.Abstractions/10.0.11" \
   "Microsoft.Extensions.Hosting.Abstractions/8.0.1" \
+  "Microsoft.Extensions.Http/10.0.11" \
   "Microsoft.Extensions.Http/8.0.1" \
   "Microsoft.Extensions.Http.Diagnostics/10.9.0" \
+  "Microsoft.Extensions.Logging/10.0.11" \
   "Microsoft.Extensions.Logging/8.0.1" \
+  "Microsoft.Extensions.Logging.Abstractions/10.0.11" \
   "Microsoft.Extensions.Logging.Abstractions/8.0.3" \
+  "Microsoft.Extensions.Logging.Configuration/10.0.11" \
   "Microsoft.Extensions.Logging.Configuration/8.0.1" \
+  "Microsoft.Extensions.ObjectPool/10.0.11" \
   "Microsoft.Extensions.ObjectPool/8.0.30" \
+  "Microsoft.Extensions.Options/10.0.11" \
   "Microsoft.Extensions.Options/8.0.2" \
+  "Microsoft.Extensions.Options.ConfigurationExtensions/10.0.11" \
   "Microsoft.Extensions.Options.ConfigurationExtensions/8.0.0" \
+  "Microsoft.Extensions.Primitives/10.0.11" \
   "Microsoft.Extensions.Primitives/8.0.0" \
   "Microsoft.Extensions.Telemetry/10.9.0" \
   "Microsoft.Extensions.Telemetry.Abstractions/10.9.0" \
@@ -158,19 +190,46 @@ if [ "$resolved" != "$expected_resolved" ]; then
   fail "the resolved package set/versions differ from the expected graph"
 fi
 
-step "Build the consumer"
+step "Verify per-TFM asset selection for the three candidate packages"
+# The consumer is multi-targeted (net8.0;net10.0): per TFM the resolved
+# assets of the three candidate packages must select the matching lib/ folder
+# (net8.0 -> lib/net8.0, net10.0 -> lib/net10.0) — not the netstandard2.0
+# fallback, not a TFM's sibling.
+python3 - "$assets" <<'PY' || fail "the per-TFM asset selection of the candidate packages is wrong"
+import json, sys
+with open(sys.argv[1]) as f:
+    assets = json.load(f)
+expected = {"net8.0": "lib/net8.0", "net10.0": "lib/net10.0"}
+candidates = ["WantsACracker",
+              "WantsACracker.Extensions.Resilience",
+              "WantsACracker.Extensions.Http.Resilience"]
+targets = assets["targets"]
+assert set(targets) == set(expected), f"unexpected target frameworks: {sorted(targets)}"
+for tfm, libdir in sorted(expected.items()):
+    for pkg in candidates:
+        entry = targets[tfm].get(f"{pkg}/0.1.0-preview.1")
+        assert entry is not None, f"{pkg} 0.1.0-preview.1 is missing from the {tfm} target"
+        want = [f"{libdir}/{pkg}.dll"]
+        assert sorted(entry.get("compile", {})) == want, f"{pkg} on {tfm}: compile assets {sorted(entry.get('compile', {}))}, expected {want}"
+        assert sorted(entry.get("runtime", {})) == want, f"{pkg} on {tfm}: runtime assets {sorted(entry.get('runtime', {}))}, expected {want}"
+print("per-TFM asset selection OK (net8.0 -> lib/net8.0, net10.0 -> lib/net10.0, all three candidate packages)")
+PY
+
+step "Build the consumer (net8.0 + net10.0)"
 "$dotnet" build "$consumer/consumer.csproj" -c Release --no-restore --nologo \
   || fail "consumer build failed"
 
-# --- 5. Run the offline 503 -> retry -> success scenario ---------------------
+# --- 5. Run the offline scenarios on both runtimes ---------------------------
 
-step "Run the consumer (offline 503 -> retry -> success)"
-"$dotnet" "$consumer/bin/Release/net8.0/consumer.dll" \
-  || fail "the consumer exited non-zero"
+step "Run the consumer on net8.0 and net10.0 (offline scenarios)"
+for tfm in net8.0 net10.0; do
+  "$dotnet" "$consumer/bin/Release/$tfm/consumer.dll" \
+    || fail "the consumer exited non-zero on $tfm"
+done
 
 if find "$cache" -maxdepth 1 -type d -iname 'polly*' | grep -q .; then
   fail "a Polly package was downloaded into the consumer cache"
 fi
 
 echo
-echo "SMOKE PASS: exactly the three $version packages restore, build, and run a named HttpClient through AddStandardResilienceHandler() (first attempt 503, retry 200) with zero Polly in the resolved graph."
+echo "SMOKE PASS: exactly the three $version packages restore, build, and run named and typed clients through AddStandardResilienceHandler() (503 -> 200 retry with exactly 2 server attempts on both; caller cancellation classified with the caller's token, not retried, and the next request succeeds) on net8.0 and net10.0, with zero Polly in the resolved graph."
