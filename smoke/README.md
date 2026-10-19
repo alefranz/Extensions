@@ -42,6 +42,21 @@ order (non-zero exit on any failure):
    set through both sides of the source-level compatibility claim at the shared
    `AddStandardResilienceHandler()` seam (see below).
 
+Stage 1 enforces a truthful build-evidence contract: it captures both build
+outputs, parses the actual `N Warning(s)` / `N Error(s)` summary and every
+distinct `warning CODE:` line (the build flow's console logger emits each
+diagnostic twice — inline and in the post-build summary section — so lines
+are deduplicated before counting and reconciled against the summary), and
+fails on any error or any warning outside one documented known warning —
+RT0003
+(`PackageReference Microsoft.Extensions.Diagnostics.ExceptionSummarization can
+be removed`) for `WantsACracker.Extensions.Resilience` / `netstandard2.0`, from
+the repo-pinned ReferenceTrimmer 3.3.1 analyzer (netstandard2.0-only and
+build-state-dependent; not a product signal). The known warning is printed,
+not suppressed, and the final `GUARD PASS` line carries the actual observed
+per-project counts. The script header's "Known warnings" section is the
+detailed home.
+
 Locally (any plain checkout):
 
 ```sh
