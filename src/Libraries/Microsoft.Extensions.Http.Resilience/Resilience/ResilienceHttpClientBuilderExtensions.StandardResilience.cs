@@ -161,12 +161,14 @@ public static partial class ResilienceHttpClientBuilderExtensions
         return content is null || IsBufferable(content);
     }
 
-    // A multipart body re-serialises its children on every send, so it is
-    // only bufferable when every child (including nested multipart content)
-    // is itself bufferable. A one-shot child (for example a StreamContent
-    // over a non-seekable stream) would otherwise be re-sent drained on a
-    // retry — a partial, changed second body — or would throw on the second
-    // serialisation. Deliberate copy of the WantsACracker core rule
+    // A multipart body re-serialises its children into a fresh stream on
+    // every send, so it is only bufferable when every child (including
+    // nested multipart content) is itself bufferable. A one-shot child
+    // (for example a StreamContent over a non-seekable stream) cannot be
+    // replayed: the BCL StreamContent throws on a second serialisation of a
+    // consumed non-seekable stream, and a one-shot child that swallows the
+    // drain would instead be re-sent as a shorter, changed body.
+    // Deliberate copy of the WantsACracker core rule
     // (StandardResilienceHandler.IsBufferable); keep in lockstep (UPSTREAM.md
     // divergence 5).
     private static bool IsBufferable(HttpContent content)

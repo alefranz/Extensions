@@ -98,11 +98,13 @@ public sealed class NonReplayableContentTests
             return new HttpResponseMessage(HttpStatusCode.ServiceUnavailable);
         });
 
-        // The multipart body re-serialises its children on every send, so a
-        // one-shot child (a stream that can be read exactly once) makes the
-        // whole body non-replayable: re-sending it would carry a drained,
-        // silently changed second body. It must therefore go through the
-        // no-retry pipeline and be sent at most once.
+        // The multipart body re-serialises its children into a fresh stream
+        // on every send, so a one-shot child (a stream that can be read
+        // exactly once) makes the whole body non-replayable: the BCL
+        // StreamContent throws on a second serialisation of the consumed
+        // non-seekable stream, and a child that swallows the drain would
+        // instead be re-sent as a shorter, changed body. It must therefore
+        // go through the no-retry pipeline and be sent at most once.
         using var bufferable = new StringContent("buffered");
         using var oneShot = new StreamContent(new UnseekableStream(_payload));
         using var multipart = new MultipartContent("form-data");
