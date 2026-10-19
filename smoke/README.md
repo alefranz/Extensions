@@ -54,14 +54,19 @@ be removed`) for `WantsACracker.Extensions.Resilience` / `netstandard2.0`, from
 the repo-pinned ReferenceTrimmer 3.3.1 analyzer (netstandard2.0-only and
 build-state-dependent; not a product signal). The known set is matched on
 **exact tokens**: the diagnostic message is compared exactly, the unscoped
-form (no marker) is the approved form, and an explicit scope marker, if
-present, must be a single fully-bracketed token naming exactly
+form (no `[` in the line) is the approved form, and an explicit scope marker,
+if present, must be a **complete** single fully-bracketed token naming exactly
 `WantsACracker.Extensions.Resilience.csproj` and TFM exactly `netstandard2.0`
-(a bare TFM marker must be exactly `netstandard2.0`) — prefix-similar
+(a bare TFM marker must be exactly `netstandard2.0`) — marker presence is
+tracked separately from marker content, so a dangling `[` (present but empty)
+is a present-but-malformed marker, and for the scoped form everything after
+the first `::` must be exactly `TargetFramework=netstandard2.0`, so a scope
+token carrying extra `::` fields between the path and the TFM never matches
+(either is unlisted and fails the guard, fail-closed); prefix-similar
 projects or TFMs (e.g. `OtherWantsACracker...csproj`, `netstandard2.01`)
-never match. The summary records are **required, not defaulted**: a missing
-or malformed (non-numeric) `N Warning(s)` / `N Error(s)` record fails the
-guard instead of fabricating a zero. The known warning is printed, not
+never match either. The summary records are **required, not defaulted**: a
+missing or malformed (non-numeric) `N Warning(s)` / `N Error(s)` record
+fails the guard instead of fabricating a zero. The known warning is printed, not
 suppressed, and the final `GUARD PASS` line carries the actual observed
 per-project counts. An opt-in regression self-test
 (`bash smoke/run-release-guard.sh --self-test`) feeds the stage-1 check logic

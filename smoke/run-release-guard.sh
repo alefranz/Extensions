@@ -89,18 +89,26 @@
 #     RT0003 "PackageReference Microsoft.Extensions.Diagnostics.
 #     ExceptionSummarization can be removed" — the diagnostic message (the
 #     text after 'warning RT0003:' up to an optional ' [...]' scope
-#     marker, trimmed) is compared EXACTLY; the unscoped form (no marker)
-#     is the approved R24 form and stays known; if a scope marker is
-#     present it must be a single fully-bracketed
+#     marker, trimmed) is compared EXACTLY; the unscoped form (no '['
+#     anywhere in the line) is the approved R24 form and stays known; a
+#     scope marker, if present, must be a COMPLETE single fully-bracketed
 #     ' [path::TargetFramework=tfm]' token whose path basename is EXACTLY
 #     WantsACracker.Extensions.Resilience.csproj and whose TFM is EXACTLY
 #     netstandard2.0 (a bare TFM marker must be exactly netstandard2.0).
+#     Marker PRESENCE is tracked separately from marker CONTENT: a
+#     dangling '[' (present but empty) is a present-but-malformed marker
+#     and fails the guard (it is NOT the unscoped form), and for the
+#     scoped form everything after the FIRST '::' must be exactly
+#     'TargetFramework=netstandard2.0' — a scope token with extra '::'
+#     fields between the path and the TFM fails the guard (the fields are
+#     not discarded).
 #     The Resilience project is the only project that references the
 #     package and netstandard2.0 the only TFM whose declared-references
 #     TSV is non-empty, so the scope is structurally determined by code +
 #     exact message. RT0003 is NOT allow-listed globally: any other code,
 #     altered/prefixed/suffixed message, project (e.g.
-#     OtherWantsACracker...csproj), or TFM (e.g. netstandard2.01) fails
+#     OtherWantsACracker...csproj), TFM (e.g. netstandard2.01), a
+#     dangling '[', or a scope token with extra '::' fields fails
 #     the guard.
 #
 #   The known warning is printed, not suppressed (no NoWarn): its count is
@@ -165,27 +173,38 @@ known_tfm="netstandard2.0"
 #   - the diagnostic message — the text after 'warning RT0003:' up to an
 #     optional ' [...]' scope marker, trimmed — is EXACTLY the documented
 #     message (any prefix, suffix, or alteration is unlisted);
-#   - if a scope marker is present, it must be a single fully-bracketed
-#     ' [path::TargetFramework=tfm]' token at the end of the line, with the
-#     path basename EXACTLY the documented project and the TFM EXACTLY the
-#     documented TFM (a bare TFM marker must be exactly the documented TFM).
-# The unscoped form (no marker) is the approved R24 form and stays known.
+#   - marker PRESENCE is tracked separately from marker CONTENT: a line
+#     with no '[' at all is the unscoped approved R24 form and stays
+#     known; a present marker must be a COMPLETE single fully-bracketed
+#     ' [path::TargetFramework=tfm]' token at the end of the line — a
+#     dangling '[' (present, empty content) is a present-but-malformed
+#     marker and is unlisted (fail closed), NOT the unscoped form;
+#   - for the scoped form the complete scope token is parsed: the path
+#     before the FIRST '::' must have a basename EXACTLY the documented
+#     project, and everything after that first '::' must be EXACTLY
+#     'TargetFramework=netstandard2.0' — no extra '::' fields between the
+#     path and the TFM are discarded; a bare TFM marker must be exactly
+#     the documented TFM.
 # Anything else — any other code, altered message, other project (e.g.
-# OtherWantsACracker...csproj), or other TFM (e.g. netstandard2.01) — is
-# unlisted and fails the guard.
+# OtherWantsACracker...csproj), other TFM (e.g. netstandard2.01), a
+# dangling '[', or a scope token with extra fields — is unlisted and
+# fails the guard.
 is_known_warning() {
   local code="$1" line="$2"
   [ "$code" = "RT0003" ] || return 1
   local rest="${line#*warning RT0003:}"
-  local message marker=""
+  local message marker="" marker_present=0
   case "$rest" in
-    *"["*) message="${rest%%\[*}"; marker="${rest#*\[}" ;;
+    *"["*) message="${rest%%\[*}"; marker="${rest#*\[}"; marker_present=1 ;;
     *)     message="$rest" ;;
   esac
   message="${message#"${message%%[![:space:]]*}"}"
   message="${message%"${message##*[![:space:]]}"}"
   [ "$message" = "$known_message" ] || return 1
-  [ -n "$marker" ] || return 0
+  [ "$marker_present" -eq 1 ] || return 0
+  # A present marker must be complete: a dangling '[' (empty content) is
+  # present-but-malformed and unlisted (fail closed).
+  [ -n "$marker" ] || return 1
   marker="${marker%"${marker##*[![:space:]]}"}"
   [[ "$marker" == *"]" ]] || return 1
   case "$marker" in
@@ -193,9 +212,13 @@ is_known_warning() {
   esac
   local content="${marker%]}"
   if [[ "$content" == *"::TargetFramework="* ]]; then
-    local path="${content%%::*}" tfm="${content#*::TargetFramework=}"
+    # The complete scope token: everything after the FIRST '::' must be
+    # exactly the TFM field itself — an extra '::field' between the path
+    # and the TFM is unlisted, not discarded.
+    local rest_after_sep="${content#*::}"
+    [ "$rest_after_sep" = "TargetFramework=$known_tfm" ] || return 1
+    local path="${content%%::*}"
     [ "${path##*/}" = "$known_project" ] || return 1
-    [ "$tfm" = "$known_tfm" ] || return 1
   else
     [ "$content" = "$known_tfm" ] || return 1
   fi
@@ -293,9 +316,10 @@ $unlisted_list"
 # Regression cases for the stage-1 check logic: the same is_known_warning /
 # check_build code path the guard uses, fed canned build outputs. Covers the
 # exact known-warning matching — including the demonstrated bypasses (changed
-# message, OtherWantsACracker...csproj, netstandard2.01, wrong project) — and
-# the required-summary fail-closed rule (empty / missing / malformed
-# summaries). Never runs during a normal guard invocation.
+# message, OtherWantsACracker...csproj, netstandard2.01, wrong project,
+# dangling '[', extra '::' scope field) — and the required-summary
+# fail-closed rule (empty / missing / malformed summaries). Never runs
+# during a normal guard invocation.
 
 # self_case <name> <expect: pass|fail> <allow-known: 1|0> <log>
 self_case() {
@@ -369,8 +393,19 @@ run_self_tests() {
     "/x/src/Libraries/Microsoft.Extensions.Resilience/Foo.cs" "The name 'Missing' does not exist in the current context" > "$dir/j-error.log"
   self_case "j-build-error" fail 1 "$dir/j-error.log"
 
+  # (k) demonstrated R28 B1 bypass: dangling '[' — marker present but empty
+  #     (no content, no closing bracket) -> unlisted/FAIL, not the unscoped form
+  printf '%s [\n    1 Warning(s)\n    0 Error(s)\n' "$known" > "$dir/k-dangling-bracket.log"
+  self_case "k-dangling-open-bracket" fail 1 "$dir/k-dangling-bracket.log"
+
+  # (l) demonstrated R28 B1 bypass: extra '::Unexpected=value' field between
+  #     the project path and the TFM in the scope token -> unlisted/FAIL
+  printf '%s [/x/%s::Unexpected=value::TargetFramework=%s]\n    1 Warning(s)\n    0 Error(s)\n' \
+    "$known" "$known_project" "$known_tfm" > "$dir/l-extra-scope-field.log"
+  self_case "l-extra-scope-field" fail 1 "$dir/l-extra-scope-field.log"
+
   if [ "$self_failed" -eq 0 ]; then
-    echo "self-test: all 12 cases behaved as expected"
+    echo "self-test: all 14 cases behaved as expected"
     return 0
   fi
   echo "self-test: one or more cases misbehaved" >&2
