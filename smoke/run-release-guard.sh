@@ -89,16 +89,26 @@
 #     RT0003 "PackageReference Microsoft.Extensions.Diagnostics.
 #     ExceptionSummarization can be removed" — the diagnostic message (the
 #     text after 'warning RT0003:' up to an optional ' [...]' scope
-#     marker, trimmed) is compared EXACTLY; the unscoped form (no '['
-#     anywhere in the line) is the approved R24 form and stays known; a
-#     scope marker, if present, must be a COMPLETE single fully-bracketed
-#     ' [path::TargetFramework=tfm]' token whose path basename is EXACTLY
+#     marker, trimmed) is compared EXACTLY. The marker grammar is defined
+#     on that diagnostic remainder (the text after the FIRST 'warning
+#     RT0003:'); the logger prefix before the diagnostic (e.g. 'CSC :' or a
+#     file/line path) is OUTSIDE the grammar and cannot change the
+#     diagnostic's identity — no whole-line single-marker grammar is
+#     claimed. The unscoped form (no '[' anywhere in the remainder) is the
+#     approved R24 form and stays known; a scope marker, if present, must
+#     be a COMPLETE single fully-bracketed ' [path::TargetFramework=tfm]'
+#     token whose path basename is EXACTLY
 #     WantsACracker.Extensions.Resilience.csproj and whose TFM is EXACTLY
 #     netstandard2.0 (a bare TFM marker must be exactly netstandard2.0).
-#     Marker PRESENCE is tracked separately from marker CONTENT: a
-#     dangling '[' (present but empty) is a present-but-malformed marker
-#     and fails the guard (it is NOT the unscoped form), and for the
-#     scoped form everything after the FIRST '::' must be exactly
+#     A present marker must be whitespace-separated from the message (the
+#     character immediately before the first '[' must be whitespace — an
+#     adjacent 'removed[...' is unlisted). Marker PRESENCE is tracked
+#     separately from marker CONTENT: a dangling '[' (present but empty) is
+#     a present-but-malformed marker and fails the guard (it is NOT the
+#     unscoped form), and a marker whose CONTENT (the text between the
+#     first '[' and the final ']') contains any literal '[' or ']' (nested
+#     or unbalanced brackets) fails the guard. For the scoped form
+#     everything after the FIRST '::' must be exactly
 #     'TargetFramework=netstandard2.0' — a scope token with extra '::'
 #     fields between the path and the TFM fails the guard (the fields are
 #     not discarded).
@@ -108,8 +118,9 @@
 #     exact message. RT0003 is NOT allow-listed globally: any other code,
 #     altered/prefixed/suffixed message, project (e.g.
 #     OtherWantsACracker...csproj), TFM (e.g. netstandard2.01), a
-#     dangling '[', or a scope token with extra '::' fields fails
-#     the guard.
+#     non-whitespace message/marker boundary, a dangling '[', a
+#     nested/unbalanced bracket, or a scope token with extra '::' fields
+#     fails the guard.
 #
 #   The known warning is printed, not suppressed (no NoWarn): its count is
 #   reported in the per-project line and in the final GUARD PASS summary.
@@ -168,17 +179,28 @@ known_tfm="netstandard2.0"
 
 # is_known_warning <code> <line>
 # True only for the single documented known warning, classified on EXACT
-# tokens (see "Known warnings" in this header):
+# tokens (see "Known warnings" in this header). The marker grammar is
+# defined on the diagnostic REMAINDER — the text after the FIRST
+# 'warning RT0003:' — NOT on the whole line: the logger prefix before the
+# diagnostic (e.g. 'CSC :' or a file/line path) is outside the grammar and
+# cannot change the diagnostic's identity.
 #   - the code is exactly RT0003;
 #   - the diagnostic message — the text after 'warning RT0003:' up to an
 #     optional ' [...]' scope marker, trimmed — is EXACTLY the documented
 #     message (any prefix, suffix, or alteration is unlisted);
+#   - when a marker is present it must be whitespace-separated from the
+#     exact message: the character immediately BEFORE the first '[' must be
+#     whitespace, so an adjacent 'removed[...' (no delimiter) is unlisted
+#     (fail closed);
 #   - marker PRESENCE is tracked separately from marker CONTENT: a line
 #     with no '[' at all is the unscoped approved R24 form and stays
 #     known; a present marker must be a COMPLETE single fully-bracketed
 #     ' [path::TargetFramework=tfm]' token at the end of the line — a
 #     dangling '[' (present, empty content) is a present-but-malformed
 #     marker and is unlisted (fail closed), NOT the unscoped form;
+#   - the marker CONTENT (the text between the first '[' and the final ']')
+#     must contain NO literal '[' and NO literal ']': nested or unbalanced
+#     brackets are unlisted (fail closed);
 #   - for the scoped form the complete scope token is parsed: the path
 #     before the FIRST '::' must have a basename EXACTLY the documented
 #     project, and everything after that first '::' must be EXACTLY
@@ -187,15 +209,25 @@ known_tfm="netstandard2.0"
 #     the documented TFM.
 # Anything else — any other code, altered message, other project (e.g.
 # OtherWantsACracker...csproj), other TFM (e.g. netstandard2.01), a
-# dangling '[', or a scope token with extra fields — is unlisted and
+# dangling '[', a nested/unbalanced bracket, a non-whitespace message/
+# marker boundary, or a scope token with extra fields — is unlisted and
 # fails the guard.
 is_known_warning() {
   local code="$1" line="$2"
   [ "$code" = "RT0003" ] || return 1
   local rest="${line#*warning RT0003:}"
-  local message marker="" marker_present=0
+  local message marker="" marker_present=0 pre
   case "$rest" in
-    *"["*) message="${rest%%\[*}"; marker="${rest#*\[}"; marker_present=1 ;;
+    *"["*)
+      # The marker must be whitespace-separated from the exact message: the
+      # character immediately BEFORE the first '[' in the diagnostic
+      # remainder must be whitespace, so an adjacent 'removed[...' (no
+      # delimiter) is unlisted (fail closed).
+      pre="${rest%%\[*}"
+      [ -z "$pre" ] || [[ "${pre: -1}" == [[:space:]] ]] || return 1
+      message="$pre"
+      marker="${rest#*\[}"
+      marker_present=1 ;;
     *)     message="$rest" ;;
   esac
   message="${message#"${message%%[![:space:]]*}"}"
@@ -207,10 +239,15 @@ is_known_warning() {
   [ -n "$marker" ] || return 1
   marker="${marker%"${marker##*[![:space:]]}"}"
   [[ "$marker" == *"]" ]] || return 1
-  case "$marker" in
-    *[*]*|*]*]*) return 1 ;;
-  esac
   local content="${marker%]}"
+  # The marker CONTENT (the text between the first '[' and the final ']')
+  # must contain NO literal '[' and NO literal ']' — nested or unbalanced
+  # brackets are unlisted (fail closed). Literal matching (quoted '[' and
+  # ']'), NOT the broken character-class glob: ' [* ]' is a class matching
+  # a literal '*', not an escaped '['.
+  case "$content" in
+    *"["*|*"]"*) return 1 ;;
+  esac
   if [[ "$content" == *"::TargetFramework="* ]]; then
     # The complete scope token: everything after the FIRST '::' must be
     # exactly the TFM field itself — an extra '::field' between the path
@@ -317,7 +354,9 @@ $unlisted_list"
 # check_build code path the guard uses, fed canned build outputs. Covers the
 # exact known-warning matching — including the demonstrated bypasses (changed
 # message, OtherWantsACracker...csproj, netstandard2.01, wrong project,
-# dangling '[', extra '::' scope field) — and the required-summary
+# dangling '[', extra '::' scope field, a nested/unbalanced opening bracket
+# in the marker content, an opening bracket inside the scoped path, and the
+# non-whitespace message/marker boundary) — and the required-summary
 # fail-closed rule (empty / missing / malformed summaries). Never runs
 # during a normal guard invocation.
 
@@ -404,8 +443,29 @@ run_self_tests() {
     "$known" "$known_project" "$known_tfm" > "$dir/l-extra-scope-field.log"
   self_case "l-extra-scope-field" fail 1 "$dir/l-extra-scope-field.log"
 
+  # (o) demonstrated R30 B1 bypass: a nested/unbalanced OPENING bracket —
+  #     'removed [[/x/...]' (a second '[' absorbed into the path prefix).
+  #     The marker content contains a literal '[' -> unlisted/FAIL.
+  printf '%s [[/x/%s::TargetFramework=%s]\n    1 Warning(s)\n    0 Error(s)\n' \
+    "$known" "$known_project" "$known_tfm" > "$dir/o-nested-open-bracket.log"
+  self_case "o-nested-open-bracket" fail 1 "$dir/o-nested-open-bracket.log"
+
+  # (p) demonstrated R30 B1 bypass: an OPENING bracket inside the scoped
+  #     path — 'removed [/x/[/...csproj...]' (marker content carries a
+  #     literal '[') -> unlisted/FAIL.
+  printf '%s [/x/[/%s::TargetFramework=%s]\n    1 Warning(s)\n    0 Error(s)\n' \
+    "$known" "$known_project" "$known_tfm" > "$dir/p-path-internal-open-bracket.log"
+  self_case "p-path-internal-open-bracket" fail 1 "$dir/p-path-internal-open-bracket.log"
+
+  # (q) demonstrated R30 boundary: the exact message immediately adjacent
+  #     to '[...]' WITHOUT the documented whitespace delimiter
+  #     ('removed[/x/...') -> unlisted/FAIL (fail closed).
+  printf '%s[/x/%s::TargetFramework=%s]\n    1 Warning(s)\n    0 Error(s)\n' \
+    "$known" "$known_project" "$known_tfm" > "$dir/q-no-delimiter.log"
+  self_case "q-no-whitespace-delimiter" fail 1 "$dir/q-no-whitespace-delimiter.log"
+
   if [ "$self_failed" -eq 0 ]; then
-    echo "self-test: all 14 cases behaved as expected"
+    echo "self-test: all 17 cases behaved as expected"
     return 0
   fi
   echo "self-test: one or more cases misbehaved" >&2

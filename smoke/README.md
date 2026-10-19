@@ -53,16 +53,24 @@ RT0003
 be removed`) for `WantsACracker.Extensions.Resilience` / `netstandard2.0`, from
 the repo-pinned ReferenceTrimmer 3.3.1 analyzer (netstandard2.0-only and
 build-state-dependent; not a product signal). The known set is matched on
-**exact tokens**: the diagnostic message is compared exactly, the unscoped
-form (no `[` in the line) is the approved form, and an explicit scope marker,
-if present, must be a **complete** single fully-bracketed token naming exactly
+**exact tokens**: the marker grammar is defined on the diagnostic remainder
+(the text after the FIRST `warning RT0003:`) — the logger prefix before the
+diagnostic (e.g. `CSC :` or a file/line path) is outside the grammar, so no
+whole-line single-marker grammar is claimed — and on that remainder the
+diagnostic message is compared exactly, the unscoped form (no `[` in the
+remainder) is the approved form, and an explicit scope marker, if present,
+must be **whitespace-separated** from the message (the character immediately
+before the first `[` must be whitespace; an adjacent `removed[…]` is unlisted)
+and a **complete** single fully-bracketed token naming exactly
 `WantsACracker.Extensions.Resilience.csproj` and TFM exactly `netstandard2.0`
 (a bare TFM marker must be exactly `netstandard2.0`) — marker presence is
 tracked separately from marker content, so a dangling `[` (present but empty)
-is a present-but-malformed marker, and for the scoped form everything after
+is a present-but-malformed marker, a marker whose content (the text between
+the first `[` and the final `]`) contains any literal `[` or `]` (nested or
+unbalanced brackets) never matches, and for the scoped form everything after
 the first `::` must be exactly `TargetFramework=netstandard2.0`, so a scope
 token carrying extra `::` fields between the path and the TFM never matches
-(either is unlisted and fails the guard, fail-closed); prefix-similar
+(each is unlisted and fails the guard, fail-closed); prefix-similar
 projects or TFMs (e.g. `OtherWantsACracker...csproj`, `netstandard2.01`)
 never match either. The summary records are **required, not defaulted**: a
 missing or malformed (non-numeric) `N Warning(s)` / `N Error(s)` record
@@ -70,7 +78,8 @@ fails the guard instead of fabricating a zero. The known warning is printed, not
 suppressed, and the final `GUARD PASS` line carries the actual observed
 per-project counts. An opt-in regression self-test
 (`bash smoke/run-release-guard.sh --self-test`) feeds the stage-1 check logic
-canned pass/fail cases (the exact-matching bypasses and the missing/malformed
+canned pass/fail cases (the exact-matching bypasses — incl. the nested/
+unbalanced-bracket and no-delimiter shapes — and the missing/malformed
 summary cases); it never runs during a normal guard invocation. The script
 header's "Known warnings" section is the detailed home.
 
